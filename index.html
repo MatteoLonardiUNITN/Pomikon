@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pomìkon - Dog TCG Photo & Collection App</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        pixel: ['"Press Start 2P"', 'cursive'],
+                    },
+                    colors: {
+                        pomired: '#FF3B5C',
+                        pomiyellow: '#FFD13B',
+                        pomiblue: '#2B86FF',
+                        pomipurple: '#8A3BFF',
+                        pomidark: '#121420',
+                        pomicard: '#1C1F33'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Holographic & UI Styles */
+        body {
+            background-color: #0b0c10;
+            color: #ffffff;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Transparent canvas grid preview */
+        .checkered-bg {
+            background-color: #1a1d2e;
+            background-image: 
+                linear-gradient(45deg, #252942 25%, transparent 25%), 
+                linear-gradient(-45deg, #252942 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #252942 75%), 
+                linear-gradient(-45deg, transparent 75%, #252942 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        /* Holographic Card Effects */
+        .tcg-card-container {
+            perspective: 1000px;
+        }
+
+        .tcg-card {
+            transition: transform 0.15s ease-out, box-shadow 0.2s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            background: linear-gradient(135deg, #1f2438 0%, #0d101d 100%);
+            border: 8px solid #f3c642;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 209, 59, 0.3);
+        }
+
+        /* Holo shimmer overlay */
+        .tcg-holo-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0.6;
+            mix-blend-mode: color-dodge;
+            background: linear-gradient(
+                115deg,
+                transparent 20%,
+                rgba(255, 0, 150, 0.4) 35%,
+                rgba(0, 255, 255, 0.6) 50%,
+                rgba(255, 230, 0, 0.4) 65%,
+                transparent 80%
+            );
+            background-size: 200% 200%;
+            transition: background-position 0.1s ease;
+        }
+
+        /* Rare / Legendary Animated Border Glow */
+        .rarity-legendaris {
+            border-color: #ffe600 !important;
+            animation: borderGlow 2.5s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { box-shadow: 0 0 15px #ffe600, inset 0 0 10px #ffe600; }
+            50% { box-shadow: 0 0 25px #ff007b, inset 0 0 15px #ff007b; }
+            100% { box-shadow: 0 0 20px #00f0ff, inset 0 0 12px #00f0ff; }
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121420;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b86ff;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col justify-between items-center bg-pomidark text-white pb-20 selection:bg-pomired selection:text-white">
+
+    <!-- TOP HEADER -->
+    <header class="w-full max-w-md bg-pomicard/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-2">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pomired via-pomiyellow to-pomiblue p-0.5 flex items-center justify-center animate-pulse">
+                <div class="w-full h-full bg-pomidark rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-bone text-pomiyellow text-sm"></i>
+                </div>
+            </div>
+            <div>
+                <h1 class="font-pixel text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pomiyellow via-pomired to-pomiblue">
+                    POMÌKON
+                </h1>
+                <p class="text-[10px] text-gray-400 font-semibold -mt-1 tracking-widest uppercase">Dog TCG Collector</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 bg-pomidark/80 px-3 py-1 rounded-full border border-gray-700">
+            <i class="fa-solid fa-[#FFD13B] fa-paw text-pomiyellow text-xs"></i>
+            <span id="header-card-count" class="text-xs font-bold text-gray-200">0 Carte</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER (Mobile Frame View) -->
+    <main id="app-container" class="w-full max-w-md flex-1 p-4 flex flex-col">
+
+        <!-- ==================== TAB 1: CATTURA & EDITING ==================== -->
+        <section id="tab-capture" class="tab-content flex-col space-y-4">
+            
+            <!-- Step 1: Camera / Upload Prompt -->
+            <div id="capture-step-1" class="bg-pomicard rounded-2xl p-5 border border-gray-800 text-center shadow-xl">
+                <div class="w-20 h-20 bg-pomiblue/10 text-pomiblue rounded-full flex items-center justify-center mx-auto mb-4 border border-pomiblue/30">
+                    <i class="fa-solid fa-camera-retro text-3xl"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-1">Scatta o Carica una Foto</h2>
+                <p class="text-xs text-gray-400 mb-6">Fotografa il tuo cane per trasformarlo in una carta TCG Pomìkon unica!</p>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="triggerFileInput('camera')" class="bg-gradient-to-r from-pomired to-rose-600 hover:from-rose-500 hover:to-pomired text-white font-bold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition transform active:scale-95">
+                        <i class="fa-solid fa-camera"></i>
+                        <span class="text-sm">Fotocamera</span>
+                    </button>
+                    <button onclick="triggerFileInput('gallery')" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 px-4 rounded-xl border border-gray-700 flex items-center justify-center space-x-2 transition transform active:scale-95">
+                        <i class="fa-solid fa-image"></i>
+                        <span class="text-sm">Galleria</span>
+                    </button>
+                </div>
+                <input type="file" id="image-file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+            </div>
+
+            <!-- Step 2: Cutout Tool (Scontornatore Canvas) -->
+            <div id="capture-step-2" class="hidden flex-col bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                    <h3 class="font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-pomiyellow"></i>
+                        Scontorna il Cane
+                    </h3>
+                    <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Tocco / Tocco colore</span>
+                </div>
+
+                <!-- Canvas Cutout Workspace -->
+                <div class="relative w-full aspect-square rounded-xl overflow-hidden checkered-bg border border-gray-700 flex items-center justify-center shadow-inner">
+                    <canvas id="cutout-canvas" class="max-w-full max-h-full object-contain cursor-crosshair"></canvas>
+                    <div id="canvas-loader" class="absolute inset-0 bg-pomidark/80 flex flex-col items-center justify-center hidden">
+                        <i class="fa-solid fa-circle-notch fa-spin text-3xl text-pomiblue mb-2"></i>
+                        <span class="text-xs font-semibold">Elaborazione immagine...</span>
+                    </div>
+                </div>
+
+                <!-- Editing Controls -->
+                <div class="space-y-3 pt-1">
+                    <!-- Tool Selection Bar -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="btn-tool-magic" onclick="setCutoutTool('magic')" class="tool-btn bg-pomiblue text-white font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Cut
+                        </button>
+                        <button id="btn-tool-erase" onclick="setCutoutTool('erase')" class="tool-btn bg-gray-800 text-gray-300 font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-solid fa-eraser"></i> Gomma
+                        </button>
+                        <button id="btn-tool-restore" onclick="setCutoutTool('restore')" class="tool-btn bg-gray-800 text-gray-300 font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-solid fa-rotate-left"></i> Ripristina
+                        </button>
+                    </div>
+
+                    <!-- Sliders & Magic Wand controls -->
+                    <div class="bg-pomidark/60 p-3 rounded-xl space-y-2 border border-gray-800">
+                        <div class="flex items-center justify-between text-xs text-gray-300">
+                            <span id="slider-label">Tolleranza Sfondi:</span>
+                            <span id="tolerance-val" class="font-bold text-pomiyellow">35</span>
+                        </div>
+                        <input type="range" id="tolerance-slider" min="5" max="100" value="35" class="w-full accent-pomiyellow h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer" oninput="updateTolerance(this.value)">
+
+                        <div class="flex items-center justify-between pt-1">
+                            <button onclick="autoRemoveBackground()" class="text-xs bg-pomipurple/20 hover:bg-pomipurple/40 text-pomipurple font-bold py-1.5 px-3 rounded-lg border border-pomipurple/40 transition flex items-center gap-1">
+                                <i class="fa-solid fa-bolt"></i> Auto Cutout Sfondo
+                            </button>
+                            <button onclick="resetCutoutCanvas()" class="text-xs text-gray-400 hover:text-white transition">
+                                <i class="fa-solid fa-trash-arrow-up"></i> Reset Foto
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="confirmCutoutAndProceed()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Conferma Ritaglio e Continua</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Dog Metadata Form -->
+            <div id="capture-step-3" class="hidden flex-col bg-pomicard rounded-2xl p-5 border border-gray-800 shadow-xl space-y-4">
+                <div class="flex items-center gap-3 border-b border-gray-800 pb-3">
+                    <img id="form-dog-preview" class="w-12 h-12 object-contain rounded-lg checkered-bg border border-gray-700" src="" alt="Cane Scontornato">
+                    <div>
+                        <h3 class="font-bold text-base">Identikit del Cane</h3>
+                        <p class="text-xs text-gray-400">Inserisci i dettagli per calcolare i Punti Lotte</p>
+                    </div>
+                </div>
+
+                <form id="dog-info-form" onsubmit="generatePomikonCard(event)" class="space-y-3">
+                    <!-- Nome -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Nome del Cane</label>
+                        <input type="text" id="dog-name" required placeholder="Es. Fiocco, Argo, Luna..." class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white placeholder-gray-500">
+                    </div>
+
+                    <!-- Razza Dropdown -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Razza</label>
+                        <select id="dog-breed" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
+                            <option value="Volpino">Volpino</option>
+                            <option value="Chihuahua Pelo Lungo">Chihuahua Pelo Lungo</option>
+                            <option value="Chihuahua Pelo Corto">Chihuahua Pelo Corto</option>
+                            <option value="Maltese">Maltese</option>
+                            <option value="Yorkshire">Yorkshire</option>
+                            <option value="Maltipoo">Maltipoo</option>
+                            <option value="Barboncino">Barboncino</option>
+                            <option value="Bassotto">Bassotto</option>
+                        </select>
+                    </div>
+
+                    <!-- Sesso -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Sesso</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center justify-center p-2.5 bg-pomidark border border-gray-700 rounded-xl cursor-pointer has-[:checked]:border-pomiblue has-[:checked]:bg-pomiblue/10">
+                                <input type="radio" name="dog-sex" value="Maschio" checked class="hidden">
+                                <i class="fa-solid fa-mars text-pomiblue mr-2"></i>
+                                <span class="text-sm font-semibold">Maschio</span>
+                            </label>
+                            <label class="flex items-center justify-center p-2.5 bg-pomidark border border-gray-700 rounded-xl cursor-pointer has-[:checked]:border-pomired has-[:checked]:bg-pomired/10">
+                                <input type="radio" name="dog-sex" value="Femmina" class="hidden">
+                                <i class="fa-solid fa-venus text-pomired mr-2"></i>
+                                <span class="text-sm font-semibold">Femmina</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Età -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Età (Anni)</label>
+                            <input type="number" id="dog-age-years" min="0" max="25" value="2" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Mesi Aggiuntivi</label>
+                            <input type="number" id="dog-age-months" min="0" max="11" value="0" class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-gradient-to-r from-pomiyellow via-amber-500 to-pomired hover:from-amber-400 hover:to-pomired text-pomidark font-black py-3.5 px-4 rounded-xl shadow-xl flex items-center justify-center gap-2 transition transform active:scale-95 text-base tracking-wide">
+                            <i class="fa-solid fa-sparkles"></i>
+                            <span>CREA CARTA POMÌKON!</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: LA MIA CARTA (CARD GENERATED VIEW) ==================== -->
+        <section id="tab-card-view" class="tab-content hidden flex-col items-center space-y-4">
+            
+            <div id="card-display-container" class="w-full flex justify-center py-2">
+                <!-- Dynamic TCG Holographic Card will render here -->
+            </div>
+
+            <!-- Action Buttons for the Card -->
+            <div class="w-full space-y-2.5">
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="saveCurrentCardToDex()" id="btn-save-card" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95">
+                        <i class="fa-solid fa-bookmark"></i>
+                        <span>Salva nel PomìDex</span>
+                    </button>
+                    <button onclick="downloadCardPNG()" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-3 rounded-xl border border-gray-700 shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Scarica PNG</span>
+                    </button>
+                </div>
+                <button onclick="startNewCapture()" class="w-full bg-pomidark hover:bg-gray-900 border border-gray-700 text-gray-300 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>Scatta Un'Altra Foto</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: POMÌDEX (COLLEZIONE) ==================== -->
+        <section id="tab-pomidex" class="tab-content hidden flex-col space-y-4">
+            <!-- Filter Bar -->
+            <div class="bg-pomicard rounded-xl p-3 border border-gray-800 space-y-2">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-500 text-xs"></i>
+                    <input type="text" id="dex-search" oninput="filterPomidex()" placeholder="Cerca cane per nome..." class="w-full bg-pomidark border border-gray-700 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-pomiyellow text-white">
+                </div>
+                <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-xs">
+                    <button onclick="setDexBreedFilter('Tutti')" class="dex-filter-btn active bg-pomiblue text-white font-semibold px-2.5 py-1 rounded-full whitespace-nowrap">Tutti</button>
+                    <button onclick="setDexBreedFilter('Volpino')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Volpino</button>
+                    <button onclick="setDexBreedFilter('Chihuahua')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Chihuahua</button>
+                    <button onclick="setDexBreedFilter('Maltese')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Maltese</button>
+                    <button onclick="setDexBreedFilter('Barboncino')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Barboncino</button>
+                    <button onclick="setDexBreedFilter('Bassotto')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Bassotto</button>
+                </div>
+            </div>
+
+            <!-- Dex Cards Grid -->
+            <div id="pomidex-grid" class="grid grid-cols-2 gap-3 min-h-[300px]">
+                <!-- Empty State -->
+                <div id="dex-empty" class="col-span-2 flex flex-col items-center justify-center py-12 text-center text-gray-500">
+                    <i class="fa-solid fa-box-open text-4xl mb-2"></i>
+                    <p class="font-bold text-sm">Il tuo PomìDex è vuoto</p>
+                    <p class="text-xs max-w-xs mt-1">Cattura subito il tuo primo cane per aggiungerlo alla collezione!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CARD MODAL FOR POMÌDEX VIEWING -->
+    <div id="card-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
+        <button onclick="closeCardModal()" class="absolute top-4 right-4 text-white hover:text-pomired text-2xl w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div id="modal-card-container" class="w-full max-w-xs my-auto">
+            <!-- Rendered Card -->
+        </div>
+        <div id="modal-actions" class="w-full max-w-xs mt-4 flex gap-2">
+            <button id="modal-download-btn" class="flex-1 bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-download"></i> Scarica PNG
+            </button>
+            <button id="modal-delete-btn" class="bg-red-900/40 border border-red-700/60 text-red-400 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-trash"></i> Elimina
+            </button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-pomicard/95 border-t border-gray-800 backdrop-blur-lg">
+        <div class="max-w-md mx-auto grid grid-cols-3 h-16">
+            <button onclick="switchTab('capture')" id="nav-capture" class="nav-btn text-pomiyellow flex flex-col items-center justify-center space-y-1">
+                <i class="fa-solid fa-camera text-lg"></i>
+                <span class="text-[10px] font-bold">Cattura</span>
+            </button>
+            <button onclick="switchTab('card-view')" id="nav-card-view" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
+                <i class="fa-solid fa-id-card text-lg"></i>
+                <span class="text-[10px] font-bold">La Mia Carta</span>
+            </button>
+            <button onclick="switchTab('pomidex')" id="nav-pomidex" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
+                <i class="fa-solid fa-[#FFD13B] fa-book-bookmark text-lg"></i>
+                <span class="text-[10px] font-bold">PomìDex</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-pomiblue text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 opacity-0 pointer-events-none transition-all duration-300 border border-white/20">
+        <i id="toast-icon" class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Messaggio Notifica</span>
+    </div>
+
+    <!-- APP LOGIC SCRIPT -->
+    <script>
+        /* ==================== GAME DATA & BREED MATRIX ==================== */
+        const BREED_DATA = {
+            'Volpino': {
+                element: 'Fuoco',
+                bgGradient: 'from-orange-500 via-amber-600 to-red-700',
+                badgeBg: 'bg-orange-500',
+                basePower: 820,
+                move1: 'Onda Sofficissima',
+                move1Dmg: 35,
+                move2: 'Vulcano Piumato',
+                move2Dmg: 85,
+                typeIcon: 'fa-fire'
+            },
+            'Chihuahua Pelo Lungo': {
+                element: 'Psico',
+                bgGradient: 'from-pink-500 via-purple-600 to-indigo-700',
+                badgeBg: 'bg-pink-500',
+                basePower: 750,
+                move1: 'Sguardo Ipnotico',
+                move1Dmg: 30,
+                move2: 'Super Fluffy Shield',
+                move2Dmg: 75,
+                typeIcon: 'fa-wand-magic-sparkles'
+            },
+            'Chihuahua Pelo Corto': {
+                element: 'Elettro',
+                bgGradient: 'from-yellow-400 via-amber-500 to-orange-600',
+                badgeBg: 'bg-yellow-500',
+                basePower: 760,
+                move1: 'Morso Tascabile',
+                move1Dmg: 40,
+                move2: 'Scossa Tremenda',
+                move2Dmg: 80,
+                typeIcon: 'fa-bolt'
+            },
+            'Maltese': {
+                element: 'Luce',
+                bgGradient: 'from-cyan-400 via-sky-500 to-blue-600',
+                badgeBg: 'bg-sky-400',
+                basePower: 800,
+                move1: 'Nuvola Candida',
+                move1Dmg: 35,
+                move2: 'Bagliore Angelico',
+                move2Dmg: 82,
+                typeIcon: 'fa-sun'
+            },
+            'Yorkshire': {
+                element: 'Lotta',
+                bgGradient: 'from-amber-600 via-stone-700 to-red-800',
+                badgeBg: 'bg-amber-700',
+                basePower: 780,
+                move1: 'Graffio Grintoso',
+                move1Dmg: 45,
+                move2: 'Carica Tenace',
+                move2Dmg: 88,
+                typeIcon: 'fa-fist-raised'
+            },
+            'Maltipoo': {
+                element: 'Fata',
+                bgGradient: 'from-rose-400 via-pink-500 to-purple-600',
+                badgeBg: 'bg-rose-400',
+                basePower: 840,
+                move1: 'Occhioni Dolci',
+                move1Dmg: 30,
+                move2: 'Tempesta Coccole',
+                move2Dmg: 90,
+                typeIcon: 'fa-heart'
+            },
+            'Barboncino': {
+                element: 'Erba',
+                bgGradient: 'from-emerald-400 via-green-600 to-teal-800',
+                badgeBg: 'bg-emerald-500',
+                basePower: 860,
+                move1: 'Salto Elegante',
+                move1Dmg: 40,
+                move2: 'Aura Regale',
+                move2Dmg: 92,
+                typeIcon: 'fa-leaf'
+            },
+            'Bassotto': {
+                element: 'Acciaio',
+                bgGradient: 'from-slate-500 via-zinc-700 to-stone-900',
+                badgeBg: 'bg-slate-600',
+                basePower: 880,
+                move1: 'Scavo Lampo',
+                move1Dmg: 42,
+                move2: 'Carica Siluro',
+                move2Dmg: 95,
+                typeIcon: 'fa-shield-halved'
+            }
+        };
+
+        const FUN_LORE = [
+            "Si dice che questo cane possa captare i biscotti da 3km di distanza.",
+            "La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.",
+            "Maestro supremo delle coccole notturne sul divano.",
+            "Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.",
+            "Custode leggendario della pallina da tennis dorata."
+        ];
+
+        /* ==================== APP STATE ==================== */
+        let currentOriginalImage = null;
+        let cutoutCanvas, cutoutCtx;
+        let isDrawing = false;
+        let activeTool = 'magic'; // 'magic', 'erase', 'restore'
+        let currentTolerance = 35;
+        let originalImageData = null;
+        let currentCardData = null;
+        let pomidexList = [];
+        let activeFilterBreed = 'Tutti';
+
+        /* ==================== INITIALIZATION ==================== */
+        window.onload = function() {
+            cutoutCanvas = document.getElementById('cutout-canvas');
+            cutoutCtx = cutoutCanvas.getContext('2d', { willReadFrequently: true });
+            
+            // Setup canvas touch/mouse interaction
+            setupCanvasEvents();
+
+            // Load Pomidex from localStorage
+            loadPomidex();
+
+            // Card 3D tilt interaction
+            setup3DTilt();
+        };
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const msgEl = document.getElementById('toast-msg');
+
+            msgEl.textContent = msg;
+            icon.className = isError ? "fa-solid fa-triangle-exclamation text-pomired" : "fa-solid fa-circle-check text-emerald-400";
+            
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        /* ==================== NAVIGATION ==================== */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-pomiyellow', 'text-gray-500'));
+
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            const targetNav = document.getElementById(`nav-${tabId}`);
+
+            if (targetTab) targetTab.classList.remove('hidden');
+            if (targetNav) targetNav.classList.replace('text-gray-500', 'text-pomiyellow');
+
+            if (tabId === 'pomidex') {
+                renderPomidexGrid();
+            }
+        }
+
+        function triggerFileInput(source) {
+            const fileInput = document.getElementById('image-file-input');
+            if (source === 'camera') {
+                fileInput.setAttribute('capture', 'environment');
+            } else {
+                fileInput.removeAttribute('capture');
+            }
+            fileInput.click();
+        }
+
+        /* ==================== IMAGE & CANVAS CUTOUT ENGINE ==================== */
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showCanvasLoader(true);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    currentOriginalImage = img;
+                    initCutoutCanvas(img);
+                    showCanvasLoader(false);
+                    document.getElementById('capture-step-1').classList.add('hidden');
+                    document.getElementById('capture-step-2').classList.remove('hidden');
+                    document.getElementById('capture-step-2').classList.add('flex');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showCanvasLoader(show) {
+            const loader = document.getElementById('canvas-loader');
+            if (show) loader.classList.remove('hidden');
+            else loader.classList.add('hidden');
+        }
+
+        function initCutoutCanvas(img) {
+            // Resize image to maximum 600px dimension for high performance canvas processing
+            const maxDim = 600;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                } else {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
+                }
+            }
+
+            cutoutCanvas.width = width;
+            cutoutCanvas.height = height;
+
+            cutoutCtx.clearRect(0, 0, width, height);
+            cutoutCtx.drawImage(img, 0, 0, width, height);
+
+            // Store original image data for restore tool
+            originalImageData = cutoutCtx.getImageData(0, 0, width, height);
+        }
+
+        function setCutoutTool(tool) {
+            activeTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(b => {
+                b.classList.replace('bg-pomiblue', 'bg-gray-800');
+                b.classList.replace('text-white', 'text-gray-300');
+            });
+
+            const btnMap = {
+                'magic': 'btn-tool-magic',
+                'erase': 'btn-tool-erase',
+                'restore': 'btn-tool-restore'
+            };
+
+            const activeBtn = document.getElementById(btnMap[tool]);
+            if (activeBtn) {
+                activeBtn.classList.replace('bg-gray-800', 'bg-pomiblue');
+                activeBtn.classList.replace('text-gray-300', 'text-white');
+            }
+
+            const label = document.getElementById('slider-label');
+            if (tool === 'magic') label.textContent = "Tolleranza Sfondi:";
+            else if (tool === 'erase') label.textContent = "Dimensione Gomma:";
+            else label.textContent = "Dimensione Pennello:";
+        }
+
+        function updateTolerance(val) {
+            currentTolerance = parseInt(val);
+            document.getElementById('tolerance-val').textContent = val;
+        }
+
+        // Color distance chroma removal algorithm
+        function autoRemoveBackground() {
+            if (!cutoutCtx || !originalImageData) return;
+            showCanvasLoader(true);
+
+            setTimeout(() => {
+                const w = cutoutCanvas.width;
+                const h = cutoutCanvas.height;
+                const imgData = cutoutCtx.getImageData(0, 0, w, h);
+                const data = imgData.data;
+
+                // Sample corners to detect background color
+                const cornerSamples = [
+                    getPixelColor(data, 5, 5, w),
+                    getPixelColor(data, w - 5, 5, w),
+                    getPixelColor(data, 5, h - 5, w),
+                    getPixelColor(data, w - 5, h - 5, w)
+                ];
+
+                const tol = currentTolerance * 2.2;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    for (let c of cornerSamples) {
+                        const dist = Math.sqrt(
+                            (r - c.r) ** 2 + 
+                            (g - c.g) ** 2 + 
+                            (b - c.b) ** 2
+                        );
+
+                        if (dist < tol) {
+                            data[i + 3] = 0; // Transparent
+                            break;
+                        }
+                    }
+                }
+
+                cutoutCtx.putImageData(imgData, 0, 0);
+                showCanvasLoader(false);
+                showToast("Sfondo rimosso automaticamente!");
+            }, 100);
+        }
+
+        function getPixelColor(data, x, y, width) {
+            const idx = (y * width + x) * 4;
+            return { r: data[idx], g: data[idx + 1], b: data[idx + 2] };
+        }
+
+        function magicWandAt(x, y) {
+            const w = cutoutCanvas.width;
+            const h = cutoutCanvas.height;
+            const imgData = cutoutCtx.getImageData(0, 0, w, h);
+            const data = imgData.data;
+
+            const targetIdx = (y * w + x) * 4;
+            const targetColor = {
+                r: data[targetIdx],
+                g: data[targetIdx + 1],
+                b: data[targetIdx + 2]
+            };
+
+            const tol = currentTolerance * 2.5;
+
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] === 0) continue; // Skip already transparent
+
+                const dist = Math.sqrt(
+                    (data[i] - targetColor.r) ** 2 +
+                    (data[i + 1] - targetColor.g) ** 2 +
+                    (data[i + 2] - targetColor.b) ** 2
+                );
+
+                if (dist <= tol) {
+                    data[i + 3] = 0; // Remove
+                }
+            }
+
+            cutoutCtx.putImageData(imgData, 0, 0);
+        }
+
+        function resetCutoutCanvas() {
+            if (currentOriginalImage) {
+                initCutoutCanvas(currentOriginalImage);
+                showToast("Immagine ripristinata");
+            }
+        }
+
+        function setupCanvasEvents() {
+            const getCanvasPos = (e) => {
+                const rect = cutoutCanvas.getBoundingClientRect();
+                const scaleX = cutoutCanvas.width / rect.width;
+                const scaleY = cutoutCanvas.height / rect.height;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                return {
+                    x: Math.floor((clientX - rect.left) * scaleX),
+                    y: Math.floor((clientY - rect.top) * scaleY)
+                };
+            };
+
+            const handleStart = (e) => {
+                isDrawing = true;
+                const pos = getCanvasPos(e);
+                if (activeTool === 'magic') {
+                    magicWandAt(pos.x, pos.y);
+                } else {
+                    applyBrush(pos.x, pos.y);
+                }
+            };
+
+            const handleMove = (e) => {
+                if (!isDrawing) return;
+                if (activeTool === 'erase' || activeTool === 'restore') {
+                    const pos = getCanvasPos(e);
+                    applyBrush(pos.x, pos.y);
+                }
+            };
+
+            const handleEnd = () => { isDrawing = false; };
+
+            cutoutCanvas.addEventListener('mousedown', handleStart);
+            cutoutCanvas.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleEnd);
+
+            cutoutCanvas.addEventListener('touchstart', (e) => { handleStart(e); e.preventDefault(); }, { passive: false });
+            cutoutCanvas.addEventListener('touchmove', (e) => { handleMove(e); e.preventDefault(); }, { passive: false });
+            window.addEventListener('touchend', handleEnd);
+        }
+
+        function applyBrush(x, y) {
+            const radius = currentTolerance;
+            cutoutCtx.save();
+            cutoutCtx.beginPath();
+            cutoutCtx.arc(x, y, radius, 0, Math.PI * 2);
+            cutoutCtx.clip();
+
+            if (activeTool === 'erase') {
+                cutoutCtx.clearRect(x - radius, y - radius, radius * 2, radius * 2);
+            } else if (activeTool === 'restore' && originalImageData) {
+                // Restore from original image buffer
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = cutoutCanvas.width;
+                tempCanvas.height = cutoutCanvas.height;
+                tempCanvas.getContext('2d').putImageData(originalImageData, 0, 0);
+                cutoutCtx.drawImage(tempCanvas, 0, 0);
+            }
+            cutoutCtx.restore();
+        }
+
+        function confirmCutoutAndProceed() {
+            // Convert cutout canvas to transparent PNG data URL
+            const cutoutPngUrl = cutoutCanvas.toDataURL('image/png');
+            document.getElementById('form-dog-preview').src = cutoutPngUrl;
+
+            document.getElementById('capture-step-2').classList.add('hidden');
+            document.getElementById('capture-step-3').classList.remove('hidden');
+            document.getElementById('capture-step-3').classList.add('flex');
+        }
+
+        /* ==================== CARD & SCORING ALGORITHM ==================== */
+        function generatePomikonCard(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('dog-name').value.trim();
+            const breed = document.getElementById('dog-breed').value;
+            const sex = document.querySelector('input[name="dog-sex"]:checked').value;
+            const years = parseInt(document.getElementById('dog-age-years').value) || 0;
+            const months = parseInt(document.getElementById('dog-age-months').value) || 0;
+
+            const breedInfo = BREED_DATA[breed] || BREED_DATA['Volpino'];
+            const cutoutPngUrl = cutoutCanvas.toDataURL('image/png');
+
+            // --- PomìPower CP Calculation Algorithm ---
+            const totalAgeMonths = (years * 12) + months;
+            
+            // Age modifier: puppies and prime age get boost
+            let ageBonus = 0;
+            if (totalAgeMonths <= 12) ageBonus = 40; // Puppy energy
+            else if (totalAgeMonths <= 60) ageBonus = 60; // Prime agility
+            else ageBonus = 35; // Senior wisdom
+
+            // Sex bonus
+            const sexBonus = sex === 'Maschio' ? 25 : 30;
+
+            // Random Cuddle Factor Roll (1 to 100)
+            const cuddleFactorRNG = Math.floor(Math.random() * 100) + 1;
+
+            // Total Score
+            const totalPowerCP = breedInfo.basePower + ageBonus + sexBonus + (cuddleFactorRNG * 2);
+            const baseHP = Math.floor(totalPowerCP / 7.5);
+
+            // Rarity Tier
+            let rarity = 'Comune';
+            let rarityColor = 'text-gray-300';
+            let rarityClass = '';
+
+            if (totalPowerCP >= 1100) {
+                rarity = 'LEGENDARY ★★★';
+                rarityColor = 'text-yellow-400 font-extrabold';
+                rarityClass = 'rarity-legendaris';
+            } else if (totalPowerCP >= 980) {
+                rarity = 'EPICO ★★';
+                rarityColor = 'text-purple-400 font-bold';
+            } else if (totalPowerCP >= 880) {
+                rarity = 'RARO ★';
+                rarityColor = 'text-blue-400 font-bold';
+            }
+
+            // Lore pick
+            const lore = FUN_LORE[Math.floor(Math.random() * FUN_LORE.length)];
+            const cardId = 'POM-' + String(Math.floor(Math.random() * 899) + 100);
+
+            currentCardData = {
+                id: cardId,
+                name: name,
+                breed: breed,
+                sex: sex,
+                ageYears: years,
+                ageMonths: months,
+                cp: totalPowerCP,
+                hp: baseHP,
+                cuddleFactor: cuddleFactorRNG,
+                rarity: rarity,
+                rarityColor: rarityColor,
+                rarityClass: rarityClass,
+                imageUrl: cutoutPngUrl,
+                lore: lore,
+                breedInfo: breedInfo,
+                timestamp: Date.now()
+            };
+
+            // Render Card in Tab 2
+            renderTcgCard(currentCardData, 'card-display-container');
+
+            // Reset Save button
+            const saveBtn = document.getElementById('btn-save-card');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>Salva nel PomìDex</span>`;
+            saveBtn.className = "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95";
+
+            // Switch view
+            switchTab('card-view');
+            showToast("Carta Pomìkon Creata con successo!");
+        }
+
+        function renderTcgCard(card, targetContainerId) {
+            const container = document.getElementById(targetContainerId);
+            const b = card.breedInfo;
+
+            container.innerHTML = `
+                <div id="active-tcg-card" class="tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative cursor-pointer">
+                    <div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${card.rarityClass}">
+                        <div class="tcg-holo-overlay"></div>
+
+                        <!-- Card Header -->
+                        <div class="flex items-center justify-between border-b-2 border-pomiyellow/60 pb-1.5 z-10">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="font-pixel text-xs text-pomiyellow font-black">${card.name}</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] text-gray-300 font-bold">HP <strong class="text-white text-xs">${card.hp}</strong></span>
+                                <div class="${b.badgeBg} w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white shadow">
+                                    <i class="fa-solid ${b.typeIcon}"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Photo Frame with Cutout -->
+                        <div class="relative w-full h-[45%] rounded-lg overflow-hidden border-2 border-pomiyellow/70 shadow-inner my-1.5 bg-gradient-to-br ${b.bgGradient} flex items-center justify-center z-10">
+                            <!-- Background Pattern Overlay -->
+                            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:10px_10px]"></div>
+                            
+                            <!-- Cutout Dog Image -->
+                            <img src="${card.imageUrl}" alt="${card.name}" class="relative z-10 max-h-[92%] max-w-[92%] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)] transition transform hover:scale-105 duration-300">
+                            
+                            <!-- CP Badge -->
+                            <div class="absolute bottom-1 right-1 bg-pomidark/90 border border-pomiyellow/80 px-2 py-0.5 rounded-md z-20 flex items-center gap-1 shadow">
+                                <span class="text-[9px] text-gray-400 font-bold uppercase">CP</span>
+                                <span class="text-xs font-black text-pomiyellow">${card.cp}</span>
+                            </div>
+                        </div>
+
+                        <!-- Breed & Stats Subheader Bar -->
+                        <div class="bg-pomidark/90 border border-gray-700 rounded-md px-2 py-1 flex items-center justify-between text-[10px] z-10 shadow-sm">
+                            <span class="font-bold text-gray-200">${card.breed}</span>
+                            <span class="text-gray-400">${card.sex === 'Maschio' ? '♂' : '♀'} • ${card.ageYears}a ${card.ageMonths}m</span>
+                        </div>
+
+                        <!-- Attack Moves Box -->
+                        <div class="bg-pomidark/80 border border-gray-800 rounded-lg p-2 space-y-1.5 z-10">
+                            <!-- Move 1 -->
+                            <div class="flex items-center justify-between text-[10px] border-b border-gray-800/80 pb-1">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fa-solid fa-paw text-pomiyellow text-[9px]"></i>
+                                    <span class="font-bold text-gray-200">${b.move1}</span>
+                                </div>
+                                <span class="font-black text-gray-100">${b.move1Dmg}</span>
+                            </div>
+                            <!-- Move 2 (Special) -->
+                            <div class="flex items-center justify-between text-[10px]">
+                                <div class="flex items-center space-x-1">
+                                    <i class="fa-solid fa-bolt text-pomired text-[9px]"></i>
+                                    <span class="font-bold text-pomiyellow">${b.move2}</span>
+                                </div>
+                                <span class="font-black text-pomiyellow">${b.move2Dmg}+</span>
+                            </div>
+                        </div>
+
+                        <!-- Lore / Flavor Text -->
+                        <p class="text-[9px] italic text-gray-400 leading-tight px-1 z-10 border-l-2 border-pomiyellow/50 py-0.5">
+                            "${card.lore}"
+                        </p>
+
+                        <!-- Card Footer -->
+                        <div class="flex items-center justify-between border-t border-gray-800 pt-1 text-[8px] text-gray-400 z-10">
+                            <span>Fattore Coccole: <strong class="text-pomiyellow">${card.cuddleFactor}%</strong></span>
+                            <span class="${card.rarityColor}">${card.rarity}</span>
+                            <span class="font-mono text-gray-500">${card.id}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==================== 3D CARD TILT EFFECT ==================== */
+        function setup3DTilt() {
+            document.addEventListener('mousemove', (e) => {
+                const card = document.getElementById('active-tcg-card');
+                if (!card) return;
+
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = (centerY - y) / 12;
+                    const rotateY = (x - centerX) / 12;
+
+                    card.querySelector('.tcg-card').style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    
+                    const holo = card.querySelector('.tcg-holo-overlay');
+                    if (holo) {
+                        holo.style.backgroundPosition = `${x}% ${y}%`;
+                    }
+                } else {
+                    card.querySelector('.tcg-card').style.transform = `rotateX(0deg) rotateY(0deg)`;
+                }
+            });
+        }
+
+        /* ==================== LOCAL STORAGE / POMÌDEX ==================== */
+        function saveCurrentCardToDex() {
+            if (!currentCardData) return;
+
+            // Check if already in dex
+            const exists = pomidexList.some(item => item.id === currentCardData.id);
+            if (exists) {
+                showToast("Carta già salvata nel PomìDex!", true);
+                return;
+            }
+
+            pomidexList.unshift(currentCardData);
+            localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
+
+            updateHeaderCount();
+
+            const saveBtn = document.getElementById('btn-save-card');
+            saveBtn.disabled = true;
+            saveBtn.className = "bg-gray-700 text-gray-400 font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs cursor-not-allowed";
+            saveBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>Salvata nel Dex</span>`;
+
+            showToast("Carta aggiunta al PomìDex!");
+        }
+
+        function loadPomidex() {
+            const saved = localStorage.getItem('pomikon_dex');
+            if (saved) {
+                try {
+                    pomidexList = JSON.parse(saved);
+                } catch(e) {
+                    pomidexList = [];
+                }
+            }
+            updateHeaderCount();
+        }
+
+        function updateHeaderCount() {
+            document.getElementById('header-card-count').textContent = `${pomidexList.length} Carte`;
+        }
+
+        function renderPomidexGrid() {
+            const grid = document.getElementById('pomidex-grid');
+            const empty = document.getElementById('dex-empty');
+            const searchQuery = document.getElementById('dex-search').value.toLowerCase().trim();
+
+            let filtered = pomidexList.filter(card => {
+                const matchSearch = card.name.toLowerCase().includes(searchQuery);
+                const matchBreed = activeFilterBreed === 'Tutti' || card.breed.includes(activeFilterBreed);
+                return matchSearch && matchBreed;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                grid.appendChild(empty);
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            grid.innerHTML = '';
+
+            filtered.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = "bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 transition cursor-pointer shadow-lg group";
+                cardEl.onclick = () => openCardModal(card.id);
+
+                cardEl.innerHTML = `
+                    <div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${card.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700">
+                        <img src="${card.imageUrl}" alt="${card.name}" class="max-h-[85%] max-w-[85%] object-contain group-hover:scale-110 transition duration-300">
+                        <span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">
+                            CP ${card.cp}
+                        </span>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-xs text-white truncate">${card.name}</h4>
+                            <span class="text-[9px] text-gray-400">${card.sex === 'Maschio' ? '♂' : '♀'}</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400 truncate">${card.breed}</p>
+                    </div>
+                `;
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function filterPomidex() {
+            renderPomidexGrid();
+        }
+
+        function setDexBreedFilter(breed) {
+            activeFilterBreed = breed;
+            document.querySelectorAll('.dex-filter-btn').forEach(btn => {
+                btn.classList.replace('bg-pomiblue', 'bg-gray-800');
+                btn.classList.replace('text-white', 'text-gray-300');
+                if (btn.textContent.includes(breed)) {
+                    btn.classList.replace('bg-gray-800', 'bg-pomiblue');
+                    btn.classList.replace('text-gray-300', 'text-white');
+                }
+            });
+            renderPomidexGrid();
+        }
+
+        /* ==================== MODAL CARD VIEWER ==================== */
+        function openCardModal(cardId) {
+            const card = pomidexList.find(c => c.id === cardId);
+            if (!card) return;
+
+            renderTcgCard(card, 'modal-card-container');
+
+            document.getElementById('modal-download-btn').onclick = () => downloadCardPNG(card);
+            document.getElementById('modal-delete-btn').onclick = () => deleteCardFromDex(card.id);
+
+            document.getElementById('card-modal').classList.remove('hidden');
+        }
+
+        function closeCardModal() {
+            document.getElementById('card-modal').classList.add('hidden');
+        }
+
+        function deleteCardFromDex(cardId) {
+            pomidexList = pomidexList.filter(c => c.id !== cardId);
+            localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
+            updateHeaderCount();
+            closeCardModal();
+            renderPomidexGrid();
+            showToast("Carta eliminata");
+        }
+
+        /* ==================== CANVAS CARD PNG EXPORT ==================== */
+        function downloadCardPNG(cardToExport = null) {
+            const card = cardToExport || currentCardData;
+            if (!card) return;
+
+            // Render crisp TCG card onto hidden offscreen canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = 600;
+            canvas.height = 930;
+            const ctx = canvas.getContext('2d');
+
+            const b = card.breedInfo;
+
+            // 1. Card Background
+            ctx.fillStyle = "#1c1f33";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Card Gold Border
+            ctx.strokeStyle = "#f3c642";
+            ctx.lineWidth = 16;
+            ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
+
+            // 2. Header
+            ctx.fillStyle = "#FFD13B";
+            ctx.font = "900 28px 'Outfit', sans-serif";
+            ctx.fillText(card.name, 35, 65);
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 20px 'Outfit', sans-serif";
+            ctx.fillText(`HP ${card.hp}`, 450, 65);
+
+            // 3. Photo Frame Gradient Background
+            const grad = ctx.createLinearGradient(30, 90, 570, 510);
+            grad.addColorStop(0, '#f97316');
+            grad.addColorStop(1, '#c2410c');
+            ctx.fillStyle = grad;
+            ctx.fillRect(35, 95, 530, 420);
+            ctx.strokeStyle = "#f3c642";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(35, 95, 530, 420);
+
+            // Load Cutout Image onto Canvas Export
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = function() {
+                // Draw dog in frame center
+                const scale = Math.min(480 / img.width, 380 / img.height);
+                const w = img.width * scale;
+                const h = img.height * scale;
+                const x = 35 + (530 - w) / 2;
+                const y = 95 + (420 - h) / 2;
+
+                ctx.drawImage(img, x, y, w, h);
+
+                // CP Badge
+                ctx.fillStyle = "rgba(18, 20, 32, 0.9)";
+                ctx.fillRect(400, 450, 150, 50);
+                ctx.strokeStyle = "#FFD13B";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(400, 450, 150, 50);
+
+                ctx.fillStyle = "#FFD13B";
+                ctx.font = "black 24px 'Outfit', sans-serif";
+                ctx.fillText(`CP ${card.cp}`, 420, 485);
+
+                // Stats Section
+                ctx.fillStyle = "#121420";
+                ctx.fillRect(35, 535, 530, 45);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 20px 'Outfit', sans-serif";
+                ctx.fillText(`${card.breed} (${card.sex} • ${card.ageYears}a ${card.ageMonths}m)`, 50, 565);
+
+                // Moves Box
+                ctx.fillStyle = "#121420";
+                ctx.fillRect(35, 600, 530, 150);
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 22px 'Outfit', sans-serif";
+                ctx.fillText(`🐾 ${b.move1}`, 55, 640);
+                ctx.fillText(`${b.move1Dmg}`, 510, 640);
+
+                ctx.fillStyle = "#FFD13B";
+                ctx.fillText(`⚡ ${b.move2}`, 55, 710);
+                ctx.fillText(`${b.move2Dmg}+`, 500, 710);
+
+                // Lore
+                ctx.fillStyle = "#9ca3af";
+                ctx.font = "italic 18px 'Outfit', sans-serif";
+                ctx.fillText(`"${card.lore}"`, 35, 790);
+
+                // Footer
+                ctx.fillStyle = "#d1d5db";
+                ctx.font = "bold 18px 'Outfit', sans-serif";
+                ctx.fillText(`Fattore Coccole: ${card.cuddleFactor}%`, 35, 870);
+                ctx.fillText(`${card.rarity}`, 270, 870);
+                ctx.fillText(`${card.id}`, 490, 870);
+
+                // Download Link Trigger
+                const dataUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `Pomikon_${card.name}_${card.id}.png`;
+                link.href = dataUrl;
+                link.click();
+
+                showToast("Carta scaricata in PNG!");
+            };
+            img.src = card.imageUrl;
+        }
+
+        function startNewCapture() {
+            document.getElementById('capture-step-1').classList.remove('hidden');
+            document.getElementById('capture-step-2').classList.add('hidden');
+            document.getElementById('capture-step-3').classList.add('hidden');
+            document.getElementById('dog-name').value = '';
+            switchTab('capture');
+        }
+    </script>
+</body>
+</html>
