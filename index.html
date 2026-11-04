@@ -62,50 +62,77 @@
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
-        /* 3D Holographic Card Styling */
+        /* 3D Holographic Card Styling & Animated Sparkles */
         .tcg-card-container {
             perspective: 1000px;
         }
 
         .tcg-card {
-            transition: transform 0.15s ease-out, box-shadow 0.2s ease;
+            transition: transform 0.15s ease-out, box-shadow 0.25s ease;
             transform-style: preserve-3d;
             position: relative;
-            background: linear-gradient(135deg, #1f2438 0%, #0d101d 100%);
+            background: linear-gradient(135deg, #242940 0%, #0d101d 100%);
             border: 8px solid #f3c642;
             border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 209, 59, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 209, 59, 0.35);
+            animation: cardEntrance 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        @keyframes cardEntrance {
+            0% { opacity: 0; transform: scale(0.8) rotateY(-30deg); }
+            100% { opacity: 1; transform: scale(1) rotateY(0deg); }
+        }
+
+        /* Holographic Dynamic Rainbow Overlay */
         .tcg-holo-overlay {
             position: absolute;
             inset: 0;
             border-radius: 10px;
             pointer-events: none;
             z-index: 20;
-            opacity: 0.55;
+            opacity: 0.65;
             mix-blend-mode: color-dodge;
             background: linear-gradient(
                 115deg,
-                transparent 20%,
-                rgba(255, 0, 150, 0.4) 35%,
-                rgba(0, 255, 255, 0.6) 50%,
-                rgba(255, 230, 0, 0.4) 65%,
-                transparent 80%
+                transparent 15%,
+                rgba(255, 0, 128, 0.45) 30%,
+                rgba(0, 255, 240, 0.65) 48%,
+                rgba(255, 230, 0, 0.5) 62%,
+                transparent 85%
             );
-            background-size: 200% 200%;
-            transition: background-position 0.1s ease;
+            background-size: 250% 250%;
+            animation: holoSweep 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes holoSweep {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Sparkle glitter animations */
+        .sparkle-particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 25;
+            background: radial-gradient(circle, #ffffff 10%, rgba(255, 209, 59, 0.8) 60%, transparent 100%);
+            border-radius: 50%;
+            animation: sparklePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes sparklePulse {
+            0%, 100% { transform: scale(0.3) rotate(0deg); opacity: 0.2; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.9; }
         }
 
         .rarity-legendaris {
             border-color: #ffe600 !important;
-            animation: borderGlow 2.5s infinite alternate;
+            animation: borderGlow 2s infinite alternate;
         }
 
         @keyframes borderGlow {
             0% { box-shadow: 0 0 15px #ffe600, inset 0 0 10px #ffe600; }
-            50% { box-shadow: 0 0 25px #ff007b, inset 0 0 15px #ff007b; }
-            100% { box-shadow: 0 0 20px #00f0ff, inset 0 0 12px #00f0ff; }
+            50% { box-shadow: 0 0 30px #ff007b, inset 0 0 18px #ff007b; }
+            100% { box-shadow: 0 0 25px #00f0ff, inset 0 0 15px #00f0ff; }
         }
 
         ::-webkit-scrollbar { width: 6px; }
@@ -140,54 +167,52 @@
     <!-- MAIN APP CONTAINER -->
     <main id="app-container" class="w-full max-w-md flex-1 p-4 flex flex-col">
 
-        <!-- ==================== TAB 1: CATTURA & EDITING ==================== -->
+        <!-- ==================== TAB 1: CATTURA & EDITING (PRIMA VERSIONE RIPRISTINATA) ==================== -->
         <section id="tab-capture" class="tab-content flex flex-col space-y-4">
             
-            <!-- Step 1: Photo Source Choice -->
+            <!-- Step 1: Camera Feed / Image Selection -->
             <div id="capture-step-1" class="bg-pomicard rounded-2xl p-5 border border-gray-800 text-center shadow-xl space-y-4">
                 <div class="w-20 h-20 bg-pomiblue/10 text-pomiblue rounded-full flex items-center justify-center mx-auto border border-pomiblue/30">
                     <i class="fa-solid fa-camera-retro text-3xl"></i>
                 </div>
                 <div>
                     <h2 class="text-xl font-bold mb-1">Cattura un Cane</h2>
-                    <p class="text-xs text-gray-400">Scatta una foto o sceglila dalla galleria per generare la carta Pomìkon!</p>
+                    <p class="text-xs text-gray-400">Scatta una foto al cane o sceglila dalla galleria!</p>
                 </div>
 
-                <!-- Live Camera View Modal/Container (Only starts when triggered) -->
-                <div id="camera-modal" class="hidden relative w-full aspect-square rounded-2xl overflow-hidden bg-black border-2 border-pomiyellow shadow-inner">
+                <!-- Direct Live Viewfinder -->
+                <div id="camera-viewfinder" class="relative w-full aspect-square rounded-2xl overflow-hidden bg-black border-2 border-pomiyellow shadow-inner">
                     <video id="webcam-video" autoplay playsinline class="w-full h-full object-cover"></video>
                     <button onclick="captureWebcamFrame()" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-white border-4 border-pomiyellow flex items-center justify-center shadow-2xl active:scale-95 transition">
                         <div class="w-10 h-10 rounded-full bg-pomired"></div>
                     </button>
-                    <button onclick="stopWebcamStream()" class="absolute top-3 right-3 bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
                 </div>
 
-                <div id="source-buttons" class="grid grid-cols-2 gap-3 pt-2">
-                    <button onclick="startWebcamStream()" class="bg-gradient-to-r from-pomired to-rose-600 hover:from-rose-500 hover:to-pomired text-white font-bold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition transform active:scale-95">
-                        <i class="fa-solid fa-camera"></i>
-                        <span class="text-sm">Fotocamera</span>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button onclick="startDirectCamera()" class="bg-gradient-to-r from-pomired to-rose-600 text-white font-bold py-3 px-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs">
+                        <i class="fa-solid fa-sync"></i>
+                        <span>Riavvia Cam</span>
                     </button>
-                    <button onclick="triggerFileInput()" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 px-4 rounded-xl border border-gray-700 flex items-center justify-center space-x-2 transition transform active:scale-95">
+                    <button onclick="triggerFileInput()" class="bg-gray-800 text-white font-bold py-3 px-3 rounded-xl border border-gray-700 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-image"></i>
-                        <span class="text-sm">Galleria</span>
+                        <span>Carica Foto</span>
                     </button>
                 </div>
-                <input type="file" id="image-file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                <!-- Native Camera / File Input -->
+                <input type="file" id="image-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(event)">
             </div>
 
-            <!-- Step 2: Cutout Canvas Workstation -->
+            <!-- Step 2: Immediate Cutout Engine Canvas -->
             <div id="capture-step-2" class="hidden flex-col bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-2">
                     <h3 class="font-bold text-sm flex items-center gap-2">
                         <i class="fa-solid fa-wand-magic-sparkles text-pomiyellow"></i>
-                        Scontorna il Cane
+                        Scontornamento Foto
                     </h3>
-                    <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Auto + Ritocco Touch</span>
+                    <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Gomma + Bacchetta</span>
                 </div>
 
-                <!-- Canvas Workspace -->
+                <!-- Interactive Cutout Canvas -->
                 <div class="relative w-full aspect-square rounded-xl overflow-hidden checkered-bg border border-gray-700 flex items-center justify-center shadow-inner">
                     <canvas id="cutout-canvas" class="max-w-full max-h-full object-contain cursor-crosshair"></canvas>
                     <div id="canvas-loader" class="absolute inset-0 bg-pomidark/80 flex flex-col items-center justify-center hidden">
@@ -196,11 +221,11 @@
                     </div>
                 </div>
 
-                <!-- Editing Tools Controls -->
+                <!-- Eraser & Magic Wand Controls -->
                 <div class="space-y-3 pt-1">
                     <div class="grid grid-cols-3 gap-2">
                         <button id="btn-tool-magic" onclick="setCutoutTool('magic')" class="tool-btn bg-pomiblue text-white font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Touch
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Magico
                         </button>
                         <button id="btn-tool-erase" onclick="setCutoutTool('erase')" class="tool-btn bg-gray-800 text-gray-300 font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
                             <i class="fa-solid fa-eraser"></i> Gomma
@@ -212,24 +237,24 @@
 
                     <div class="bg-pomidark/60 p-3 rounded-xl space-y-2 border border-gray-800">
                         <div class="flex items-center justify-between text-xs text-gray-300">
-                            <span id="slider-label">Tolleranza / Dimensione:</span>
+                            <span>Sensibilità Gomma:</span>
                             <span id="tolerance-val" class="font-bold text-pomiyellow">35</span>
                         </div>
                         <input type="range" id="tolerance-slider" min="5" max="100" value="35" class="w-full accent-pomiyellow h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer" oninput="updateTolerance(this.value)">
 
                         <div class="flex items-center justify-between pt-1">
                             <button onclick="autoRemoveBackground()" class="text-xs bg-pomipurple/20 hover:bg-pomipurple/40 text-pomipurple font-bold py-1.5 px-3 rounded-lg border border-pomipurple/40 transition flex items-center gap-1">
-                                <i class="fa-solid fa-bolt"></i> Auto Cutout Sfondo
+                                <i class="fa-solid fa-bolt"></i> Auto Scontorno
                             </button>
                             <button onclick="resetCutoutCanvas()" class="text-xs text-gray-400 hover:text-white transition">
-                                <i class="fa-solid fa-trash-arrow-up"></i> Reset Foto
+                                <i class="fa-solid fa-trash-arrow-up"></i> Reset
                             </button>
                         </div>
                     </div>
 
                     <button onclick="confirmCutoutAndProceed()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-check-circle"></i>
-                        <span>Conferma Ritaglio e Continua</span>
+                        <span>Conferma e Crea Carta</span>
                     </button>
                 </div>
             </div>
@@ -240,7 +265,7 @@
                     <img id="form-dog-preview" class="w-12 h-12 object-contain rounded-lg checkered-bg border border-gray-700" src="" alt="Cane Scontornato">
                     <div>
                         <h3 class="font-bold text-base">Identikit del Cane</h3>
-                        <p class="text-xs text-gray-400">Inserisci i dati per la tua carta Pokémon Pomìkon</p>
+                        <p class="text-xs text-gray-400">Inserisci i dati per calcolare il PomìPower</p>
                     </div>
                 </div>
 
@@ -302,7 +327,7 @@
             </div>
         </section>
 
-        <!-- ==================== TAB 2: LA MIA CARTA (CARD PREVIEW & GENERATED VIEW) ==================== -->
+        <!-- ==================== TAB 2: LA MIA CARTA ==================== -->
         <section id="tab-card-view" class="tab-content hidden flex-col items-center space-y-4">
             <div id="card-display-container" class="w-full flex justify-center py-2">
                 <!-- Dynamic TCG Holographic Card renders here -->
@@ -326,7 +351,7 @@
             </div>
         </section>
 
-        <!-- ==================== TAB 3: POMÌDEX (COLLECTION GALLERY) ==================== -->
+        <!-- ==================== TAB 3: POMÌDEX ==================== -->
         <section id="tab-pomidex" class="tab-content hidden flex-col space-y-4">
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800 space-y-2">
                 <div class="relative">
@@ -352,7 +377,7 @@
             </div>
         </section>
 
-        <!-- ==================== TAB 4: PROFILO & SCAMBIO ==================== -->
+        <!-- ==================== TAB 4: PROFILO & SCAMBIO CORRETTO ==================== -->
         <section id="tab-profile" class="tab-content hidden flex-col space-y-4">
             <!-- Trainer Profile Card -->
             <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-4">
@@ -382,14 +407,14 @@
                 </div>
             </div>
 
-            <!-- P2P Card Trading Box -->
+            <!-- P2P Card Trading Box (FIXED UTF-8 ENCODING) -->
             <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
                 <h3 class="font-bold text-sm flex items-center gap-2 text-pomiyellow">
                     <i class="fa-solid fa-right-left"></i>
                     Scambio Carte tra Giocatori
                 </h3>
                 <p class="text-xs text-gray-400 leading-relaxed">
-                    Incolla qui sotto il codice di scambio ricevuto dal tuo amico (via WhatsApp o Telegram) per aggiungere la sua carta al tuo PomìDex!
+                    Incolla il codice di scambio inviato dal tuo amico per aggiungere la sua carta al tuo PomìDex!
                 </p>
 
                 <textarea id="trade-code-input" rows="3" placeholder="Incolla il codice di scambio qui..." class="w-full bg-pomidark border border-gray-700 rounded-xl p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-pomiyellow resize-none"></textarea>
@@ -414,7 +439,7 @@
         <div id="modal-actions" class="w-full max-w-xs mt-3 flex flex-col gap-2">
             <div class="grid grid-cols-2 gap-2">
                 <button id="modal-trade-btn" class="bg-pomiyellow text-pomidark font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
-                    <i class="fa-solid fa-share-nodes"></i> Codice Scambio
+                    <i class="fa-solid fa-share-nodes"></i> Copia Codice
                 </button>
                 <button id="modal-download-btn" class="bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
                     <i class="fa-solid fa-download"></i> Scarica PNG
@@ -592,6 +617,7 @@
             setupCanvasEvents();
             loadPomidexAndProfile();
             setup3DTilt();
+            startDirectCamera(); // Direct camera on app load
         };
 
         function showToast(msg, isError = false) {
@@ -622,7 +648,9 @@
             if (targetTab) targetTab.classList.remove('hidden');
             if (targetNav) targetNav.classList.replace('text-gray-500', 'text-pomiyellow');
 
-            if (tabId !== 'capture') {
+            if (tabId === 'capture') {
+                startDirectCamera();
+            } else {
                 stopWebcamStream();
             }
 
@@ -633,17 +661,17 @@
             }
         }
 
-        /* ==================== CAMERA MANAGEMENT (ON DEMAND ONLY) ==================== */
-        async function startWebcamStream() {
+        /* ==================== DIRECT CAMERA FEED (RESTORED) ==================== */
+        async function startDirectCamera() {
+            if (webcamStream) return;
             try {
                 webcamStream = await navigator.mediaDevices.getUserMedia({
                     video: { facingMode: 'environment', width: { ideal: 720 }, height: { ideal: 720 } }
                 });
                 const videoEl = document.getElementById('webcam-video');
                 videoEl.srcObject = webcamStream;
-                document.getElementById('camera-modal').classList.remove('hidden');
             } catch (err) {
-                showToast("Impossibile accedere alla fotocamera. Usa la Galleria.", true);
+                console.log("Fotocamera diretta non disponibile, usa il caricamento foto");
             }
         }
 
@@ -652,13 +680,14 @@
                 webcamStream.getTracks().forEach(track => track.stop());
                 webcamStream = null;
             }
-            const modal = document.getElementById('camera-modal');
-            if (modal) modal.classList.add('hidden');
         }
 
         function captureWebcamFrame() {
             const videoEl = document.getElementById('webcam-video');
-            if (!videoEl || !webcamStream) return;
+            if (!videoEl || !videoEl.videoWidth) {
+                triggerFileInput();
+                return;
+            }
 
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = videoEl.videoWidth || 600;
@@ -705,7 +734,7 @@
             reader.readAsDataURL(file);
         }
 
-        /* ==================== CANVAS & CUTOUT ENGINE ==================== */
+        /* ==================== CANVAS & AUTOMATIC CUTOUT ENGINE ==================== */
         function showCanvasLoader(show) {
             const loader = document.getElementById('canvas-loader');
             if (show) loader.classList.remove('hidden');
@@ -734,7 +763,6 @@
             cutoutCtx.drawImage(img, 0, 0, width, height);
             originalImageData = cutoutCtx.getImageData(0, 0, width, height);
 
-            // Execute initial automatic background removal
             autoRemoveBackground();
         }
 
@@ -903,7 +931,6 @@
         }
 
         function confirmCutoutAndProceed() {
-            // Convert to lightweight compressed image data URL
             const compressedUrl = cutoutCanvas.toDataURL('image/webp', 0.8) || cutoutCanvas.toDataURL('image/png');
             document.getElementById('form-dog-preview').src = compressedUrl;
 
@@ -925,7 +952,6 @@
             const breedInfo = BREED_DATA[breed] || BREED_DATA['Sconosciuta'];
             const cutoutUrl = cutoutCanvas.toDataURL('image/webp', 0.8) || cutoutCanvas.toDataURL('image/png');
 
-            // Dynamic Score Calculation
             const totalAgeMonths = (years * 12) + months;
             let ageBonus = totalAgeMonths <= 12 ? 45 : (totalAgeMonths <= 60 ? 60 : 35);
             const sexBonus = sex === 'Maschio' ? 25 : 30;
@@ -991,7 +1017,14 @@
             container.innerHTML = `
                 <div id="active-tcg-card" class="tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative cursor-pointer">
                     <div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${card.rarityClass}">
+                        
+                        <!-- Holographic Overlay -->
                         <div class="tcg-holo-overlay"></div>
+
+                        <!-- Sparkle Particles -->
+                        <div class="sparkle-particle w-3 h-3 top-4 left-6" style="animation-delay: 0.1s"></div>
+                        <div class="sparkle-particle w-2.5 h-2.5 bottom-12 right-8" style="animation-delay: 0.6s"></div>
+                        <div class="sparkle-particle w-3.5 h-3.5 top-1/2 left-4" style="animation-delay: 1.2s"></div>
 
                         <!-- Card Header -->
                         <div class="flex items-center justify-between border-b-2 border-pomiyellow/60 pb-1.5 z-10">
@@ -1057,31 +1090,34 @@
 
         /* ==================== 3D TILT EFFECT ==================== */
         function setup3DTilt() {
-            document.addEventListener('mousemove', (e) => {
+            const handleMove = (clientX, clientY) => {
                 const card = document.getElementById('active-tcg-card');
                 if (!card) return;
 
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
 
                 if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
 
-                    const rotateX = (centerY - y) / 12;
-                    const rotateY = (x - centerX) / 12;
+                    const rotateX = (centerY - y) / 10;
+                    const rotateY = (x - centerX) / 10;
 
                     card.querySelector('.tcg-card').style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                     const holo = card.querySelector('.tcg-holo-overlay');
-                    if (holo) holo.style.backgroundPosition = `${x}% ${y}%`;
-                } else {
-                    card.querySelector('.tcg-card').style.transform = `rotateX(0deg) rotateY(0deg)`;
+                    if (holo) holo.style.backgroundPosition = `${x * 1.5}% ${y * 1.5}%`;
                 }
+            };
+
+            document.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches && e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
             });
         }
 
-        /* ==================== LOCAL STORAGE & PROFILE MANAGEMENT ==================== */
+        /* ==================== LOCAL STORAGE & PROFILE ==================== */
         function loadPomidexAndProfile() {
             const savedDex = localStorage.getItem('pomikon_dex');
             if (savedDex) {
@@ -1233,7 +1269,25 @@
             renderPomidexGrid();
         }
 
-        /* ==================== CARD MODAL & P2P TRADING SYSTEM ==================== */
+        /* ==================== SAFE UTF-8 TRADE CODE ENCODING (FIXED) ==================== */
+        function cardToTradeCode(card) {
+            // Encode UTF-8 cleanly to avoid Base64 btoa exceptions
+            const jsonStr = JSON.stringify(card);
+            const encodedStr = encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+                return String.fromCharCode('0x' + p1);
+            });
+            return btoa(encodedStr);
+        }
+
+        function tradeCodeToCard(code) {
+            const cleanCode = code.trim().replace(/\s+/g, '');
+            const decodedStr = atob(cleanCode);
+            const jsonStr = decodeURIComponent(decodedStr.split('').map(c => {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonStr);
+        }
+
         function openCardModal(cardId) {
             const card = pomidexList.find(c => c.id === cardId);
             if (!card) return;
@@ -1260,30 +1314,31 @@
         }
 
         function exportCardToTradeCode(card) {
-            const jsonStr = JSON.stringify(card);
-            const b64Code = btoa(unescape(encodeURIComponent(jsonStr)));
+            try {
+                const b64Code = cardToTradeCode(card);
 
-            // Compatibility copy to clipboard
-            const tempInput = document.createElement('textarea');
-            tempInput.value = b64Code;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
+                const tempInput = document.createElement('textarea');
+                tempInput.value = b64Code;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
 
-            showToast("Codice Scambio copiato negli appunti!");
+                showToast("Codice Scambio copiato negli appunti!");
+            } catch (err) {
+                showToast("Errore durante la creazione del codice!", true);
+            }
         }
 
         function importCardFromCode() {
-            const codeInput = document.getElementById('trade-code-input').value.trim();
+            const codeInput = document.getElementById('trade-code-input').value;
             if (!codeInput) {
-                showToast("Inserisci un codice valido!", true);
+                showToast("Incolla un codice di scambio valido!", true);
                 return;
             }
 
             try {
-                const jsonStr = decodeURIComponent(escape(atob(codeInput)));
-                const card = JSON.parse(jsonStr);
+                const card = tradeCodeToCard(codeInput);
 
                 if (!card.id || !card.name || !card.cp) {
                     throw new Error("Formato carta non valido");
@@ -1402,7 +1457,6 @@
         }
 
         function startNewCapture() {
-            stopWebcamStream();
             document.getElementById('capture-step-1').classList.remove('hidden');
             document.getElementById('capture-step-2').classList.add('hidden');
             document.getElementById('capture-step-3').classList.add('hidden');
