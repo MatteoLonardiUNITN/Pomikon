@@ -1,755 +1,749 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pomìkon - Dog TCG Photo & Collection App</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        pixel: ['"Press Start 2P"', 'cursive'],
-                    },
-                    colors: {
-                        pomired: '#FF3B5C',
-                        pomiyellow: '#FFD13B',
-                        pomiblue: '#2B86FF',
-                        pomipurple: '#8A3BFF',
-                        pomidark: '#121420',
-                        pomicard: '#1C1F33'
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        /* Custom Holographic & UI Styles */
-        body {
-            background-color: #0b0c10;
-            color: #ffffff;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-        }
-
-        /* Transparent canvas grid preview */
-        .checkered-bg {
-            background-color: #1a1d2e;
-            background-image: 
-                linear-gradient(45deg, #252942 25%, transparent 25%), 
-                linear-gradient(-45deg, #252942 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #252942 75%), 
-                linear-gradient(-45deg, transparent 75%, #252942 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-        }
-
-        /* Holographic Card Effects */
-        .tcg-card-container {
-            perspective: 1000px;
-        }
-
-        .tcg-card {
-            transition: transform 0.15s ease-out, box-shadow 0.2s ease;
-            transform-style: preserve-3d;
-            position: relative;
-            background: linear-gradient(135deg, #1f2438 0%, #0d101d 100%);
-            border: 8px solid #f3c642;
-            border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 209, 59, 0.3);
-        }
-
-        /* Holo shimmer overlay */
-        .tcg-holo-overlay {
-            position: absolute;
-            inset: 0;
-            border-radius: 10px;
-            pointer-events: none;
-            z-index: 20;
-            opacity: 0.6;
-            mix-blend-mode: color-dodge;
-            background: linear-gradient(
-                115deg,
-                transparent 20%,
-                rgba(255, 0, 150, 0.4) 35%,
-                rgba(0, 255, 255, 0.6) 50%,
-                rgba(255, 230, 0, 0.4) 65%,
-                transparent 80%
-            );
-            background-size: 200% 200%;
-            transition: background-position 0.1s ease;
-        }
-
-        /* Rare / Legendary Animated Border Glow */
-        .rarity-legendaris {
-            border-color: #ffe600 !important;
-            animation: borderGlow 2.5s infinite alternate;
-        }
-
-        @keyframes borderGlow {
-            0% { box-shadow: 0 0 15px #ffe600, inset 0 0 10px #ffe600; }
-            50% { box-shadow: 0 0 25px #ff007b, inset 0 0 15px #ff007b; }
-            100% { box-shadow: 0 0 20px #00f0ff, inset 0 0 12px #00f0ff; }
-        }
-
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #121420; }
-        ::-webkit-scrollbar-thumb { background: #2b86ff; border-radius: 4px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Pomìkon - Dog TCG Photo & Collection App</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['Outfit','sans-serif'],pixel:['"Press Start 2P"','cursive']},colors:{pomired:'#FF3B5C',pomiyellow:'#FFD13B',pomiblue:'#2B86FF',pomipurple:'#8A3BFF',pomidark:'#121420',pomicard:'#1C1F33'}}}}
+</script>
+<style>
+body{background-color:#0b0c10;color:#fff;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+input,textarea{user-select:text;-webkit-user-select:text}
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-.125em;flex-shrink:0}
+.checkered-bg{background-color:#1a1d2e;background-image:linear-gradient(45deg,#252942 25%,transparent 25%),linear-gradient(-45deg,#252942 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#252942 75%),linear-gradient(-45deg,transparent 75%,#252942 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0px}
+.tcg-card-container{perspective:1000px}
+.tcg-card{transition:transform .15s ease-out,box-shadow .2s ease;transform-style:preserve-3d;position:relative;background:linear-gradient(135deg,#1f2438 0%,#0d101d 100%);border:8px solid #f3c642;border-radius:18px;box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 15px rgba(255,209,59,.3)}
+.tcg-holo-overlay{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:20;opacity:.6;mix-blend-mode:color-dodge;background:linear-gradient(115deg,transparent 20%,rgba(255,0,150,.4) 35%,rgba(0,255,255,.6) 50%,rgba(255,230,0,.4) 65%,transparent 80%);background-size:200% 200%;transition:background-position .1s ease}
+.rarity-legendaris{border-color:#ffe600!important;animation:borderGlow 2.5s infinite alternate}
+@keyframes borderGlow{0%{box-shadow:0 0 15px #ffe600,inset 0 0 10px #ffe600}50%{box-shadow:0 0 25px #ff007b,inset 0 0 15px #ff007b}100%{box-shadow:0 0 20px #00f0ff,inset 0 0 12px #00f0ff}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#121420}::-webkit-scrollbar-thumb{background:#2b86ff;border-radius:4px}
+@keyframes inR{from{opacity:0;transform:translate3d(32px,0,0)}to{opacity:1;transform:none}}
+@keyframes inL{from{opacity:0;transform:translate3d(-32px,0,0)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.pop-in{animation:pop .5s cubic-bezier(.2,.9,.3,1.1) both}
+.tab-content{display:none}
+.tab-content.on{display:flex}
+.step{display:none}
+.step.on{display:flex;animation:pop .45s cubic-bezier(.2,.9,.3,1.1) both}
+.modal{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex-direction:column;align-items:center;justify-content:center;padding:1rem}
+.modal.on{display:flex;animation:fade .25s ease both}
+.modal.top{z-index:60}
+.nb{transition:color .3s ease}
+.nb .ic{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.nb.on .ic{transform:translateY(-3px) scale(1.15)}
+.sw{width:44px;height:24px;border-radius:99px;background:#374151;position:relative;transition:background .3s;flex-shrink:0}
+.sw span{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.sw.on{background:#2b86ff}
+.sw.on span{transform:translateX(20px)}
+.dexcard{transition:transform .2s ease,border-color .2s}
+.dexcard:active{transform:scale(.96)}
+.btn{transition:transform .15s ease,filter .2s ease}
+.btn:active{transform:scale(.95)}
+#toast{position:fixed;top:4rem;left:50%;transform:translate(-50%,-12px);opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.8,.2,1);z-index:70;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
 </head>
-<body class="font-sans min-h-screen flex flex-col justify-between items-center bg-pomidark text-white pb-20 selection:bg-pomired selection:text-white">
+<body class="font-sans min-h-screen flex flex-col justify-between items-center bg-pomidark text-white pb-24 selection:bg-pomired selection:text-white">
 
-    <!-- TOP HEADER -->
-    <header class="w-full max-w-md bg-pomicard/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-lg">
-        <div class="flex items-center space-x-2">
-            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pomired via-pomiyellow to-pomiblue p-0.5 flex items-center justify-center animate-pulse">
-                <div class="w-full h-full bg-pomidark rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-bone text-pomiyellow text-sm"></i>
-                </div>
+<header class="w-full max-w-md bg-pomicard/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-2">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pomired via-pomiyellow to-pomiblue p-0.5 flex items-center justify-center animate-pulse">
+            <div class="w-full h-full bg-pomidark rounded-full flex items-center justify-center"><i data-ic="bone" class="text-sm text-pomiyellow"></i></div>
+        </div>
+        <div>
+            <h1 class="font-pixel text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pomiyellow via-pomired to-pomiblue">POMÌKON</h1>
+            <p class="text-[10px] text-gray-400 font-semibold -mt-1 tracking-widest uppercase">Dog TCG Collector</p>
+        </div>
+    </div>
+    <div class="flex items-center space-x-2 bg-pomidark/80 px-3 py-1 rounded-full border border-gray-700">
+        <i data-ic="paw" class="text-xs text-pomiyellow"></i>
+        <span id="hdr-count" class="text-xs font-bold text-gray-200">0 Carte</span>
+    </div>
+</header>
+
+<main class="w-full max-w-md flex-1 p-4 flex flex-col">
+
+    <!-- CATTURA -->
+    <section id="tab-capture" class="tab-content on flex-col space-y-4">
+
+        <div id="s1" class="step on flex-col bg-pomicard rounded-2xl p-5 border border-gray-800 text-center shadow-xl">
+            <div class="w-20 h-20 bg-pomiblue/10 text-pomiblue rounded-full flex items-center justify-center mx-auto mb-4 border border-pomiblue/30">
+                <i data-ic="camera-retro" class="text-3xl"></i>
             </div>
-            <div>
-                <h1 class="font-pixel text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pomiyellow via-pomired to-pomiblue">
-                    POMÌKON
-                </h1>
-                <p class="text-[10px] text-gray-400 font-semibold -mt-1 tracking-widest uppercase">Dog TCG Collector</p>
+            <h2 class="text-xl font-bold mb-1">Scatta o Carica una Foto</h2>
+            <p class="text-xs text-gray-400 mb-6">Fotografa il tuo cane per trasformarlo in una carta TCG Pomìkon unica!</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="pickFile(true)" class="btn bg-gradient-to-r from-pomired to-rose-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center space-x-2">
+                    <i data-ic="camera"></i><span class="text-sm">Fotocamera</span>
+                </button>
+                <button onclick="pickFile(false)" class="btn bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 px-4 rounded-xl border border-gray-700 flex items-center justify-center space-x-2">
+                    <i data-ic="image"></i><span class="text-sm">Galleria</span>
+                </button>
+            </div>
+            <input type="file" id="file-in" accept="image/*" class="hidden" onchange="onPick(event)">
+        </div>
+
+        <div id="s2" class="step flex-col bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="wand-magic-sparkles" class="text-pomiyellow"></i> Scontorna il Cane</h3>
+                <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Tocca lo sfondo</span>
+            </div>
+            <div class="relative w-full aspect-square rounded-xl overflow-hidden checkered-bg border border-gray-700 flex items-center justify-center shadow-inner">
+                <canvas id="cutout-canvas" class="max-w-full max-h-full cursor-crosshair" style="touch-action:none"></canvas>
+            </div>
+            <div class="space-y-3 pt-1">
+                <div class="grid grid-cols-3 gap-2">
+                    <button data-t="magic" onclick="setTool('magic')" class="tb font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition"><i data-ic="wand-magic-sparkles"></i> Magic</button>
+                    <button data-t="erase" onclick="setTool('erase')" class="tb font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition"><i data-ic="eraser"></i> Gomma</button>
+                    <button data-t="restore" onclick="setTool('restore')" class="tb font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition"><i data-ic="rotate-left"></i> Ripristina</button>
+                </div>
+                <div class="bg-pomidark/60 p-3 rounded-xl space-y-2 border border-gray-800">
+                    <div class="flex items-center justify-between text-xs text-gray-300">
+                        <span>Tolleranza colore (Magic)</span><span id="tol-v" class="font-bold text-pomiyellow">35</span>
+                    </div>
+                    <input type="range" id="tol" min="5" max="100" value="35" class="w-full accent-pomiyellow h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer" oninput="$('tol-v').textContent=this.value">
+                    <div class="flex items-center justify-between text-xs text-gray-300 pt-1">
+                        <span>Dimensione pennello</span><span id="brush-v" class="font-bold text-pomiyellow">25</span>
+                    </div>
+                    <input type="range" id="brush" min="3" max="80" value="25" class="w-full accent-pomiyellow h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer" oninput="$('brush-v').textContent=this.value">
+                    <div class="flex items-center justify-between pt-1">
+                        <button onclick="autoCut()" class="btn text-xs bg-pomipurple/20 hover:bg-pomipurple/40 text-pomipurple font-bold py-1.5 px-3 rounded-lg border border-pomipurple/40 flex items-center gap-1"><i data-ic="bolt"></i> Auto Cutout</button>
+                        <button onclick="resetCut()" class="text-xs text-gray-400 hover:text-white transition flex items-center gap-1"><i data-ic="trash-arrow-up"></i> Reset Foto</button>
+                    </div>
+                </div>
+                <button onclick="confirmCut()" class="btn w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+                    <i data-ic="check-circle"></i><span>Conferma Ritaglio e Continua</span>
+                </button>
             </div>
         </div>
 
-        <div class="flex items-center space-x-2 bg-pomidark/80 px-3 py-1 rounded-full border border-gray-700">
-            <i class="fa-solid fa-[#FFD13B] fa-paw text-pomiyellow text-xs"></i>
-            <span id="header-card-count" class="text-xs font-bold text-gray-200">0 Carte</span>
-        </div>
-    </header>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main id="app-container" class="w-full max-w-md flex-1 p-4 flex flex-col">
-
-        <!-- ==================== TAB 1: CATTURA & EDITING ==================== -->
-        <section id="tab-capture" class="tab-content flex-col space-y-4">
-            
-            <!-- Step 1: Camera / Upload Prompt -->
-            <div id="capture-step-1" class="bg-pomicard rounded-2xl p-5 border border-gray-800 text-center shadow-xl">
-                <div class="w-20 h-20 bg-pomiblue/10 text-pomiblue rounded-full flex items-center justify-center mx-auto mb-4 border border-pomiblue/30">
-                    <i class="fa-solid fa-camera-retro text-3xl"></i>
-                </div>
-                <h2 class="text-xl font-bold mb-1">Scatta o Carica una Foto</h2>
-                <p class="text-xs text-gray-400 mb-6">Fotografa il tuo cane per trasformarlo in una carta TCG Pomìkon unica!</p>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="triggerFileInput('camera')" class="bg-gradient-to-r from-pomired to-rose-600 hover:from-rose-500 hover:to-pomired text-white font-bold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition transform active:scale-95">
-                        <i class="fa-solid fa-camera"></i>
-                        <span class="text-sm">Fotocamera</span>
-                    </button>
-                    <button onclick="triggerFileInput('gallery')" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 px-4 rounded-xl border border-gray-700 flex items-center justify-center space-x-2 transition transform active:scale-95">
-                        <i class="fa-solid fa-image"></i>
-                        <span class="text-sm">Galleria</span>
-                    </button>
-                </div>
-                <input type="file" id="image-file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-            </div>
-
-            <!-- Step 2: Cutout Tool -->
-            <div id="capture-step-2" class="hidden flex-col bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
-                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
-                    <h3 class="font-bold text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles text-pomiyellow"></i>
-                        Scontorna il Cane
-                    </h3>
-                    <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Tocco / Tocco colore</span>
-                </div>
-
-                <div class="relative w-full aspect-square rounded-xl overflow-hidden checkered-bg border border-gray-700 flex items-center justify-center shadow-inner">
-                    <canvas id="cutout-canvas" class="max-w-full max-h-full object-contain cursor-crosshair"></canvas>
-                    <div id="canvas-loader" class="absolute inset-0 bg-pomidark/80 flex flex-col items-center justify-center hidden">
-                        <i class="fa-solid fa-circle-notch fa-spin text-3xl text-pomiblue mb-2"></i>
-                        <span class="text-xs font-semibold">Elaborazione immagine...</span>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-1">
-                    <div class="grid grid-cols-3 gap-2">
-                        <button id="btn-tool-magic" onclick="setCutoutTool('magic')" class="tool-btn bg-pomiblue text-white font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Cut
-                        </button>
-                        <button id="btn-tool-erase" onclick="setCutoutTool('erase')" class="tool-btn bg-gray-800 text-gray-300 font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
-                            <i class="fa-solid fa-eraser"></i> Gomma
-                        </button>
-                        <button id="btn-tool-restore" onclick="setCutoutTool('restore')" class="tool-btn bg-gray-800 text-gray-300 font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
-                            <i class="fa-solid fa-rotate-left"></i> Ripristina
-                        </button>
-                    </div>
-
-                    <div class="bg-pomidark/60 p-3 rounded-xl space-y-2 border border-gray-800">
-                        <div class="flex items-center justify-between text-xs text-gray-300">
-                            <span id="slider-label">Tolleranza Sfondi:</span>
-                            <span id="tolerance-val" class="font-bold text-pomiyellow">35</span>
-                        </div>
-                        <input type="range" id="tolerance-slider" min="5" max="100" value="35" class="w-full accent-pomiyellow h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer" oninput="updateTolerance(this.value)">
-
-                        <div class="flex items-center justify-between pt-1">
-                            <button onclick="autoRemoveBackground()" class="text-xs bg-pomipurple/20 hover:bg-pomipurple/40 text-pomipurple font-bold py-1.5 px-3 rounded-lg border border-pomipurple/40 transition flex items-center gap-1">
-                                <i class="fa-solid fa-bolt"></i> Auto Cutout Sfondo
-                            </button>
-                            <button onclick="resetCutoutCanvas()" class="text-xs text-gray-400 hover:text-white transition">
-                                <i class="fa-solid fa-trash-arrow-up"></i> Reset Foto
-                            </button>
-                        </div>
-                    </div>
-
-                    <button onclick="confirmCutoutAndProceed()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
-                        <i class="fa-solid fa-check-circle"></i>
-                        <span>Conferma Ritaglio e Continua</span>
-                    </button>
+        <div id="s3" class="step flex-col bg-pomicard rounded-2xl p-5 border border-gray-800 shadow-xl space-y-4">
+            <div class="flex items-center gap-3 border-b border-gray-800 pb-3">
+                <img id="form-prev" class="w-12 h-12 object-contain rounded-lg checkered-bg border border-gray-700" src="" alt="Cane">
+                <div>
+                    <h3 class="font-bold text-base">Identikit del Cane</h3>
+                    <p class="text-xs text-gray-400">Inserisci i dettagli per calcolare i Punti Lotte</p>
                 </div>
             </div>
-
-            <!-- Step 3: Dog Metadata Form -->
-            <div id="capture-step-3" class="hidden flex-col bg-pomicard rounded-2xl p-5 border border-gray-800 shadow-xl space-y-4">
-                <div class="flex items-center gap-3 border-b border-gray-800 pb-3">
-                    <img id="form-dog-preview" class="w-12 h-12 object-contain rounded-lg checkered-bg border border-gray-700" src="" alt="Cane Scontornato">
-                    <div>
-                        <h3 class="font-bold text-base">Identikit del Cane</h3>
-                        <p class="text-xs text-gray-400">Inserisci i dettagli per calcolare i Punti Lotte</p>
-                    </div>
+            <form onsubmit="makeCard(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Nome del Cane</label>
+                    <input type="text" id="dog-name" required maxlength="18" placeholder="Es. Fiocco, Argo, Luna..." class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white placeholder-gray-500">
                 </div>
-
-                <form id="dog-info-form" onsubmit="generatePomikonCard(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Nome del Cane</label>
-                        <input type="text" id="dog-name" required placeholder="Es. Fiocco, Argo, Luna..." class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white placeholder-gray-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Razza</label>
-                        <select id="dog-breed" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
-                            <option value="Volpino">Volpino</option>
-                            <option value="Chihuahua Pelo Lungo">Chihuahua Pelo Lungo</option>
-                            <option value="Chihuahua Pelo Corto">Chihuahua Pelo Corto</option>
-                            <option value="Maltese">Maltese</option>
-                            <option value="Yorkshire">Yorkshire</option>
-                            <option value="Maltipoo">Maltipoo</option>
-                            <option value="Barboncino">Barboncino</option>
-                            <option value="Bassotto">Bassotto</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Sesso</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="flex items-center justify-center p-2.5 bg-pomidark border border-gray-700 rounded-xl cursor-pointer has-[:checked]:border-pomiblue has-[:checked]:bg-pomiblue/10">
-                                <input type="radio" name="dog-sex" value="Maschio" checked class="hidden">
-                                <i class="fa-solid fa-mars text-pomiblue mr-2"></i>
-                                <span class="text-sm font-semibold">Maschio</span>
-                            </label>
-                            <label class="flex items-center justify-center p-2.5 bg-pomidark border border-gray-700 rounded-xl cursor-pointer has-[:checked]:border-pomired has-[:checked]:bg-pomired/10">
-                                <input type="radio" name="dog-sex" value="Femmina" class="hidden">
-                                <i class="fa-solid fa-venus text-pomired mr-2"></i>
-                                <span class="text-sm font-semibold">Femmina</span>
-                            </label>
-                        </div>
-                    </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Razza</label>
+                    <select id="dog-breed" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
+                        <option>Volpino</option><option>Chihuahua Pelo Lungo</option><option>Chihuahua Pelo Corto</option><option>Maltese</option><option>Yorkshire</option><option>Maltipoo</option><option>Barboncino</option><option>Bassotto</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Sesso</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Età (Anni)</label>
-                            <input type="number" id="dog-age-years" min="0" max="25" value="2" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Mesi Aggiuntivi</label>
-                            <input type="number" id="dog-age-months" min="0" max="11" value="0" class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
-                        </div>
+                        <label class="flex items-center justify-center p-2.5 bg-pomidark border border-gray-700 rounded-xl cursor-pointer has-[:checked]:border-pomiblue has-[:checked]:bg-pomiblue/10">
+                            <input type="radio" name="dog-sex" value="Maschio" checked class="hidden"><i data-ic="mars" class="mr-2 text-pomiblue"></i><span class="text-sm font-semibold">Maschio</span>
+                        </label>
+                        <label class="flex items-center justify-center p-2.5 bg-pomidark border border-gray-700 rounded-xl cursor-pointer has-[:checked]:border-pomired has-[:checked]:bg-pomired/10">
+                            <input type="radio" name="dog-sex" value="Femmina" class="hidden"><i data-ic="venus" class="mr-2 text-pomired"></i><span class="text-sm font-semibold">Femmina</span>
+                        </label>
                     </div>
-
-                    <div class="pt-2">
-                        <button type="submit" class="w-full bg-gradient-to-r from-pomiyellow via-amber-500 to-pomired hover:from-amber-400 hover:to-pomired text-pomidark font-black py-3.5 px-4 rounded-xl shadow-xl flex items-center justify-center gap-2 transition transform active:scale-95 text-base tracking-wide">
-                            <i class="fa-solid fa-sparkles"></i>
-                            <span>CREA CARTA POMÌKON!</span>
-                        </button>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Età (Anni)</label>
+                        <input type="number" id="age-y" min="0" max="25" value="2" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
                     </div>
-                </form>
-            </div>
-        </section>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Mesi Aggiuntivi</label>
+                        <input type="number" id="age-m" min="0" max="11" value="0" class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="btn w-full bg-gradient-to-r from-pomiyellow via-amber-500 to-pomired text-pomidark font-black py-3.5 px-4 rounded-xl shadow-xl flex items-center justify-center gap-2 text-base tracking-wide">
+                        <i data-ic="wand-magic-sparkles"></i><span>CREA CARTA POMÌKON!</span>
+                    </button>
+                </div>
+            </form>
+        </div>
 
-        <!-- ==================== TAB 2: LA MIA CARTA ==================== -->
-        <section id="tab-card-view" class="tab-content hidden flex-col items-center space-y-4">
-            <div id="card-display-container" class="w-full flex justify-center py-2">
-                <!-- Carta creata -->
-            </div>
-
+        <div id="s4" class="step flex-col items-center space-y-4">
+            <div id="card-box" class="w-full flex justify-center py-2"></div>
             <div class="w-full space-y-2.5">
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="saveCurrentCardToDex()" id="btn-save-card" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95">
-                        <i class="fa-solid fa-bookmark"></i>
-                        <span>Salva nel PomìDex</span>
-                    </button>
-                    <button onclick="downloadCardPNG()" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-3 rounded-xl border border-gray-700 shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95">
-                        <i class="fa-solid fa-download"></i>
-                        <span>Scarica PNG</span>
-                    </button>
+                    <button id="btn-save" onclick="saveCard()" class="btn font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs"></button>
+                    <button onclick="downloadPNG()" class="btn bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-3 rounded-xl border border-gray-700 shadow-md flex items-center justify-center gap-2 text-xs"><i data-ic="download"></i><span>Scarica PNG</span></button>
                 </div>
-                <button onclick="startNewCapture()" class="w-full bg-pomidark hover:bg-gray-900 border border-gray-700 text-gray-300 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
-                    <i class="fa-solid fa-plus-circle"></i>
-                    <span>Scatta Un'Altra Foto</span>
-                </button>
+                <button onclick="newPhoto()" class="btn w-full bg-pomidark hover:bg-gray-900 border border-gray-700 text-gray-300 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="plus-circle"></i><span>Scatta Un'Altra Foto</span></button>
             </div>
-        </section>
-
-        <!-- ==================== TAB 3: POMÌDEX ==================== -->
-        <section id="tab-pomidex" class="tab-content hidden flex-col space-y-4">
-            <!-- Barra Ricerca e Importazione -->
-            <div class="bg-pomicard rounded-xl p-3 border border-gray-800 space-y-2">
-                <div class="flex gap-2">
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-500 text-xs"></i>
-                        <input type="text" id="dex-search" oninput="filterPomidex()" placeholder="Cerca cane..." class="w-full bg-pomidark border border-gray-700 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-pomiyellow text-white">
-                    </div>
-                    <button onclick="importCard()" class="bg-pomipurple hover:bg-purple-500 text-white px-3 rounded-lg text-xs font-bold transition flex items-center gap-1">
-                        <i class="fa-solid fa-file-import"></i> Importa
-                    </button>
-                </div>
-                <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-xs">
-                    <button onclick="setDexBreedFilter('Tutti')" class="dex-filter-btn active bg-pomiblue text-white font-semibold px-2.5 py-1 rounded-full whitespace-nowrap">Tutti</button>
-                    <button onclick="setDexBreedFilter('Volpino')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Volpino</button>
-                    <button onclick="setDexBreedFilter('Chihuahua')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Chihuahua</button>
-                    <button onclick="setDexBreedFilter('Maltese')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Maltese</button>
-                    <button onclick="setDexBreedFilter('Barboncino')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Barboncino</button>
-                    <button onclick="setDexBreedFilter('Bassotto')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Bassotto</button>
-                </div>
-            </div>
-
-            <!-- Dex Cards Grid -->
-            <div id="pomidex-grid" class="grid grid-cols-2 gap-3 min-h-[300px]">
-                <div id="dex-empty" class="col-span-2 flex flex-col items-center justify-center py-12 text-center text-gray-500">
-                    <i class="fa-solid fa-box-open text-4xl mb-2"></i>
-                    <p class="font-bold text-sm">Il tuo PomìDex è vuoto</p>
-                    <p class="text-xs max-w-xs mt-1">Cattura subito o importa il tuo primo cane!</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- CARD MODAL FOR POMÌDEX VIEWING -->
-    <div id="card-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
-        <button onclick="closeCardModal()" class="absolute top-4 right-4 text-white hover:text-pomired text-2xl w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div id="modal-card-container" class="w-full max-w-xs my-auto flex justify-center">
-            <!-- Rendered Card -->
         </div>
-        <div id="modal-actions" class="w-full max-w-xs mt-4 flex flex-col gap-2">
-            <button id="modal-export-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
-                <i class="fa-solid fa-share-nodes"></i> Esporta Codice Scambio
-            </button>
+    </section>
+
+    <!-- POMÌDEX -->
+    <section id="tab-dex" class="tab-content flex-col space-y-4">
+        <div class="bg-pomicard rounded-xl p-3 border border-gray-800 space-y-2">
             <div class="flex gap-2">
-                <button id="modal-download-btn" class="flex-1 bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-download"></i> Scarica PNG
-                </button>
-                <button id="modal-delete-btn" class="bg-red-900/40 border border-red-700/60 text-red-400 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <div class="relative flex-1">
+                    <i data-ic="magnifying-glass" class="absolute left-3 top-3 text-gray-500 text-xs"></i>
+                    <input type="text" id="dex-q" oninput="renderDex()" placeholder="Cerca cane..." class="w-full bg-pomidark border border-gray-700 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-pomiyellow text-white">
+                </div>
+                <button onclick="openCode('import')" class="btn bg-pomipurple text-white px-3 rounded-lg text-xs font-bold flex items-center gap-1"><i data-ic="file-import"></i> Importa</button>
+            </div>
+            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-xs">
+                <button class="fb" data-b="Tutti" onclick="setBreed('Tutti')">Tutti</button>
+                <button class="fb" data-b="Volpino" onclick="setBreed('Volpino')">Volpino</button>
+                <button class="fb" data-b="Chihuahua" onclick="setBreed('Chihuahua')">Chihuahua</button>
+                <button class="fb" data-b="Maltese" onclick="setBreed('Maltese')">Maltese</button>
+                <button class="fb" data-b="Barboncino" onclick="setBreed('Barboncino')">Barboncino</button>
+                <button class="fb" data-b="Bassotto" onclick="setBreed('Bassotto')">Bassotto</button>
             </div>
         </div>
-    </div>
-
-    <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-pomicard/95 border-t border-gray-800 backdrop-blur-lg">
-        <div class="max-w-md mx-auto grid grid-cols-3 h-16">
-            <button onclick="switchTab('capture')" id="nav-capture" class="nav-btn text-pomiyellow flex flex-col items-center justify-center space-y-1">
-                <i class="fa-solid fa-camera text-lg"></i>
-                <span class="text-[10px] font-bold">Cattura</span>
-            </button>
-            <button onclick="switchTab('card-view')" id="nav-card-view" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
-                <i class="fa-solid fa-id-card text-lg"></i>
-                <span class="text-[10px] font-bold">La Mia Carta</span>
-            </button>
-            <button onclick="switchTab('pomidex')" id="nav-pomidex" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
-                <i class="fa-solid fa-[#FFD13B] fa-book-bookmark text-lg"></i>
-                <span class="text-[10px] font-bold">PomìDex</span>
-            </button>
+        <div id="dex-grid" class="grid grid-cols-2 gap-3 min-h-[200px]"></div>
+        <div id="dex-empty" class="flex-col items-center justify-center py-12 text-center text-gray-500" style="display:none">
+            <i data-ic="box-open" class="text-4xl mb-2"></i>
+            <p id="dex-msg" class="font-bold text-sm">Il tuo PomìDex è vuoto</p>
+            <p class="text-xs max-w-xs mt-1">Cattura subito o importa il tuo primo cane!</p>
         </div>
-    </nav>
+    </section>
 
-    <!-- NOTIFICATION TOAST -->
-    <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-pomiblue text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 opacity-0 pointer-events-none transition-all duration-300 border border-white/20">
-        <i id="toast-icon" class="fa-solid fa-circle-check"></i>
-        <span id="toast-msg">Messaggio Notifica</span>
+    <!-- PROFILO -->
+    <section id="tab-profile" class="tab-content flex-col space-y-4">
+        <div class="bg-pomicard rounded-2xl p-5 border border-gray-800 shadow-xl flex flex-col items-center text-center">
+            <label class="relative cursor-pointer">
+                <div class="w-24 h-24 rounded-full border-4 border-pomiyellow overflow-hidden bg-gradient-to-tr from-pomired via-pomiyellow to-pomiblue flex items-center justify-center">
+                    <img id="av-img" class="w-full h-full object-cover" style="display:none" alt="">
+                    <i data-ic="dog" id="av-ico" class="text-4xl text-pomidark"></i>
+                </div>
+                <span class="absolute bottom-0 right-0 bg-pomiblue w-8 h-8 rounded-full flex items-center justify-center border-2 border-pomicard"><i data-ic="camera" class="text-xs"></i></span>
+                <input type="file" accept="image/*" class="hidden" onchange="setAvatar(event)">
+            </label>
+            <h2 id="p-title" class="mt-3 text-xl font-black">Allenatore</h2>
+            <p class="text-xs text-gray-400">Allenatore Pomìkon</p>
+        </div>
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-300">Nome utente</label>
+            <div class="flex gap-2">
+                <input id="p-name" maxlength="18" class="flex-1 bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
+                <button onclick="saveName()" class="btn bg-pomiblue text-white font-bold px-4 rounded-xl text-xs">Salva</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-cards" class="text-xl font-black text-pomiyellow">0</p><p class="text-[10px] text-gray-400 uppercase">Carte</p></div>
+            <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-best" class="text-xl font-black text-pomiyellow">0</p><p class="text-[10px] text-gray-400 uppercase">CP Max</p></div>
+            <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-breeds" class="text-xl font-black text-pomiyellow">0/8</p><p class="text-[10px] text-gray-400 uppercase">Razze</p></div>
+        </div>
+    </section>
+
+    <!-- IMPOSTAZIONI -->
+    <section id="tab-settings" class="tab-content flex-col space-y-4">
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-4">
+            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="volume-high" class="text-pomiblue"></i> Effetti Audio</h3>
+            <div class="flex items-center justify-between">
+                <span class="text-sm">Effetti sonori</span>
+                <button id="sw-sfx" class="sw" onclick="toggleSet('sfx')"><span></span></button>
+            </div>
+            <div>
+                <div class="flex justify-between text-xs text-gray-300 mb-1"><span>Volume effetti</span><span id="v-sfx"></span></div>
+                <input type="range" min="0" max="100" id="r-sfx" class="w-full accent-pomiyellow" oninput="setVol('sfxVol',this.value,'v-sfx')" onchange="SFX.click()">
+            </div>
+        </div>
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-4">
+            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="music" class="text-pomipurple"></i> Musica</h3>
+            <div class="flex items-center justify-between">
+                <span class="text-sm">Melodia di sottofondo</span>
+                <button id="sw-music" class="sw" onclick="toggleSet('music')"><span></span></button>
+            </div>
+            <div>
+                <div class="flex justify-between text-xs text-gray-300 mb-1"><span>Volume musica</span><span id="v-music"></span></div>
+                <input type="range" min="0" max="100" id="r-music" class="w-full accent-pomipurple" oninput="setVol('musVol',this.value,'v-music')">
+            </div>
+        </div>
+        <button onclick="SFX.reveal()" class="btn w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="play"></i> Prova effetti</button>
+    </section>
+</main>
+
+<!-- MODALE CARTA -->
+<div id="card-modal" class="modal" onclick="if(event.target===this)closeModal()">
+    <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-pomired text-2xl w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center"><i data-ic="xmark"></i></button>
+    <div id="modal-card" class="w-full max-w-xs my-auto flex justify-center"></div>
+    <div class="w-full max-w-xs mt-4 flex flex-col gap-2">
+        <button onclick="exportModal()" class="btn w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="share-nodes"></i> Esporta Codice Scambio</button>
+        <div class="flex gap-2">
+            <button onclick="downloadPNG(dexCard())" class="btn flex-1 bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="download"></i> Scarica PNG</button>
+            <button onclick="deleteModal()" class="btn bg-red-900/40 border border-red-700/60 text-red-400 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center"><i data-ic="trash"></i></button>
+        </div>
     </div>
+</div>
 
-    <!-- APP LOGIC SCRIPT -->
-    <script>
-        /* ==================== GAME DATA & MATRIX ==================== */
-        const BREED_DATA = {
-            'Volpino': { element: 'Fuoco', bgGradient: 'from-orange-500 via-amber-600 to-red-700', badgeBg: 'bg-orange-500', basePower: 820, move1: 'Onda Sofficissima', move1Dmg: 35, move2: 'Vulcano Piumato', move2Dmg: 85, typeIcon: 'fa-fire' },
-            'Chihuahua Pelo Lungo': { element: 'Psico', bgGradient: 'from-pink-500 via-purple-600 to-indigo-700', badgeBg: 'bg-pink-500', basePower: 750, move1: 'Sguardo Ipnotico', move1Dmg: 30, move2: 'Super Fluffy Shield', move2Dmg: 75, typeIcon: 'fa-wand-magic-sparkles' },
-            'Chihuahua Pelo Corto': { element: 'Elettro', bgGradient: 'from-yellow-400 via-amber-500 to-orange-600', badgeBg: 'bg-yellow-500', basePower: 760, move1: 'Morso Tascabile', move1Dmg: 40, move2: 'Scossa Tremenda', move2Dmg: 80, typeIcon: 'fa-bolt' },
-            'Maltese': { element: 'Luce', bgGradient: 'from-cyan-400 via-sky-500 to-blue-600', badgeBg: 'bg-sky-400', basePower: 800, move1: 'Nuvola Candida', move1Dmg: 35, move2: 'Bagliore Angelico', move2Dmg: 82, typeIcon: 'fa-sun' },
-            'Yorkshire': { element: 'Lotta', bgGradient: 'from-amber-600 via-stone-700 to-red-800', badgeBg: 'bg-amber-700', basePower: 780, move1: 'Graffio Grintoso', move1Dmg: 45, move2: 'Carica Tenace', move2Dmg: 88, typeIcon: 'fa-fist-raised' },
-            'Maltipoo': { element: 'Fata', bgGradient: 'from-rose-400 via-pink-500 to-purple-600', badgeBg: 'bg-rose-400', basePower: 840, move1: 'Occhioni Dolci', move1Dmg: 30, move2: 'Tempesta Coccole', move2Dmg: 90, typeIcon: 'fa-heart' },
-            'Barboncino': { element: 'Erba', bgGradient: 'from-emerald-400 via-green-600 to-teal-800', badgeBg: 'bg-emerald-500', basePower: 860, move1: 'Salto Elegante', move1Dmg: 40, move2: 'Aura Regale', move2Dmg: 92, typeIcon: 'fa-leaf' },
-            'Bassotto': { element: 'Acciaio', bgGradient: 'from-slate-500 via-zinc-700 to-stone-900', badgeBg: 'bg-slate-600', basePower: 880, move1: 'Scavo Lampo', move1Dmg: 42, move2: 'Carica Siluro', move2Dmg: 95, typeIcon: 'fa-shield-halved' }
-        };
+<!-- MODALE CODICE SCAMBIO -->
+<div id="code-modal" class="modal top" onclick="if(event.target===this)closeCode()">
+    <div class="pop-in bg-pomicard border border-gray-800 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl">
+        <h3 id="code-title" class="font-bold text-sm"></h3>
+        <p id="code-desc" class="text-xs text-gray-400"></p>
+        <textarea id="code-text" rows="6" spellcheck="false" placeholder="POM1.…" class="w-full bg-pomidark border border-gray-700 rounded-xl p-2.5 text-[11px] font-mono text-white focus:outline-none focus:border-pomiyellow break-all"></textarea>
+        <div class="grid grid-cols-3 gap-2">
+            <button onclick="closeCode()" class="btn bg-gray-800 border border-gray-700 font-bold py-2.5 rounded-xl text-xs">Chiudi</button>
+            <button id="code-copy" onclick="copyCode()" class="btn bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs">Copia</button>
+            <button id="code-go" onclick="importCode()" class="btn bg-pomipurple text-white font-bold py-2.5 rounded-xl text-xs">Importa</button>
+        </div>
+    </div>
+</div>
 
-        const FUN_LORE = ["Si dice che questo cane possa captare i biscotti da 3km di distanza.", "La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.", "Maestro supremo delle coccole notturne sul divano.", "Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.", "Custode leggendario della pallina da tennis dorata."];
+<!-- NAVIGAZIONE -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-pomicard/95 border-t border-gray-800 backdrop-blur-lg">
+    <div class="max-w-md mx-auto grid grid-cols-4 h-16">
+        <button data-t="capture" onclick="switchTab('capture')" class="nb on text-pomiyellow flex flex-col items-center justify-center space-y-1"><i data-ic="camera" class="text-lg"></i><span class="text-[10px] font-bold">Cattura</span></button>
+        <button data-t="dex" onclick="switchTab('dex')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="book-bookmark" class="text-lg"></i><span class="text-[10px] font-bold">PomìDex</span></button>
+        <button data-t="profile" onclick="switchTab('profile')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="user" class="text-lg"></i><span class="text-[10px] font-bold">Profilo</span></button>
+        <button data-t="settings" onclick="switchTab('settings')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="gear" class="text-lg"></i><span class="text-[10px] font-bold">Impostazioni</span></button>
+    </div>
+</nav>
 
-        /* ==================== APP STATE ==================== */
-        let currentOriginalImage = null; let cutoutCanvas, cutoutCtx;
-        let isDrawing = false; let activeTool = 'magic'; let currentTolerance = 35;
-        let originalImageData = null; let currentCardData = null;
-        let pomidexList = []; let activeFilterBreed = 'Tutti';
+<div id="toast" class="bg-pomiblue text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 border border-white/20">
+    <span id="toast-icon" class="flex items-center"></span><span id="toast-msg"></span>
+</div>
 
-        window.onload = function() {
-            cutoutCanvas = document.getElementById('cutout-canvas');
-            cutoutCtx = cutoutCanvas.getContext('2d', { willReadFrequently: true });
-            setupCanvasEvents();
-            loadPomidex();
-            setup3DTilt();
-        };
+<script>
+/* ================= ICONE SVG ================= */
+const IC={
+ 'bone':'<circle cx="5" cy="7" r="2.5"/><circle cx="5" cy="17" r="2.5"/><circle cx="19" cy="7" r="2.5"/><circle cx="19" cy="17" r="2.5"/><path d="M7 8l10 8"/>',
+ 'paw':'<circle cx="6" cy="10" r="2" fill="currentColor"/><circle cx="10" cy="6" r="2" fill="currentColor"/><circle cx="14" cy="6" r="2" fill="currentColor"/><circle cx="18" cy="10" r="2" fill="currentColor"/><path d="M8 19c0-3 2-6 4-6s4 3 4 6c0 1-1 2-2 2h-4c-1 0-2-1-2-2z" fill="currentColor"/>',
+ 'camera':'<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>',
+ 'camera-retro':'<path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/>',
+ 'image':'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/>',
+ 'wand-magic-sparkles':'<path d="M4 20L15 9"/><path d="M17 3v4M15 5h4M19 11v3M17.5 12.5h3"/>',
+ 'eraser':'<path d="M4 17l8-9 8 8-5 5H9z"/><path d="M9 21h11"/>',
+ 'rotate-left':'<path d="M4 12a8 8 0 1 0 2.5-5.8L4 9"/><path d="M4 4v5h5"/>',
+ 'bolt':'<path d="M13 2L4 14h7l-1 8 9-12h-7z" fill="currentColor"/>',
+ 'trash-arrow-up':'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/><path d="M12 17v-5M10 14l2-2 2 2"/>',
+ 'trash':'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+ 'check-circle':'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+ 'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+ 'check':'<path d="M5 12l5 5 9-10"/>',
+ 'mars':'<circle cx="10" cy="14" r="6"/><path d="M14.5 9.5L21 3M15 3h6v6"/>',
+ 'venus':'<circle cx="12" cy="9" r="6"/><path d="M12 15v7M9 19h6"/>',
+ 'fire':'<path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-2 2-2 4-2 4s-1-2-2-3c-1 3-4 5-4 9 0 4 2 7 5 7z" fill="currentColor"/>',
+ 'sun':'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+ 'fist-raised':'<rect x="6" y="9" width="12" height="11" rx="3" fill="currentColor"/><path d="M9 9V5M12 9V4M15 9V5"/>',
+ 'heart':'<path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z" fill="currentColor"/>',
+ 'leaf':'<path d="M4 20C4 10 10 4 20 4c0 10-6 16-16 16z" fill="currentColor"/><path d="M4 20L14 10"/>',
+ 'shield-halved':'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 3v19"/>',
+ 'magnifying-glass':'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>',
+ 'file-import':'<path d="M14 3H6v18h12V7z"/><path d="M12 11v6M9 14l3 3 3-3"/>',
+ 'book-bookmark':'<path d="M5 4h12v16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="M11 4v7l2-2 2 2V4"/>',
+ 'user':'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+ 'gear':'<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="6"/>',
+ 'volume-high':'<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13"/>',
+ 'music':'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+ 'play':'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',
+ 'plus-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+ 'box-open':'<path d="M3 8l9-5 9 5v9l-9 4-9-4z"/><path d="M3 8l9 4 9-4M12 12v9"/>',
+ 'share-nodes':'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>',
+ 'xmark':'<path d="M6 6l12 12M18 6L6 18"/>',
+ 'download':'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
+ 'triangle-exclamation':'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
+ 'dog':'<path d="M5 9c0-3 2-5 4-5l3 2 3-2c2 0 4 2 4 5v5c0 4-3 7-7 7s-7-3-7-7z"/><circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/>',
+ 'bookmark':'<path d="M6 3h12v18l-6-4-6 4z"/>'
+};
+function ic(n,c='',id=''){
+ const p=IC[n];
+ return p?`<svg ${id?`id="${id}"`:''} class="ic ${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`:'';
+}
 
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = msg;
-            document.getElementById('toast-icon').className = isError ? "fa-solid fa-triangle-exclamation text-pomired" : "fa-solid fa-circle-check text-emerald-400";
-            toast.classList.remove('opacity-0', 'pointer-events-none'); toast.classList.add('opacity-100');
-            setTimeout(() => { toast.classList.remove('opacity-100'); toast.classList.add('opacity-0', 'pointer-events-none'); }, 3000);
-        }
+/* ================= DATI ================= */
+const $=i=>document.getElementById(i);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const BREED_DATA={
+ 'Volpino':{bgGradient:'from-orange-500 via-amber-600 to-red-700',badgeBg:'bg-orange-500',basePower:820,move1:'Onda Sofficissima',move1Dmg:35,move2:'Vulcano Piumato',move2Dmg:85,typeIcon:'fire'},
+ 'Chihuahua Pelo Lungo':{bgGradient:'from-pink-500 via-purple-600 to-indigo-700',badgeBg:'bg-pink-500',basePower:750,move1:'Sguardo Ipnotico',move1Dmg:30,move2:'Super Fluffy Shield',move2Dmg:75,typeIcon:'wand-magic-sparkles'},
+ 'Chihuahua Pelo Corto':{bgGradient:'from-yellow-400 via-amber-500 to-orange-600',badgeBg:'bg-yellow-500',basePower:760,move1:'Morso Tascabile',move1Dmg:40,move2:'Scossa Tremenda',move2Dmg:80,typeIcon:'bolt'},
+ 'Maltese':{bgGradient:'from-cyan-400 via-sky-500 to-blue-600',badgeBg:'bg-sky-400',basePower:800,move1:'Nuvola Candida',move1Dmg:35,move2:'Bagliore Angelico',move2Dmg:82,typeIcon:'sun'},
+ 'Yorkshire':{bgGradient:'from-amber-600 via-stone-700 to-red-800',badgeBg:'bg-amber-700',basePower:780,move1:'Graffio Grintoso',move1Dmg:45,move2:'Carica Tenace',move2Dmg:88,typeIcon:'fist-raised'},
+ 'Maltipoo':{bgGradient:'from-rose-400 via-pink-500 to-purple-600',badgeBg:'bg-rose-400',basePower:840,move1:'Occhioni Dolci',move1Dmg:30,move2:'Tempesta Coccole',move2Dmg:90,typeIcon:'heart'},
+ 'Barboncino':{bgGradient:'from-emerald-400 via-green-600 to-teal-800',badgeBg:'bg-emerald-500',basePower:860,move1:'Salto Elegante',move1Dmg:40,move2:'Aura Regale',move2Dmg:92,typeIcon:'leaf'},
+ 'Bassotto':{bgGradient:'from-slate-500 via-zinc-700 to-stone-900',badgeBg:'bg-slate-600',basePower:880,move1:'Scavo Lampo',move1Dmg:42,move2:'Carica Siluro',move2Dmg:95,typeIcon:'shield-halved'}
+};
+const FUN_LORE=["Si dice che questo cane possa captare i biscotti da 3km di distanza.","La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.","Maestro supremo delle coccole notturne sul divano.","Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.","Custode leggendario della pallina da tennis dorata."];
+const TABS=['capture','dex','profile','settings'];
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-pomiyellow', 'text-gray-500'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.replace('text-gray-500', 'text-pomiyellow');
-            if (tabId === 'pomidex') renderPomidexGrid();
-        }
+/* ================= STATO ================= */
+const S={sfx:true,sfxVol:.6,music:false,musVol:.35,user:'Allenatore',avatar:''};
+try{Object.assign(S,JSON.parse(localStorage.getItem('pomikon_cfg')||'{}'))}catch(e){}
+let dex=[];
+try{dex=JSON.parse(localStorage.getItem('pomikon_dex')||'[]').filter(c=>BREED_DATA[c.breed]).map(c=>({...c,breedInfo:BREED_DATA[c.breed],...rarityOf(c.cp)}))}catch(e){}
+let cv,cx,orig,work,W=0,H=0,tool='magic',drawing=false,last=null,srcUrl=null,card=null,curTab='capture',activeBreed='Tutti',modalId=null,musTimer=null,musStep=0,toastT;
 
-        function triggerFileInput(source) {
-            const fileInput = document.getElementById('image-file-input');
-            if (source === 'camera') fileInput.setAttribute('capture', 'environment');
-            else fileInput.removeAttribute('capture');
-            fileInput.click();
-        }
+function save(){try{localStorage.setItem('pomikon_cfg',JSON.stringify(S))}catch(e){toast('Impossibile salvare le impostazioni',1)}}
+function persistDex(){try{localStorage.setItem('pomikon_dex',JSON.stringify(dex));return true}catch(e){toast('Memoria piena: elimina qualche carta',1);return false}}
 
-        /* ==================== CANVAS CUTOUT ==================== */
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            showCanvasLoader(true);
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    currentOriginalImage = img; initCutoutCanvas(img); showCanvasLoader(false);
-                    document.getElementById('capture-step-1').classList.add('hidden');
-                    document.getElementById('capture-step-2').classList.remove('hidden');
-                    document.getElementById('capture-step-2').classList.add('flex');
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
+/* ================= UTILITY ================= */
+function toast(msg,err){
+ $('toast-msg').textContent=msg;
+ $('toast-icon').innerHTML=ic(err?'triangle-exclamation':'circle-check',err?'text-pomired':'text-emerald-400');
+ const t=$('toast');t.classList.add('on');
+ clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600);
+}
+const show=(el,on)=>el.style.display=on?'':'none';
+const shrink=(src,max,q=.85)=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/webp',q))};im.onerror=rej;im.src=src});
+function rarityOf(cp){
+ if(cp>=1100)return{rarity:'LEGENDARY ★★★',rarityColor:'text-yellow-400 font-extrabold',rarityClass:'rarity-legendaris'};
+ if(cp>=980)return{rarity:'EPICO ★★',rarityColor:'text-purple-400 font-bold',rarityClass:''};
+ if(cp>=880)return{rarity:'RARO ★',rarityColor:'text-blue-400 font-bold',rarityClass:''};
+ return{rarity:'Comune',rarityColor:'text-gray-300',rarityClass:''};
+}
+function buildCard(o){
+ return{...o,id:'POM-'+Math.random().toString(36).slice(2,7).toUpperCase(),hp:Math.floor(o.cp/7.5),breedInfo:BREED_DATA[o.breed],...rarityOf(o.cp)};
+}
 
-        function showCanvasLoader(show) { document.getElementById('canvas-loader').classList.toggle('hidden', !show); }
+/* ================= AUDIO (sintetizzato) ================= */
+let AC=null;
+function note(f,dur,type,vol,lvl,when=0,slide=0){
+ if(!lvl)return;
+ try{
+  if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended')AC.resume();
+  const t=AC.currentTime+when,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);
+  if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol*lvl,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur+.05);
+ }catch(e){}
+}
+const sfxL=()=>S.sfx?S.sfxVol:0;
+const SFX={
+ click:()=>note(640,.05,'square',.12,sfxL()),
+ tab:()=>note(380,.16,'triangle',.25,sfxL(),0,820),
+ ok:()=>{note(523,.1,'triangle',.25,sfxL());note(784,.18,'triangle',.25,sfxL(),.09)},
+ reveal:()=>[523,659,784,1047].forEach((f,i)=>note(f,.22,'triangle',.22,sfxL(),i*.09)),
+ open:()=>note(880,.2,'sine',.25,sfxL(),0,1320),
+ cut:()=>note(300,.08,'sine',.2,sfxL(),0,600),
+ err:()=>note(170,.28,'sawtooth',.14,sfxL(),0,95)
+};
+const MEL=[523,659,784,659,587,698,880,698],BASS=[131,131,175,175,110,110,147,147];
+function musicBar(){
+ const L=S.music?S.musVol:0;if(!L)return;
+ const k=(musStep++%2)?1.189:1;
+ for(let i=0;i<8;i++){note(MEL[i]*k,.22,'triangle',.12,L,i*.2);note(BASS[i],.3,'sine',.2,L,i*.2)}
+}
+function startMusic(){if(musTimer)return;musicBar();musTimer=setInterval(musicBar,1600)}
+function stopMusic(){clearInterval(musTimer);musTimer=null}
 
-        function initCutoutCanvas(img) {
-            const maxDim = 600; let w = img.width, h = img.height;
-            if (w > maxDim || h > maxDim) { if (w > h) { h = Math.round((h * maxDim)/w); w = maxDim; } else { w = Math.round((w * maxDim)/h); h = maxDim; } }
-            cutoutCanvas.width = w; cutoutCanvas.height = h;
-            cutoutCtx.clearRect(0, 0, w, h); cutoutCtx.drawImage(img, 0, 0, w, h);
-            originalImageData = cutoutCtx.getImageData(0, 0, w, h);
-        }
+/* ================= IMPOSTAZIONI ================= */
+function toggleSet(k){
+ S[k]=!S[k];save();
+ if(k==='music'){S.music?startMusic():stopMusic()}
+ paintSettings();
+ if(S[k]&&k==='sfx')SFX.ok();
+}
+function setVol(k,v,label){S[k]=v/100;$(label).textContent=v+'%';save()}
+function paintSettings(){
+ $('sw-sfx').classList.toggle('on',S.sfx);$('sw-music').classList.toggle('on',S.music);
+ $('r-sfx').value=Math.round(S.sfxVol*100);$('v-sfx').textContent=Math.round(S.sfxVol*100)+'%';
+ $('r-music').value=Math.round(S.musVol*100);$('v-music').textContent=Math.round(S.musVol*100)+'%';
+}
 
-        function setCutoutTool(tool) {
-            activeTool = tool;
-            document.querySelectorAll('.tool-btn').forEach(b => { b.classList.replace('bg-pomiblue', 'bg-gray-800'); b.classList.replace('text-white', 'text-gray-300'); });
-            const btnMap = { 'magic': 'btn-tool-magic', 'erase': 'btn-tool-erase', 'restore': 'btn-tool-restore' };
-            const activeBtn = document.getElementById(btnMap[tool]);
-            if (activeBtn) { activeBtn.classList.replace('bg-gray-800', 'bg-pomiblue'); activeBtn.classList.replace('text-gray-300', 'text-white'); }
-        }
+/* ================= NAVIGAZIONE & ANIMAZIONI ================= */
+function switchTab(t){
+ if(t===curTab)return;
+ const forward=TABS.indexOf(t)>TABS.indexOf(curTab);
+ $('tab-'+curTab).classList.remove('on');
+ const el=$('tab-'+t);
+ el.classList.add('on');
+ el.style.animation=`${forward?'inR':'inL'} .4s cubic-bezier(.2,.8,.2,1) both`;
+ document.querySelectorAll('.nb').forEach(b=>{const on=b.dataset.t===t;b.classList.toggle('on',on);b.classList.toggle('text-pomiyellow',on);b.classList.toggle('text-gray-500',!on)});
+ curTab=t;SFX.tab();
+ if(t==='dex')renderDex();
+ if(t==='profile')renderProfile();
+ if(t==='settings')paintSettings();
+}
+function step(id){['s1','s2','s3','s4'].forEach(s=>$(s).classList.toggle('on',s===id))}
 
-        function updateTolerance(val) { currentTolerance = parseInt(val); document.getElementById('tolerance-val').textContent = val; }
+/* ================= RITAGLIO ================= */
+function pickFile(cam){const f=$('file-in');cam?f.setAttribute('capture','environment'):f.removeAttribute('capture');f.click()}
+function onPick(e){
+ const f=e.target.files[0];if(!f)return;
+ if(srcUrl)URL.revokeObjectURL(srcUrl);
+ srcUrl=URL.createObjectURL(f);
+ const img=new Image();
+ img.onload=()=>{
+  const s=Math.min(1,700/Math.max(img.width,img.height));
+  W=Math.round(img.width*s);H=Math.round(img.height*s);
+  cv.width=W;cv.height=H;cx.clearRect(0,0,W,H);cx.drawImage(img,0,0,W,H);
+  orig=cx.getImageData(0,0,W,H);
+  work=new ImageData(new Uint8ClampedArray(orig.data),W,H);
+  render();step('s2');SFX.ok();
+ };
+ img.onerror=()=>toast('Immagine non valida',1);
+ img.src=srcUrl;
+ e.target.value='';
+}
+function render(){if(work)cx.putImageData(work,0,0)}
+function pos(e){
+ const r=cv.getBoundingClientRect();
+ return{x:Math.min(W-1,Math.max(0,Math.floor((e.clientX-r.left)*W/r.width))),y:Math.min(H-1,Math.max(0,Math.floor((e.clientY-r.top)*H/r.height)))};
+}
+const tolV=()=>+$('tol').value*2.5;
+const brushR=()=>+$('brush').value;
+function setTool(t){
+ tool=t;
+ document.querySelectorAll('.tb').forEach(b=>{const on=b.dataset.t===t;b.className='tb font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition '+(on?'bg-pomiblue text-white':'bg-gray-800 text-gray-300')});
+}
+// Riempimento a zona contigua: rimuove solo i pixel collegati al seme e simili al colore di riferimento
+function flood(seeds,ref,tol){
+ const d=work.data,vis=new Uint8Array(W*H),st=[];
+ for(const s of seeds)if(!vis[s]){vis[s]=1;st.push(s)}
+ while(st.length){
+  const p=st.pop(),x=p%W,y=(p/W)|0;
+  d[p*4+3]=0;
+  const nb=[];
+  if(x>0)nb.push(p-1);if(x<W-1)nb.push(p+1);if(y>0)nb.push(p-W);if(y<H-1)nb.push(p+W);
+  for(const q of nb){
+   if(vis[q])continue;vis[q]=1;const j=q*4;
+   if(d[j+3]&&Math.hypot(d[j]-ref[0],d[j+1]-ref[1],d[j+2]-ref[2])<=tol)st.push(q);
+  }
+ }
+}
+function brush(x,y){
+ const r=brushR(),r2=r*r,d=work.data,o=orig.data,erase=tool==='erase';
+ for(let dy=-r;dy<=r;dy++){
+  const py=y+dy;if(py<0||py>=H)continue;
+  for(let dx=-r;dx<=r;dx++){
+   const px=x+dx;if(px<0||px>=W||dx*dx+dy*dy>r2)continue;
+   const i=(py*W+px)*4;
+   if(erase)d[i+3]=0;
+   else{d[i]=o[i];d[i+1]=o[i+1];d[i+2]=o[i+2];d[i+3]=o[i+3]}
+  }
+ }
+}
+function autoCut(){
+ if(!work)return;
+ const d=work.data,bi=[];
+ for(let x=0;x<W;x++)bi.push(x,(H-1)*W+x);
+ for(let y=0;y<H;y++)bi.push(y*W,y*W+W-1);
+ const ref=[0,1,2].map(c=>{const v=bi.map(i=>d[i*4+c]).sort((a,b)=>a-b);return v[v.length>>1]});
+ const tol=tolV();
+ const seeds=bi.filter(i=>Math.hypot(d[i*4]-ref[0],d[i*4+1]-ref[1],d[i*4+2]-ref[2])<=tol);
+ flood(seeds,ref,tol);render();SFX.ok();toast('Sfondo rimosso');
+}
+function resetCut(){if(!orig)return;work=new ImageData(new Uint8ClampedArray(orig.data),W,H);render();toast('Foto ripristinata')}
+function confirmCut(){if(!work)return;$('form-prev').src=cv.toDataURL('image/png');step('s3');SFX.ok()}
 
-        function autoRemoveBackground() {
-            if (!cutoutCtx || !originalImageData) return;
-            showCanvasLoader(true);
-            setTimeout(() => {
-                const w = cutoutCanvas.width, h = cutoutCanvas.height;
-                const imgData = cutoutCtx.getImageData(0, 0, w, h); const data = imgData.data;
-                const getPx = (x,y) => ({ r: data[(y*w+x)*4], g: data[(y*w+x)*4+1], b: data[(y*w+x)*4+2] });
-                const corners = [getPx(5,5), getPx(w-5,5), getPx(5,h-5), getPx(w-5,h-5)];
-                const tol = currentTolerance * 2.2;
-                for (let i = 0; i < data.length; i += 4) {
-                    for (let c of corners) {
-                        if (Math.sqrt((data[i]-c.r)**2 + (data[i+1]-c.g)**2 + (data[i+2]-c.b)**2) < tol) { data[i+3] = 0; break; }
-                    }
-                }
-                cutoutCtx.putImageData(imgData, 0, 0); showCanvasLoader(false); showToast("Sfondo rimosso!");
-            }, 100);
-        }
+/* ================= CREAZIONE CARTA ================= */
+async function makeCard(e){
+ e.preventDefault();
+ const name=$('dog-name').value.trim(),breed=$('dog-breed').value;
+ const sex=document.querySelector('input[name="dog-sex"]:checked').value;
+ const yrs=+$('age-y').value||0,mo=+$('age-m').value||0;
+ const tot=yrs*12+mo,ageBonus=tot<=12?40:(tot<=60?60:35);
+ const cuddle=1+Math.floor(Math.random()*100);
+ const cp=BREED_DATA[breed].basePower+ageBonus+(sex==='Maschio'?25:30)+cuddle*2;
+ let img;
+ try{img=await shrink(cv.toDataURL('image/png'),480,.85)}catch(err){toast('Errore immagine',1);return}
+ card=buildCard({name,breed,sex,ageYears:yrs,ageMonths:mo,cp,cuddleFactor:cuddle,lore:FUN_LORE[Math.floor(Math.random()*FUN_LORE.length)],imageUrl:img});
+ renderCard(card,'card-box');
+ paintSaveBtn();
+ step('s4');SFX.reveal();toast('Carta creata!');
+}
+function paintSaveBtn(){
+ const b=$('btn-save'),saved=dex.some(x=>x.id===card.id);
+ b.disabled=saved;
+ b.className=(saved?'bg-gray-700 text-gray-400 cursor-not-allowed ':'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-md ')+'btn font-bold py-3 px-3 rounded-xl flex items-center justify-center gap-2 text-xs';
+ b.innerHTML=`${ic(saved?'check':'bookmark')}<span>${saved?'Salvata nel Dex':'Salva nel PomìDex'}</span>`;
+}
+function saveCard(){
+ if(!card||dex.some(x=>x.id===card.id))return;
+ dex.unshift(card);
+ if(!persistDex()){dex.shift();return}
+ paintSaveBtn();updateCount();SFX.ok();toast('Aggiunta al PomìDex!');
+}
+function newPhoto(){card=null;$('dog-name').value='';step('s1')}
+function renderCard(c,boxId){
+ const b=c.breedInfo;
+ $(boxId).innerHTML=`<div class="pop-in tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative"><div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${c.rarityClass}"><div class="tcg-holo-overlay"></div>
+<div class="flex items-center justify-between border-b-2 border-pomiyellow/60 pb-1.5 z-10"><span class="font-pixel text-xs text-pomiyellow font-black">${esc(c.name)}</span><div class="flex items-center space-x-2"><span class="text-[10px] text-gray-300 font-bold">HP <strong class="text-white text-xs">${c.hp}</strong></span><div class="${b.badgeBg} w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white shadow">${ic(b.typeIcon)}</div></div></div>
+<div class="relative w-full h-[45%] rounded-lg overflow-hidden border-2 border-pomiyellow/70 shadow-inner my-1.5 bg-gradient-to-br ${b.bgGradient} flex items-center justify-center z-10"><div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:10px_10px]"></div><img src="${c.imageUrl}" class="relative z-10 max-h-[92%] max-w-[92%] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)]"><div class="absolute bottom-1 right-1 bg-pomidark/90 border border-pomiyellow/80 px-2 py-0.5 rounded-md z-20 flex items-center gap-1 shadow"><span class="text-[9px] text-gray-400 font-bold">CP</span><span class="text-xs font-black text-pomiyellow">${c.cp}</span></div></div>
+<div class="bg-pomidark/90 border border-gray-700 rounded-md px-2 py-1 flex items-center justify-between text-[10px] z-10 shadow-sm"><span class="font-bold text-gray-200">${esc(c.breed)}</span><span class="text-gray-400">${c.sex==='Maschio'?'♂':'♀'} • ${c.ageYears}a ${c.ageMonths}m</span></div>
+<div class="bg-pomidark/80 border border-gray-800 rounded-lg p-2 space-y-1.5 z-10"><div class="flex items-center justify-between text-[10px] border-b border-gray-800/80 pb-1"><div class="flex items-center gap-1">${ic('paw','text-pomiyellow')}<span class="font-bold text-gray-200">${b.move1}</span></div><span class="font-black">${b.move1Dmg}</span></div><div class="flex items-center justify-between text-[10px]"><div class="flex items-center gap-1">${ic('bolt','text-pomired')}<span class="font-bold text-pomiyellow">${b.move2}</span></div><span class="font-black text-pomiyellow">${b.move2Dmg}+</span></div></div>
+<p class="text-[9px] italic text-gray-400 leading-tight px-1 z-10 border-l-2 border-pomiyellow/50 py-0.5">"${esc(c.lore)}"</p>
+<div class="flex items-center justify-between border-t border-gray-800 pt-1 text-[8px] text-gray-400 z-10"><span>Fattore Coccole: <strong class="text-pomiyellow">${c.cuddleFactor}%</strong></span><span class="${c.rarityColor}">${c.rarity}</span><span class="font-mono">${c.id}</span></div>
+</div></div>`;
+}
 
-        function magicWandAt(x, y) {
-            const w = cutoutCanvas.width, h = cutoutCanvas.height;
-            const imgData = cutoutCtx.getImageData(0, 0, w, h); const data = imgData.data;
-            const targetIdx = (y * w + x) * 4;
-            const tr = data[targetIdx], tg = data[targetIdx+1], tb = data[targetIdx+2];
-            const tol = currentTolerance * 2.5;
-            for (let i = 0; i < data.length; i += 4) {
-                if (data[i+3] === 0) continue;
-                if (Math.sqrt((data[i]-tr)**2 + (data[i+1]-tg)**2 + (data[i+2]-tb)**2) <= tol) data[i+3] = 0;
-            }
-            cutoutCtx.putImageData(imgData, 0, 0);
-        }
+/* ================= PNG ================= */
+function downloadPNG(c=card){
+ if(!c)return;
+ const cn=document.createElement('canvas');cn.width=600;cn.height=930;const x=cn.getContext('2d'),b=c.breedInfo;
+ x.fillStyle='#1c1f33';x.fillRect(0,0,600,930);x.strokeStyle='#f3c642';x.lineWidth=16;x.strokeRect(8,8,584,914);
+ x.fillStyle='#FFD13B';x.font="900 28px 'Outfit', sans-serif";x.fillText(c.name,35,65);
+ x.fillStyle='#ffffff';x.font="bold 20px 'Outfit'";x.fillText('HP '+c.hp,450,65);
+ const g=x.createLinearGradient(30,90,570,510);g.addColorStop(0,'#f97316');g.addColorStop(1,'#c2410c');
+ x.fillStyle=g;x.fillRect(35,95,530,420);x.strokeStyle='#f3c642';x.lineWidth=6;x.strokeRect(35,95,530,420);
+ const im=new Image();
+ im.onload=()=>{
+  const s=Math.min(480/im.width,380/im.height),w=im.width*s,h=im.height*s;
+  x.drawImage(im,35+(530-w)/2,95+(420-h)/2,w,h);
+  x.fillStyle='rgba(18,20,32,.9)';x.fillRect(400,450,150,50);x.strokeStyle='#FFD13B';x.lineWidth=2;x.strokeRect(400,450,150,50);
+  x.fillStyle='#FFD13B';x.font="bold 24px 'Outfit'";x.fillText('CP '+c.cp,420,485);
+  x.fillStyle='#121420';x.fillRect(35,535,530,45);x.fillStyle='#ffffff';x.font="bold 20px 'Outfit'";x.fillText(`${c.breed} (${c.sex} • ${c.ageYears}a ${c.ageMonths}m)`,50,565);
+  x.fillStyle='#121420';x.fillRect(35,600,530,150);x.fillStyle='#ffffff';x.font="bold 22px 'Outfit'";
+  x.fillText(b.move1,55,640);x.fillText(''+b.move1Dmg,510,640);x.fillStyle='#FFD13B';x.fillText(b.move2,55,710);x.fillText(b.move2Dmg+'+',500,710);
+  x.fillStyle='#9ca3af';x.font="italic 18px 'Outfit'";x.fillText(`"${c.lore}"`,35,790);
+  x.fillStyle='#d1d5db';x.font="bold 18px 'Outfit'";x.fillText('Fattore Coccole: '+c.cuddleFactor+'%',35,870);x.fillText(c.rarity,270,870);x.fillText(c.id,490,870);
+  const a=document.createElement('a');a.download=`Pomikon_${c.name}.png`;a.href=cn.toDataURL('image/png');a.click();
+  toast('Scaricata in PNG!');
+ };
+ im.src=c.imageUrl;
+}
 
-        function resetCutoutCanvas() { if (currentOriginalImage) { initCutoutCanvas(currentOriginalImage); showToast("Ripristinata"); } }
+/* ================= POMIDEX ================= */
+function updateCount(){$('hdr-count').textContent=dex.length+' Carte'}
+function setBreed(b){
+ activeBreed=b;
+ document.querySelectorAll('.fb').forEach(x=>{const on=x.dataset.b===b;x.className='fb font-semibold px-2.5 py-1 rounded-full whitespace-nowrap text-xs transition '+(on?'bg-pomiblue text-white':'bg-gray-800 text-gray-300')});
+ renderDex();
+}
+function renderDex(){
+ const q=$('dex-q').value.toLowerCase().trim();
+ const list=dex.filter(c=>c.name.toLowerCase().includes(q)&&(activeBreed==='Tutti'||c.breed.startsWith(activeBreed)));
+ $('dex-grid').innerHTML=list.map((c,i)=>`<div class="dexcard pop-in bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 shadow-lg cursor-pointer" style="animation-delay:${Math.min(i,12)*40}ms" onclick="openModal('${c.id}')">
+ <div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${c.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700"><img src="${c.imageUrl}" class="max-h-[85%] max-w-[85%] object-contain"><span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">CP ${c.cp}</span></div>
+ <div><div class="flex items-center justify-between"><h4 class="font-bold text-xs text-white truncate">${esc(c.name)}</h4><span class="text-[9px] text-gray-400">${c.sex==='Maschio'?'♂':'♀'}</span></div><p class="text-[10px] text-gray-400 truncate">${esc(c.breed)}</p></div></div>`).join('');
+ const empty=$('dex-empty');
+ empty.style.display=list.length?'none':'flex';
+ $('dex-msg').textContent=dex.length?'Nessuna carta trovata':'Il tuo PomìDex è vuoto';
+}
+function dexCard(){return dex.find(x=>x.id===modalId)}
+function openModal(id){
+ modalId=id;const c=dexCard();if(!c)return;
+ renderCard(c,'modal-card');
+ $('card-modal').classList.add('on');SFX.open();
+}
+function closeModal(){$('card-modal').classList.remove('on');modalId=null}
+function deleteModal(){
+ if(!confirm('Vuoi davvero eliminare questa carta?'))return;
+ dex=dex.filter(c=>c.id!==modalId);
+ persistDex();closeModal();renderDex();updateCount();toast('Carta eliminata');
+}
+function exportModal(){const c=dexCard();if(c)exportCard(c)}
 
-        function setupCanvasEvents() {
-            const getPos = (e) => {
-                const rect = cutoutCanvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: Math.floor((clientX - rect.left) * (cutoutCanvas.width / rect.width)), y: Math.floor((clientY - rect.top) * (cutoutCanvas.height / rect.height)) };
-            };
-            const start = (e) => { isDrawing = true; const p = getPos(e); activeTool === 'magic' ? magicWandAt(p.x, p.y) : applyBrush(p.x, p.y); };
-            const move = (e) => { if (!isDrawing) return; if(activeTool !== 'magic') { const p = getPos(e); applyBrush(p.x, p.y); } };
-            
-            cutoutCanvas.addEventListener('mousedown', start); cutoutCanvas.addEventListener('mousemove', move); window.addEventListener('mouseup', ()=>isDrawing=false);
-            cutoutCanvas.addEventListener('touchstart', (e)=>{start(e); e.preventDefault();}, {passive:false}); cutoutCanvas.addEventListener('touchmove', (e)=>{move(e); e.preventDefault();}, {passive:false}); window.addEventListener('touchend', ()=>isDrawing=false);
-        }
+/* ================= CODICE DI SCAMBIO ================= */
+function enc(o){
+ const bytes=new TextEncoder().encode(JSON.stringify(o));
+ let s='';bytes.forEach(b=>s+=String.fromCharCode(b));
+ return 'POM1.'+btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function dec(code){
+ let c=code.replace(/\s/g,'').replace(/^POM1\./,'').replace(/-/g,'+').replace(/_/g,'/');
+ while(c.length%4)c+='=';
+ const bin=atob(c);
+ return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))));
+}
+async function exportCard(c){
+ try{
+  const img=await shrink(c.imageUrl,180,.55);
+  openCode('export',enc({v:1,n:c.name,b:c.breed,s:c.sex,y:c.ageYears,m:c.ageMonths,c:c.cp,k:c.cuddleFactor,l:c.lore,i:img}));
+ }catch(e){toast('Impossibile creare il codice',1)}
+}
+function fromShare(o){
+ if(!o||o.v!==1||!BREED_DATA[o.b]||!o.n||!(+o.c>0))throw new Error('invalid');
+ if(!/^data:image\/(webp|png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(o.i||''))throw new Error('img');
+ return buildCard({name:String(o.n).slice(0,18),breed:o.b,sex:o.s==='Femmina'?'Femmina':'Maschio',ageYears:+o.y||0,ageMonths:+o.m||0,cp:+o.c,cuddleFactor:+o.k||0,lore:String(o.l||'').slice(0,140),imageUrl:o.i});
+}
+function openCode(mode,text=''){
+ const ta=$('code-text');
+ $('code-title').textContent=mode==='export'?'Codice di scambio':'Importa carta';
+ $('code-desc').textContent=mode==='export'?'Copia questo codice e invialo al tuo amico.':'Incolla il codice ricevuto da un altro allenatore.';
+ ta.value=text;ta.readOnly=mode==='export';
+ show($('code-copy'),mode==='export');show($('code-go'),mode==='import');
+ $('code-modal').classList.add('on');
+ if(mode==='export')setTimeout(()=>{ta.focus();ta.select()},50);
+}
+function closeCode(){$('code-modal').classList.remove('on')}
+function copyCode(){
+ const ta=$('code-text');ta.focus();ta.select();
+ const fallback=()=>{const ok=document.execCommand('copy');toast(ok?'Codice copiato!':'Seleziona e copia il codice',!ok)};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(ta.value).then(()=>toast('Codice copiato!'),fallback);
+ else fallback();
+}
+function importCode(){
+ try{
+  const c=fromShare(dec($('code-text').value));
+  dex.unshift(c);
+  if(!persistDex()){dex.shift();return}
+  closeCode();renderDex();updateCount();SFX.reveal();toast(`${c.name} aggiunto al PomìDex!`);
+ }catch(e){SFX.err();toast('Codice non valido o corrotto!',1)}
+}
 
-        function applyBrush(x, y) {
-            const r = currentTolerance; cutoutCtx.save(); cutoutCtx.beginPath(); cutoutCtx.arc(x, y, r, 0, Math.PI*2); cutoutCtx.clip();
-            if (activeTool === 'erase') cutoutCtx.clearRect(x-r, y-r, r*2, r*2);
-            else if (activeTool === 'restore' && originalImageData) {
-                const temp = document.createElement('canvas'); temp.width = cutoutCanvas.width; temp.height = cutoutCanvas.height;
-                temp.getContext('2d').putImageData(originalImageData, 0, 0); cutoutCtx.drawImage(temp, 0, 0);
-            }
-            cutoutCtx.restore();
-        }
+/* ================= PROFILO ================= */
+function renderProfile(){
+ if(document.activeElement!==$('p-name'))$('p-name').value=S.user;
+ $('p-title').textContent=S.user;
+ show($('av-img'),!!S.avatar);show($('av-ico'),!S.avatar);
+ if(S.avatar)$('av-img').src=S.avatar;
+ $('st-cards').textContent=dex.length;
+ $('st-best').textContent=dex.length?Math.max(...dex.map(c=>c.cp)):0;
+ $('st-breeds').textContent=new Set(dex.map(c=>c.breed)).size+'/8';
+}
+function saveName(){
+ S.user=$('p-name').value.trim().slice(0,18)||'Allenatore';
+ save();renderProfile();SFX.ok();toast('Nome salvato!');
+}
+function setAvatar(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=async()=>{
+  try{S.avatar=await shrink(r.result,160,.8);save();renderProfile();SFX.ok();toast('Foto profilo aggiornata!')}
+  catch(err){toast('Immagine non valida',1)}
+ };
+ r.readAsDataURL(f);
+ e.target.value='';
+}
 
-        function confirmCutoutAndProceed() {
-            document.getElementById('form-dog-preview').src = cutoutCanvas.toDataURL('image/png');
-            document.getElementById('capture-step-2').classList.add('hidden');
-            document.getElementById('capture-step-3').classList.remove('hidden'); document.getElementById('capture-step-3').classList.add('flex');
-        }
+/* ================= EVENTI GLOBALI ================= */
+document.addEventListener('pointerdown',e=>{
+ if(S.music&&!musTimer)startMusic();
+ const b=e.target.closest&&e.target.closest('button,label,.dexcard');
+ if(b&&!b.closest('nav'))SFX.click();
+},true);
 
-        /* ==================== CARD GENERATION ==================== */
-        function generatePomikonCard(e) {
-            e.preventDefault();
-            const name = document.getElementById('dog-name').value.trim(); const breed = document.getElementById('dog-breed').value;
-            const sex = document.querySelector('input[name="dog-sex"]:checked').value;
-            const years = parseInt(document.getElementById('dog-age-years').value)||0; const months = parseInt(document.getElementById('dog-age-months').value)||0;
-            const b = BREED_DATA[breed] || BREED_DATA['Volpino'];
-            
-            const totalAge = (years*12)+months; let ageBonus = totalAge<=12 ? 40 : (totalAge<=60 ? 60 : 35);
-            const cuddle = Math.floor(Math.random()*100)+1;
-            const cp = b.basePower + ageBonus + (sex==='Maschio'?25:30) + (cuddle*2);
-            
-            let rarity = 'Comune', rc = 'text-gray-300', rclass = '';
-            if (cp >= 1100) { rarity = 'LEGENDARY ★★★'; rc = 'text-yellow-400 font-extrabold'; rclass = 'rarity-legendaris'; }
-            else if (cp >= 980) { rarity = 'EPICO ★★'; rc = 'text-purple-400 font-bold'; }
-            else if (cp >= 880) { rarity = 'RARO ★'; rc = 'text-blue-400 font-bold'; }
+document.addEventListener('pointermove',e=>{
+ document.querySelectorAll('.tcg-card-container').forEach(el=>{
+  if(!el.offsetParent)return;
+  const card=el.querySelector('.tcg-card'),r=el.getBoundingClientRect();
+  const x=e.clientX-r.left,y=e.clientY-r.top;
+  if(x>=0&&x<=r.width&&y>=0&&y<=r.height){
+   card.style.transform=`rotateX(${(r.height/2-y)/12}deg) rotateY(${(x-r.width/2)/12}deg)`;
+   const h=el.querySelector('.tcg-holo-overlay');
+   if(h)h.style.backgroundPosition=`${(x/r.width)*100}% ${(y/r.height)*100}%`;
+  }else card.style.transform='';
+ });
+});
 
-            currentCardData = {
-                id: 'POM-' + Math.floor(Math.random()*899+100), name, breed, sex, ageYears: years, ageMonths: months,
-                cp, hp: Math.floor(cp/7.5), cuddleFactor: cuddle, rarity, rarityColor: rc, rarityClass: rclass,
-                imageUrl: cutoutCanvas.toDataURL('image/png'), lore: FUN_LORE[Math.floor(Math.random()*FUN_LORE.length)], breedInfo: b
-            };
-
-            renderTcgCard(currentCardData, 'card-display-container');
-            const saveBtn = document.getElementById('btn-save-card'); saveBtn.disabled = false;
-            saveBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>Salva nel PomìDex</span>`;
-            saveBtn.className = "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95";
-            switchTab('card-view'); showToast("Carta Creata!");
-        }
-
-        function renderTcgCard(card, targetContainerId) {
-            const b = card.breedInfo;
-            document.getElementById(targetContainerId).innerHTML = `
-                <div class="tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative cursor-pointer">
-                    <div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${card.rarityClass}">
-                        <div class="tcg-holo-overlay"></div>
-                        <div class="flex items-center justify-between border-b-2 border-pomiyellow/60 pb-1.5 z-10">
-                            <span class="font-pixel text-xs text-pomiyellow font-black">${card.name}</span>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-[10px] text-gray-300 font-bold">HP <strong class="text-white text-xs">${card.hp}</strong></span>
-                                <div class="${b.badgeBg} w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white shadow"><i class="fa-solid ${b.typeIcon}"></i></div>
-                            </div>
-                        </div>
-                        <div class="relative w-full h-[45%] rounded-lg overflow-hidden border-2 border-pomiyellow/70 shadow-inner my-1.5 bg-gradient-to-br ${b.bgGradient} flex items-center justify-center z-10">
-                            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:10px_10px]"></div>
-                            <img src="${card.imageUrl}" class="relative z-10 max-h-[92%] max-w-[92%] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)] transition transform hover:scale-105 duration-300">
-                            <div class="absolute bottom-1 right-1 bg-pomidark/90 border border-pomiyellow/80 px-2 py-0.5 rounded-md z-20 flex items-center gap-1 shadow">
-                                <span class="text-[9px] text-gray-400 font-bold">CP</span><span class="text-xs font-black text-pomiyellow">${card.cp}</span>
-                            </div>
-                        </div>
-                        <div class="bg-pomidark/90 border border-gray-700 rounded-md px-2 py-1 flex items-center justify-between text-[10px] z-10 shadow-sm">
-                            <span class="font-bold text-gray-200">${card.breed}</span><span class="text-gray-400">${card.sex==='Maschio'?'♂':'♀'} • ${card.ageYears}a ${card.ageMonths}m</span>
-                        </div>
-                        <div class="bg-pomidark/80 border border-gray-800 rounded-lg p-2 space-y-1.5 z-10">
-                            <div class="flex items-center justify-between text-[10px] border-b border-gray-800/80 pb-1">
-                                <div><i class="fa-solid fa-paw text-pomiyellow"></i> <span class="font-bold text-gray-200">${b.move1}</span></div><span class="font-black">${b.move1Dmg}</span>
-                            </div>
-                            <div class="flex items-center justify-between text-[10px]">
-                                <div><i class="fa-solid fa-bolt text-pomired"></i> <span class="font-bold text-pomiyellow">${b.move2}</span></div><span class="font-black text-pomiyellow">${b.move2Dmg}+</span>
-                            </div>
-                        </div>
-                        <p class="text-[9px] italic text-gray-400 leading-tight px-1 z-10 border-l-2 border-pomiyellow/50 py-0.5">"${card.lore}"</p>
-                        <div class="flex items-center justify-between border-t border-gray-800 pt-1 text-[8px] text-gray-400 z-10">
-                            <span>Fattore Coccole: <strong class="text-pomiyellow">${card.cuddleFactor}%</strong></span><span class="${card.rarityColor}">${card.rarity}</span><span class="font-mono">${card.id}</span>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        /* ==================== 3D TILT EFFECT ==================== */
-        function setup3DTilt() {
-            const handleTilt = (e) => {
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                document.querySelectorAll('.tcg-card-container').forEach(card => {
-                    if (card.offsetParent === null) return; // Salta le carte non visibili
-                    const rect = card.getBoundingClientRect();
-                    const x = clientX - rect.left; const y = clientY - rect.top;
-                    if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                        const rotX = ((rect.height/2) - y) / 12; const rotY = (x - (rect.width/2)) / 12;
-                        card.querySelector('.tcg-card').style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-                        const holo = card.querySelector('.tcg-holo-overlay'); if (holo) holo.style.backgroundPosition = `${(x/rect.width)*100}% ${(y/rect.height)*100}%`;
-                    } else { card.querySelector('.tcg-card').style.transform = `rotateX(0deg) rotateY(0deg)`; }
-                });
-            };
-            document.addEventListener('mousemove', handleTilt);
-            document.addEventListener('touchmove', handleTilt, {passive: true});
-        }
-
-        /* ==================== POMIDEX & SCAMBIO ==================== */
-        function saveCurrentCardToDex() {
-            if (!currentCardData || pomidexList.some(i => i.id === currentCardData.id)) return showToast("Già salvata!", true);
-            pomidexList.unshift(currentCardData); localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
-            updateHeaderCount();
-            const btn = document.getElementById('btn-save-card'); btn.disabled = true;
-            btn.className = "bg-gray-700 text-gray-400 font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs cursor-not-allowed";
-            btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Salvata nel Dex</span>`;
-            showToast("Aggiunta al PomìDex!");
-        }
-
-        function loadPomidex() {
-            const saved = localStorage.getItem('pomikon_dex');
-            if (saved) { try { pomidexList = JSON.parse(saved); } catch(e) { pomidexList = []; } }
-            updateHeaderCount();
-        }
-        function updateHeaderCount() { document.getElementById('header-card-count').textContent = `${pomidexList.length} Carte`; }
-
-        function renderPomidexGrid() {
-            const grid = document.getElementById('pomidex-grid'); const empty = document.getElementById('dex-empty');
-            const q = document.getElementById('dex-search').value.toLowerCase().trim();
-            let filtered = pomidexList.filter(c => (c.name.toLowerCase().includes(q)) && (activeFilterBreed === 'Tutti' || c.breed.includes(activeFilterBreed)));
-            if (filtered.length === 0) { grid.innerHTML = ''; grid.appendChild(empty); empty.classList.remove('hidden'); return; }
-            empty.classList.add('hidden'); grid.innerHTML = '';
-            filtered.forEach(c => {
-                const el = document.createElement('div');
-                el.className = "bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 shadow-lg cursor-pointer";
-                el.onclick = () => openCardModal(c.id);
-                el.innerHTML = `<div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${c.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700">
-                    <img src="${c.imageUrl}" class="max-h-[85%] max-w-[85%] object-contain"><span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">CP ${c.cp}</span>
-                    </div><div><div class="flex items-center justify-between"><h4 class="font-bold text-xs text-white truncate">${c.name}</h4><span class="text-[9px] text-gray-400">${c.sex==='Maschio'?'♂':'♀'}</span></div><p class="text-[10px] text-gray-400 truncate">${c.breed}</p></div>`;
-                grid.appendChild(el);
-            });
-        }
-        function filterPomidex() { renderPomidexGrid(); }
-        function setDexBreedFilter(breed) {
-            activeFilterBreed = breed; document.querySelectorAll('.dex-filter-btn').forEach(b => {
-                b.classList.replace('bg-pomiblue', 'bg-gray-800'); b.classList.replace('text-white', 'text-gray-300');
-                if (b.textContent.includes(breed)) { b.classList.replace('bg-gray-800', 'bg-pomiblue'); b.classList.replace('text-gray-300', 'text-white'); }
-            }); renderPomidexGrid();
-        }
-
-        /* --- CODICE SCAMBIO SICURO --- */
-        async function exportTradeCode(cardId) {
-            const card = pomidexList.find(c => c.id === cardId); if (!card) return;
-            // Comprime immagine a 250px WEBP per evitare crash degli appunti o di WhatsApp
-            const img = new Image(); img.src = card.imageUrl;
-            await new Promise(r => img.onload = r);
-            const cvs = document.createElement('canvas'); const max = 250;
-            let w = img.width, h = img.height;
-            if (w > max || h > max) { if (w > h) { h = h*(max/w); w = max; } else { w = w*(max/h); h = max; } }
-            cvs.width = w; cvs.height = h; cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-            
-            const exportData = { ...card, imageUrl: cvs.toDataURL('image/webp', 0.6) };
-            const base64Code = btoa(encodeURIComponent(JSON.stringify(exportData)));
-            
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(base64Code).then(() => showToast("Codice copiato negli appunti!"));
-            } else { prompt("Copia questo codice per il tuo amico:", base64Code); }
-        }
-
-        function importCard() {
-            const code = prompt("Incolla qui il codice di scambio ricevuto:");
-            if (!code) return;
-            try {
-                const card = JSON.parse(decodeURIComponent(atob(code)));
-                if (!card.name || !card.cp) throw new Error("Invalid");
-                card.id = 'POM-' + Math.floor(Math.random()*899+100) + '-TRD'; // Genera nuovo ID
-                pomidexList.unshift(card); localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
-                updateHeaderCount(); renderPomidexGrid(); showToast("Carta importata con successo!");
-            } catch(e) { showToast("Codice non valido o corrotto!", true); }
-        }
-
-        /* ==================== MODAL ==================== */
-        let activeModalCardId = null;
-        function openCardModal(id) {
-            activeModalCardId = id; const card = pomidexList.find(c => c.id === id); if(!card) return;
-            renderTcgCard(card, 'modal-card-container');
-            document.getElementById('modal-download-btn').onclick = () => downloadCardPNG(card);
-            document.getElementById('modal-export-btn').onclick = () => exportTradeCode(id);
-            document.getElementById('modal-delete-btn').onclick = () => {
-                if(confirm("Vuoi davvero eliminare questa carta?")) {
-                    pomidexList = pomidexList.filter(c => c.id !== id); localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
-                    updateHeaderCount(); renderPomidexGrid(); closeCardModal(); showToast("Carta eliminata");
-                }
-            };
-            document.getElementById('card-modal').classList.remove('hidden');
-        }
-        function closeCardModal() { document.getElementById('card-modal').classList.add('hidden'); activeModalCardId = null; }
-
-        /* ==================== PNG EXPORT ==================== */
-        function downloadCardPNG(cardToExport = null) {
-            const card = cardToExport || currentCardData; if (!card) return;
-            const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 930; const ctx = canvas.getContext('2d');
-            const b = card.breedInfo;
-            ctx.fillStyle = "#1c1f33"; ctx.fillRect(0, 0, 600, 930); ctx.strokeStyle = "#f3c642"; ctx.lineWidth = 16; ctx.strokeRect(8, 8, 584, 914);
-            ctx.fillStyle = "#FFD13B"; ctx.font = "900 28px 'Outfit', sans-serif"; ctx.fillText(card.name, 35, 65);
-            ctx.fillStyle = "#ffffff"; ctx.font = "bold 20px 'Outfit'"; ctx.fillText(`HP ${card.hp}`, 450, 65);
-            const grad = ctx.createLinearGradient(30, 90, 570, 510); grad.addColorStop(0, '#f97316'); grad.addColorStop(1, '#c2410c');
-            ctx.fillStyle = grad; ctx.fillRect(35, 95, 530, 420); ctx.strokeStyle = "#f3c642"; ctx.lineWidth = 6; ctx.strokeRect(35, 95, 530, 420);
-            
-            const img = new Image(); img.crossOrigin = "anonymous";
-            img.onload = function() {
-                const s = Math.min(480/img.width, 380/img.height); const w = img.width*s, h = img.height*s;
-                ctx.drawImage(img, 35+(530-w)/2, 95+(420-h)/2, w, h);
-                ctx.fillStyle = "rgba(18,20,32,0.9)"; ctx.fillRect(400, 450, 150, 50); ctx.strokeStyle = "#FFD13B"; ctx.lineWidth = 2; ctx.strokeRect(400, 450, 150, 50);
-                ctx.fillStyle = "#FFD13B"; ctx.font = "black 24px 'Outfit'"; ctx.fillText(`CP ${card.cp}`, 420, 485);
-                ctx.fillStyle = "#121420"; ctx.fillRect(35, 535, 530, 45); ctx.fillStyle = "#ffffff"; ctx.font = "bold 20px 'Outfit'"; ctx.fillText(`${card.breed} (${card.sex} • ${card.ageYears}a ${card.ageMonths}m)`, 50, 565);
-                ctx.fillStyle = "#121420"; ctx.fillRect(35, 600, 530, 150); ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px 'Outfit'";
-                ctx.fillText(`🐾 ${b.move1}`, 55, 640); ctx.fillText(`${b.move1Dmg}`, 510, 640); ctx.fillStyle = "#FFD13B"; ctx.fillText(`⚡ ${b.move2}`, 55, 710); ctx.fillText(`${b.move2Dmg}+`, 500, 710);
-                ctx.fillStyle = "#9ca3af"; ctx.font = "italic 18px 'Outfit'"; ctx.fillText(`"${card.lore}"`, 35, 790);
-                ctx.fillStyle = "#d1d5db"; ctx.font = "bold 18px 'Outfit'"; ctx.fillText(`Fattore Coccole: ${card.cuddleFactor}%`, 35, 870); ctx.fillText(card.rarity, 270, 870); ctx.fillText(card.id, 490, 870);
-                
-                const link = document.createElement('a'); link.download = `Pomikon_${card.name}.png`; link.href = canvas.toDataURL('image/png'); link.click(); showToast("Scaricata in PNG!");
-            };
-            img.src = card.imageUrl;
-        }
-
-        function startNewCapture() {
-            document.getElementById('capture-step-1').classList.remove('hidden'); document.getElementById('capture-step-2').classList.add('hidden');
-            document.getElementById('capture-step-3').classList.add('hidden'); document.getElementById('dog-name').value = ''; switchTab('capture');
-        }
-    </script>
+/* ================= INIT ================= */
+document.querySelectorAll('i[data-ic]').forEach(el=>el.outerHTML=ic(el.dataset.ic,el.className,el.id));
+cv=$('cutout-canvas');cx=cv.getContext('2d',{willReadFrequently:true});
+cv.addEventListener('pointerdown',e=>{
+ if(!work)return;
+ e.preventDefault();cv.setPointerCapture(e.pointerId);
+ drawing=true;const p=pos(e);last=p;
+ if(tool==='magic'){
+  const i=p.y*W+p.x,d=work.data;
+  if(d[i*4+3]){flood([i],[d[i*4],d[i*4+1],d[i*4+2]],tolV());SFX.cut()}
+ }else brush(p.x,p.y);
+ render();
+});
+cv.addEventListener('pointermove',e=>{
+ if(!drawing||!work||tool==='magic')return;
+ const p=pos(e),r=brushR();
+ const n=Math.max(1,Math.ceil(Math.hypot(p.x-last.x,p.y-last.y)/(r*.5)));
+ for(let k=1;k<=n;k++)brush(Math.round(last.x+(p.x-last.x)*k/n),Math.round(last.y+(p.y-last.y)*k/n));
+ last=p;render();
+});
+const stopDraw=()=>drawing=false;
+cv.addEventListener('pointerup',stopDraw);cv.addEventListener('pointercancel',stopDraw);
+setTool('magic');setBreed('Tutti');paintSettings();renderProfile();updateCount();
+</script>
 </body>
 </html>
