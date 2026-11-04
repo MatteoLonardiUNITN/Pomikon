@@ -2,16 +2,8 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#121420">
-    <title>Pomìkon - Dog TCG Collector</title>
-
-    <!-- Embedded PWA Manifest -->
-    <link rel="manifest" href='data:application/manifest+json;utf8,{"name":"Pomìkon Dog TCG","short_name":"Pomìkon","display":"standalone","background_color":"#121420","theme_color":"#FFD13B"}'>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pomìkon - Dog TCG Photo & Collection App</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -41,16 +33,16 @@
     </script>
 
     <style>
+        /* Custom Holographic & UI Styles */
         body {
             background-color: #0b0c10;
             color: #ffffff;
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
-        /* Checkered canvas background for transparency preview */
+        /* Transparent canvas grid preview */
         .checkered-bg {
             background-color: #1a1d2e;
             background-image: 
@@ -62,79 +54,55 @@
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
-        /* 3D Holographic Card Styling & Animated Sparkles */
+        /* Holographic Card Effects */
         .tcg-card-container {
             perspective: 1000px;
         }
 
         .tcg-card {
-            transition: transform 0.15s ease-out, box-shadow 0.25s ease;
+            transition: transform 0.15s ease-out, box-shadow 0.2s ease;
             transform-style: preserve-3d;
             position: relative;
-            background: linear-gradient(135deg, #242940 0%, #0d101d 100%);
+            background: linear-gradient(135deg, #1f2438 0%, #0d101d 100%);
             border: 8px solid #f3c642;
             border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 209, 59, 0.35);
-            animation: cardEntrance 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 209, 59, 0.3);
         }
 
-        @keyframes cardEntrance {
-            0% { opacity: 0; transform: scale(0.8) rotateY(-30deg); }
-            100% { opacity: 1; transform: scale(1) rotateY(0deg); }
-        }
-
-        /* Holographic Dynamic Rainbow Overlay */
+        /* Holo shimmer overlay */
         .tcg-holo-overlay {
             position: absolute;
             inset: 0;
             border-radius: 10px;
             pointer-events: none;
             z-index: 20;
-            opacity: 0.65;
+            opacity: 0.6;
             mix-blend-mode: color-dodge;
             background: linear-gradient(
                 115deg,
-                transparent 15%,
-                rgba(255, 0, 128, 0.45) 30%,
-                rgba(0, 255, 240, 0.65) 48%,
-                rgba(255, 230, 0, 0.5) 62%,
-                transparent 85%
+                transparent 20%,
+                rgba(255, 0, 150, 0.4) 35%,
+                rgba(0, 255, 255, 0.6) 50%,
+                rgba(255, 230, 0, 0.4) 65%,
+                transparent 80%
             );
-            background-size: 250% 250%;
-            animation: holoSweep 5s ease-in-out infinite alternate;
+            background-size: 200% 200%;
+            transition: background-position 0.1s ease;
         }
 
-        @keyframes holoSweep {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        /* Sparkle glitter animations */
-        .sparkle-particle {
-            position: absolute;
-            pointer-events: none;
-            z-index: 25;
-            background: radial-gradient(circle, #ffffff 10%, rgba(255, 209, 59, 0.8) 60%, transparent 100%);
-            border-radius: 50%;
-            animation: sparklePulse 2s ease-in-out infinite;
-        }
-
-        @keyframes sparklePulse {
-            0%, 100% { transform: scale(0.3) rotate(0deg); opacity: 0.2; }
-            50% { transform: scale(1.2) rotate(180deg); opacity: 0.9; }
-        }
-
+        /* Rare / Legendary Animated Border Glow */
         .rarity-legendaris {
             border-color: #ffe600 !important;
-            animation: borderGlow 2s infinite alternate;
+            animation: borderGlow 2.5s infinite alternate;
         }
 
         @keyframes borderGlow {
             0% { box-shadow: 0 0 15px #ffe600, inset 0 0 10px #ffe600; }
-            50% { box-shadow: 0 0 30px #ff007b, inset 0 0 18px #ff007b; }
-            100% { box-shadow: 0 0 25px #00f0ff, inset 0 0 15px #00f0ff; }
+            50% { box-shadow: 0 0 25px #ff007b, inset 0 0 15px #ff007b; }
+            100% { box-shadow: 0 0 20px #00f0ff, inset 0 0 12px #00f0ff; }
         }
 
+        /* Custom Scrollbars */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #121420; }
         ::-webkit-scrollbar-thumb { background: #2b86ff; border-radius: 4px; }
@@ -142,7 +110,7 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col justify-between items-center bg-pomidark text-white pb-20 selection:bg-pomired selection:text-white">
 
-    <!-- HEADER BAR -->
+    <!-- TOP HEADER -->
     <header class="w-full max-w-md bg-pomicard/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-30 px-4 py-3 flex items-center justify-between shadow-lg">
         <div class="flex items-center space-x-2">
             <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pomired via-pomiyellow to-pomiblue p-0.5 flex items-center justify-center animate-pulse">
@@ -159,73 +127,60 @@
         </div>
 
         <div class="flex items-center space-x-2 bg-pomidark/80 px-3 py-1 rounded-full border border-gray-700">
-            <i class="fa-solid fa-paw text-pomiyellow text-xs"></i>
+            <i class="fa-solid fa-[#FFD13B] fa-paw text-pomiyellow text-xs"></i>
             <span id="header-card-count" class="text-xs font-bold text-gray-200">0 Carte</span>
         </div>
     </header>
 
-    <!-- MAIN APP CONTAINER -->
+    <!-- MAIN CONTENT CONTAINER -->
     <main id="app-container" class="w-full max-w-md flex-1 p-4 flex flex-col">
 
-        <!-- ==================== TAB 1: CATTURA & EDITING (PRIMA VERSIONE RIPRISTINATA) ==================== -->
-        <section id="tab-capture" class="tab-content flex flex-col space-y-4">
+        <!-- ==================== TAB 1: CATTURA & EDITING ==================== -->
+        <section id="tab-capture" class="tab-content flex-col space-y-4">
             
-            <!-- Step 1: Camera Feed / Image Selection -->
-            <div id="capture-step-1" class="bg-pomicard rounded-2xl p-5 border border-gray-800 text-center shadow-xl space-y-4">
-                <div class="w-20 h-20 bg-pomiblue/10 text-pomiblue rounded-full flex items-center justify-center mx-auto border border-pomiblue/30">
+            <!-- Step 1: Camera / Upload Prompt -->
+            <div id="capture-step-1" class="bg-pomicard rounded-2xl p-5 border border-gray-800 text-center shadow-xl">
+                <div class="w-20 h-20 bg-pomiblue/10 text-pomiblue rounded-full flex items-center justify-center mx-auto mb-4 border border-pomiblue/30">
                     <i class="fa-solid fa-camera-retro text-3xl"></i>
                 </div>
-                <div>
-                    <h2 class="text-xl font-bold mb-1">Cattura un Cane</h2>
-                    <p class="text-xs text-gray-400">Scatta una foto al cane o sceglila dalla galleria!</p>
-                </div>
+                <h2 class="text-xl font-bold mb-1">Scatta o Carica una Foto</h2>
+                <p class="text-xs text-gray-400 mb-6">Fotografa il tuo cane per trasformarlo in una carta TCG Pomìkon unica!</p>
 
-                <!-- Direct Live Viewfinder -->
-                <div id="camera-viewfinder" class="relative w-full aspect-square rounded-2xl overflow-hidden bg-black border-2 border-pomiyellow shadow-inner">
-                    <video id="webcam-video" autoplay playsinline class="w-full h-full object-cover"></video>
-                    <button onclick="captureWebcamFrame()" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-white border-4 border-pomiyellow flex items-center justify-center shadow-2xl active:scale-95 transition">
-                        <div class="w-10 h-10 rounded-full bg-pomired"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="triggerFileInput('camera')" class="bg-gradient-to-r from-pomired to-rose-600 hover:from-rose-500 hover:to-pomired text-white font-bold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition transform active:scale-95">
+                        <i class="fa-solid fa-camera"></i>
+                        <span class="text-sm">Fotocamera</span>
                     </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 pt-1">
-                    <button onclick="startDirectCamera()" class="bg-gradient-to-r from-pomired to-rose-600 text-white font-bold py-3 px-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs">
-                        <i class="fa-solid fa-sync"></i>
-                        <span>Riavvia Cam</span>
-                    </button>
-                    <button onclick="triggerFileInput()" class="bg-gray-800 text-white font-bold py-3 px-3 rounded-xl border border-gray-700 flex items-center justify-center gap-2 text-xs">
+                    <button onclick="triggerFileInput('gallery')" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3.5 px-4 rounded-xl border border-gray-700 flex items-center justify-center space-x-2 transition transform active:scale-95">
                         <i class="fa-solid fa-image"></i>
-                        <span>Carica Foto</span>
+                        <span class="text-sm">Galleria</span>
                     </button>
                 </div>
-                <!-- Native Camera / File Input -->
-                <input type="file" id="image-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(event)">
+                <input type="file" id="image-file-input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
             </div>
 
-            <!-- Step 2: Immediate Cutout Engine Canvas -->
+            <!-- Step 2: Cutout Tool -->
             <div id="capture-step-2" class="hidden flex-col bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-2">
                     <h3 class="font-bold text-sm flex items-center gap-2">
                         <i class="fa-solid fa-wand-magic-sparkles text-pomiyellow"></i>
-                        Scontornamento Foto
+                        Scontorna il Cane
                     </h3>
-                    <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Gomma + Bacchetta</span>
+                    <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded">Tocco / Tocco colore</span>
                 </div>
 
-                <!-- Interactive Cutout Canvas -->
                 <div class="relative w-full aspect-square rounded-xl overflow-hidden checkered-bg border border-gray-700 flex items-center justify-center shadow-inner">
                     <canvas id="cutout-canvas" class="max-w-full max-h-full object-contain cursor-crosshair"></canvas>
                     <div id="canvas-loader" class="absolute inset-0 bg-pomidark/80 flex flex-col items-center justify-center hidden">
                         <i class="fa-solid fa-circle-notch fa-spin text-3xl text-pomiblue mb-2"></i>
-                        <span class="text-xs font-semibold">Scontornamento in corso...</span>
+                        <span class="text-xs font-semibold">Elaborazione immagine...</span>
                     </div>
                 </div>
 
-                <!-- Eraser & Magic Wand Controls -->
                 <div class="space-y-3 pt-1">
                     <div class="grid grid-cols-3 gap-2">
                         <button id="btn-tool-magic" onclick="setCutoutTool('magic')" class="tool-btn bg-pomiblue text-white font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Magico
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Magic Cut
                         </button>
                         <button id="btn-tool-erase" onclick="setCutoutTool('erase')" class="tool-btn bg-gray-800 text-gray-300 font-semibold py-2 px-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
                             <i class="fa-solid fa-eraser"></i> Gomma
@@ -237,24 +192,24 @@
 
                     <div class="bg-pomidark/60 p-3 rounded-xl space-y-2 border border-gray-800">
                         <div class="flex items-center justify-between text-xs text-gray-300">
-                            <span>Sensibilità Gomma:</span>
+                            <span id="slider-label">Tolleranza Sfondi:</span>
                             <span id="tolerance-val" class="font-bold text-pomiyellow">35</span>
                         </div>
                         <input type="range" id="tolerance-slider" min="5" max="100" value="35" class="w-full accent-pomiyellow h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer" oninput="updateTolerance(this.value)">
 
                         <div class="flex items-center justify-between pt-1">
                             <button onclick="autoRemoveBackground()" class="text-xs bg-pomipurple/20 hover:bg-pomipurple/40 text-pomipurple font-bold py-1.5 px-3 rounded-lg border border-pomipurple/40 transition flex items-center gap-1">
-                                <i class="fa-solid fa-bolt"></i> Auto Scontorno
+                                <i class="fa-solid fa-bolt"></i> Auto Cutout Sfondo
                             </button>
                             <button onclick="resetCutoutCanvas()" class="text-xs text-gray-400 hover:text-white transition">
-                                <i class="fa-solid fa-trash-arrow-up"></i> Reset
+                                <i class="fa-solid fa-trash-arrow-up"></i> Reset Foto
                             </button>
                         </div>
                     </div>
 
                     <button onclick="confirmCutoutAndProceed()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-check-circle"></i>
-                        <span>Conferma e Crea Carta</span>
+                        <span>Conferma Ritaglio e Continua</span>
                     </button>
                 </div>
             </div>
@@ -265,7 +220,7 @@
                     <img id="form-dog-preview" class="w-12 h-12 object-contain rounded-lg checkered-bg border border-gray-700" src="" alt="Cane Scontornato">
                     <div>
                         <h3 class="font-bold text-base">Identikit del Cane</h3>
-                        <p class="text-xs text-gray-400">Inserisci i dati per calcolare il PomìPower</p>
+                        <p class="text-xs text-gray-400">Inserisci i dettagli per calcolare i Punti Lotte</p>
                     </div>
                 </div>
 
@@ -274,22 +229,19 @@
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Nome del Cane</label>
                         <input type="text" id="dog-name" required placeholder="Es. Fiocco, Argo, Luna..." class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white placeholder-gray-500">
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Razza</label>
                         <select id="dog-breed" required class="w-full bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white">
-                            <option value="Volpini">Volpini</option>
-                            <option value="Chihuahua pelo lungo">Chihuahua pelo lungo</option>
-                            <option value="Chihuahua pelo corto">Chihuahua pelo corto</option>
+                            <option value="Volpino">Volpino</option>
+                            <option value="Chihuahua Pelo Lungo">Chihuahua Pelo Lungo</option>
+                            <option value="Chihuahua Pelo Corto">Chihuahua Pelo Corto</option>
                             <option value="Maltese">Maltese</option>
                             <option value="Yorkshire">Yorkshire</option>
                             <option value="Maltipoo">Maltipoo</option>
-                            <option value="Barboncini">Barboncini</option>
+                            <option value="Barboncino">Barboncino</option>
                             <option value="Bassotto">Bassotto</option>
-                            <option value="Sconosciuta">Sconosciuta / Meticcio</option>
                         </select>
                     </div>
-
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Sesso</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -305,7 +257,6 @@
                             </label>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-gray-300 mb-1">Età (Anni)</label>
@@ -330,7 +281,7 @@
         <!-- ==================== TAB 2: LA MIA CARTA ==================== -->
         <section id="tab-card-view" class="tab-content hidden flex-col items-center space-y-4">
             <div id="card-display-container" class="w-full flex justify-center py-2">
-                <!-- Dynamic TCG Holographic Card renders here -->
+                <!-- Carta creata -->
             </div>
 
             <div class="w-full space-y-2.5">
@@ -346,129 +297,83 @@
                 </div>
                 <button onclick="startNewCapture()" class="w-full bg-pomidark hover:bg-gray-900 border border-gray-700 text-gray-300 font-semibold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
                     <i class="fa-solid fa-plus-circle"></i>
-                    <span>Cattura Un Altro Cane</span>
+                    <span>Scatta Un'Altra Foto</span>
                 </button>
             </div>
         </section>
 
         <!-- ==================== TAB 3: POMÌDEX ==================== -->
         <section id="tab-pomidex" class="tab-content hidden flex-col space-y-4">
+            <!-- Barra Ricerca e Importazione -->
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800 space-y-2">
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-500 text-xs"></i>
-                    <input type="text" id="dex-search" oninput="filterPomidex()" placeholder="Cerca cane per nome..." class="w-full bg-pomidark border border-gray-700 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-pomiyellow text-white">
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-500 text-xs"></i>
+                        <input type="text" id="dex-search" oninput="filterPomidex()" placeholder="Cerca cane..." class="w-full bg-pomidark border border-gray-700 rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-pomiyellow text-white">
+                    </div>
+                    <button onclick="importCard()" class="bg-pomipurple hover:bg-purple-500 text-white px-3 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                        <i class="fa-solid fa-file-import"></i> Importa
+                    </button>
                 </div>
                 <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-xs">
                     <button onclick="setDexBreedFilter('Tutti')" class="dex-filter-btn active bg-pomiblue text-white font-semibold px-2.5 py-1 rounded-full whitespace-nowrap">Tutti</button>
-                    <button onclick="setDexBreedFilter('Volpini')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Volpini</button>
+                    <button onclick="setDexBreedFilter('Volpino')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Volpino</button>
                     <button onclick="setDexBreedFilter('Chihuahua')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Chihuahua</button>
                     <button onclick="setDexBreedFilter('Maltese')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Maltese</button>
-                    <button onclick="setDexBreedFilter('Barboncini')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Barboncini</button>
+                    <button onclick="setDexBreedFilter('Barboncino')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Barboncino</button>
                     <button onclick="setDexBreedFilter('Bassotto')" class="dex-filter-btn bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full whitespace-nowrap">Bassotto</button>
                 </div>
             </div>
 
+            <!-- Dex Cards Grid -->
             <div id="pomidex-grid" class="grid grid-cols-2 gap-3 min-h-[300px]">
                 <div id="dex-empty" class="col-span-2 flex flex-col items-center justify-center py-12 text-center text-gray-500">
                     <i class="fa-solid fa-box-open text-4xl mb-2"></i>
                     <p class="font-bold text-sm">Il tuo PomìDex è vuoto</p>
-                    <p class="text-xs max-w-xs mt-1">Cattura il tuo primo cane o importa un codice di scambio!</p>
+                    <p class="text-xs max-w-xs mt-1">Cattura subito o importa il tuo primo cane!</p>
                 </div>
-            </div>
-        </section>
-
-        <!-- ==================== TAB 4: PROFILO & SCAMBIO CORRETTO ==================== -->
-        <section id="tab-profile" class="tab-content hidden flex-col space-y-4">
-            <!-- Trainer Profile Card -->
-            <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-4">
-                <div class="flex items-center gap-4">
-                    <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-pomiyellow bg-pomidark flex items-center justify-center cursor-pointer" onclick="triggerAvatarUpload()">
-                        <img id="trainer-avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232B86FF' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>🧢</text></svg>" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition">
-                            <i class="fa-solid fa-pen text-white text-xs"></i>
-                        </div>
-                    </div>
-                    <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
-                    <div class="flex-1">
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400">Nome Allenatore</label>
-                        <input type="text" id="trainer-name-input" value="Allenatore Pomì" onchange="saveTrainerProfile()" class="w-full bg-pomidark border border-gray-700 rounded-lg px-2.5 py-1.5 text-sm font-bold text-pomiyellow focus:outline-none focus:border-pomiyellow">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800 text-center">
-                    <div class="bg-pomidark/60 p-2.5 rounded-xl border border-gray-800">
-                        <p class="text-[10px] text-gray-400 uppercase font-bold">Collezione</p>
-                        <p id="profile-total-cards" class="text-base font-black text-white">0 Carte</p>
-                    </div>
-                    <div class="bg-pomidark/60 p-2.5 rounded-xl border border-gray-800">
-                        <p class="text-[10px] text-gray-400 uppercase font-bold">PomìPower Max</p>
-                        <p id="profile-max-cp" class="text-base font-black text-pomiyellow">0 CP</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- P2P Card Trading Box (FIXED UTF-8 ENCODING) -->
-            <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
-                <h3 class="font-bold text-sm flex items-center gap-2 text-pomiyellow">
-                    <i class="fa-solid fa-right-left"></i>
-                    Scambio Carte tra Giocatori
-                </h3>
-                <p class="text-xs text-gray-400 leading-relaxed">
-                    Incolla il codice di scambio inviato dal tuo amico per aggiungere la sua carta al tuo PomìDex!
-                </p>
-
-                <textarea id="trade-code-input" rows="3" placeholder="Incolla il codice di scambio qui..." class="w-full bg-pomidark border border-gray-700 rounded-xl p-2.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-pomiyellow resize-none"></textarea>
-
-                <button onclick="importCardFromCode()" class="w-full bg-gradient-to-r from-pomiblue to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs transition active:scale-95">
-                    <i class="fa-solid fa-file-import"></i>
-                    <span>IMPORTA CARTA DA CODICE</span>
-                </button>
             </div>
         </section>
 
     </main>
 
-    <!-- CARD MODAL FOR POMÌDEX VIEWING & EXPORT -->
+    <!-- CARD MODAL FOR POMÌDEX VIEWING -->
     <div id="card-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
         <button onclick="closeCardModal()" class="absolute top-4 right-4 text-white hover:text-pomired text-2xl w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <div id="modal-card-container" class="w-full max-w-xs my-auto">
+        <div id="modal-card-container" class="w-full max-w-xs my-auto flex justify-center">
             <!-- Rendered Card -->
         </div>
-        <div id="modal-actions" class="w-full max-w-xs mt-3 flex flex-col gap-2">
-            <div class="grid grid-cols-2 gap-2">
-                <button id="modal-trade-btn" class="bg-pomiyellow text-pomidark font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
-                    <i class="fa-solid fa-share-nodes"></i> Copia Codice
-                </button>
-                <button id="modal-download-btn" class="bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
+        <div id="modal-actions" class="w-full max-w-xs mt-4 flex flex-col gap-2">
+            <button id="modal-export-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-share-nodes"></i> Esporta Codice Scambio
+            </button>
+            <div class="flex gap-2">
+                <button id="modal-download-btn" class="flex-1 bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2">
                     <i class="fa-solid fa-download"></i> Scarica PNG
                 </button>
+                <button id="modal-delete-btn" class="bg-red-900/40 border border-red-700/60 text-red-400 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
-            <button id="modal-delete-btn" class="w-full bg-red-900/40 border border-red-700/60 text-red-400 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-trash"></i> Elimina dal Dex
-            </button>
         </div>
     </div>
 
     <!-- BOTTOM NAVIGATION BAR -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 bg-pomicard/95 border-t border-gray-800 backdrop-blur-lg">
-        <div class="max-w-md mx-auto grid grid-cols-4 h-16">
+        <div class="max-w-md mx-auto grid grid-cols-3 h-16">
             <button onclick="switchTab('capture')" id="nav-capture" class="nav-btn text-pomiyellow flex flex-col items-center justify-center space-y-1">
                 <i class="fa-solid fa-camera text-lg"></i>
                 <span class="text-[10px] font-bold">Cattura</span>
             </button>
             <button onclick="switchTab('card-view')" id="nav-card-view" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
                 <i class="fa-solid fa-id-card text-lg"></i>
-                <span class="text-[10px] font-bold">La Carta</span>
+                <span class="text-[10px] font-bold">La Mia Carta</span>
             </button>
             <button onclick="switchTab('pomidex')" id="nav-pomidex" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
-                <i class="fa-solid fa-book-bookmark text-lg"></i>
+                <i class="fa-solid fa-[#FFD13B] fa-book-bookmark text-lg"></i>
                 <span class="text-[10px] font-bold">PomìDex</span>
-            </button>
-            <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn text-gray-500 flex flex-col items-center justify-center space-y-1">
-                <i class="fa-solid fa-user-gear text-lg"></i>
-                <span class="text-[10px] font-bold">Profilo</span>
             </button>
         </div>
     </nav>
@@ -479,252 +384,69 @@
         <span id="toast-msg">Messaggio Notifica</span>
     </div>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- APP LOGIC SCRIPT -->
     <script>
-        /* ==================== GAME DATA & BREEDS MATRIX ==================== */
+        /* ==================== GAME DATA & MATRIX ==================== */
         const BREED_DATA = {
-            'Volpini': {
-                element: 'Fuoco',
-                bgGradient: 'from-orange-500 via-amber-600 to-red-700',
-                badgeBg: 'bg-orange-500',
-                basePower: 820,
-                move1: 'Onda Sofficissima',
-                move1Dmg: 35,
-                move2: 'Vulcano Piumato',
-                move2Dmg: 85,
-                typeIcon: 'fa-fire'
-            },
-            'Chihuahua pelo lungo': {
-                element: 'Psico',
-                bgGradient: 'from-pink-500 via-purple-600 to-indigo-700',
-                badgeBg: 'bg-pink-500',
-                basePower: 750,
-                move1: 'Sguardo Ipnotico',
-                move1Dmg: 30,
-                move2: 'Super Fluffy Shield',
-                move2Dmg: 75,
-                typeIcon: 'fa-wand-magic-sparkles'
-            },
-            'Chihuahua pelo corto': {
-                element: 'Elettro',
-                bgGradient: 'from-yellow-400 via-amber-500 to-orange-600',
-                badgeBg: 'bg-yellow-500',
-                basePower: 760,
-                move1: 'Morso Tascabile',
-                move1Dmg: 40,
-                move2: 'Scossa Tremenda',
-                move2Dmg: 80,
-                typeIcon: 'fa-bolt'
-            },
-            'Maltese': {
-                element: 'Luce',
-                bgGradient: 'from-cyan-400 via-sky-500 to-blue-600',
-                badgeBg: 'bg-sky-400',
-                basePower: 800,
-                move1: 'Nuvola Candida',
-                move1Dmg: 35,
-                move2: 'Bagliore Angelico',
-                move2Dmg: 82,
-                typeIcon: 'fa-sun'
-            },
-            'Yorkshire': {
-                element: 'Lotta',
-                bgGradient: 'from-amber-600 via-stone-700 to-red-800',
-                badgeBg: 'bg-amber-700',
-                basePower: 780,
-                move1: 'Graffio Grintoso',
-                move1Dmg: 45,
-                move2: 'Carica Tenace',
-                move2Dmg: 88,
-                typeIcon: 'fa-fist-raised'
-            },
-            'Maltipoo': {
-                element: 'Fata',
-                bgGradient: 'from-rose-400 via-pink-500 to-purple-600',
-                badgeBg: 'bg-rose-400',
-                basePower: 840,
-                move1: 'Occhioni Dolci',
-                move1Dmg: 30,
-                move2: 'Tempesta Coccole',
-                move2Dmg: 90,
-                typeIcon: 'fa-heart'
-            },
-            'Barboncini': {
-                element: 'Erba',
-                bgGradient: 'from-emerald-400 via-green-600 to-teal-800',
-                badgeBg: 'bg-emerald-500',
-                basePower: 860,
-                move1: 'Salto Elegante',
-                move1Dmg: 40,
-                move2: 'Aura Regale',
-                move2Dmg: 92,
-                typeIcon: 'fa-leaf'
-            },
-            'Bassotto': {
-                element: 'Acciaio',
-                bgGradient: 'from-slate-500 via-zinc-700 to-stone-900',
-                badgeBg: 'bg-slate-600',
-                basePower: 880,
-                move1: 'Scavo Lampo',
-                move1Dmg: 42,
-                move2: 'Carica Siluro',
-                move2Dmg: 95,
-                typeIcon: 'fa-shield-halved'
-            },
-            'Sconosciuta': {
-                element: 'Drago',
-                bgGradient: 'from-indigo-600 via-purple-700 to-pink-800',
-                badgeBg: 'bg-indigo-600',
-                basePower: 810,
-                move1: 'Abbraccio Misterioso',
-                move1Dmg: 38,
-                move2: 'Alito di Biscotto',
-                move2Dmg: 86,
-                typeIcon: 'fa-dragon'
-            }
+            'Volpino': { element: 'Fuoco', bgGradient: 'from-orange-500 via-amber-600 to-red-700', badgeBg: 'bg-orange-500', basePower: 820, move1: 'Onda Sofficissima', move1Dmg: 35, move2: 'Vulcano Piumato', move2Dmg: 85, typeIcon: 'fa-fire' },
+            'Chihuahua Pelo Lungo': { element: 'Psico', bgGradient: 'from-pink-500 via-purple-600 to-indigo-700', badgeBg: 'bg-pink-500', basePower: 750, move1: 'Sguardo Ipnotico', move1Dmg: 30, move2: 'Super Fluffy Shield', move2Dmg: 75, typeIcon: 'fa-wand-magic-sparkles' },
+            'Chihuahua Pelo Corto': { element: 'Elettro', bgGradient: 'from-yellow-400 via-amber-500 to-orange-600', badgeBg: 'bg-yellow-500', basePower: 760, move1: 'Morso Tascabile', move1Dmg: 40, move2: 'Scossa Tremenda', move2Dmg: 80, typeIcon: 'fa-bolt' },
+            'Maltese': { element: 'Luce', bgGradient: 'from-cyan-400 via-sky-500 to-blue-600', badgeBg: 'bg-sky-400', basePower: 800, move1: 'Nuvola Candida', move1Dmg: 35, move2: 'Bagliore Angelico', move2Dmg: 82, typeIcon: 'fa-sun' },
+            'Yorkshire': { element: 'Lotta', bgGradient: 'from-amber-600 via-stone-700 to-red-800', badgeBg: 'bg-amber-700', basePower: 780, move1: 'Graffio Grintoso', move1Dmg: 45, move2: 'Carica Tenace', move2Dmg: 88, typeIcon: 'fa-fist-raised' },
+            'Maltipoo': { element: 'Fata', bgGradient: 'from-rose-400 via-pink-500 to-purple-600', badgeBg: 'bg-rose-400', basePower: 840, move1: 'Occhioni Dolci', move1Dmg: 30, move2: 'Tempesta Coccole', move2Dmg: 90, typeIcon: 'fa-heart' },
+            'Barboncino': { element: 'Erba', bgGradient: 'from-emerald-400 via-green-600 to-teal-800', badgeBg: 'bg-emerald-500', basePower: 860, move1: 'Salto Elegante', move1Dmg: 40, move2: 'Aura Regale', move2Dmg: 92, typeIcon: 'fa-leaf' },
+            'Bassotto': { element: 'Acciaio', bgGradient: 'from-slate-500 via-zinc-700 to-stone-900', badgeBg: 'bg-slate-600', basePower: 880, move1: 'Scavo Lampo', move1Dmg: 42, move2: 'Carica Siluro', move2Dmg: 95, typeIcon: 'fa-shield-halved' }
         };
 
-        const FUN_LORE = [
-            "Si dice che questo cane possa captare i biscotti da 3km di distanza.",
-            "La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.",
-            "Maestro supremo delle coccole notturne sul divano.",
-            "Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.",
-            "Custode leggendario della pallina da tennis dorata."
-        ];
+        const FUN_LORE = ["Si dice che questo cane possa captare i biscotti da 3km di distanza.", "La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.", "Maestro supremo delle coccole notturne sul divano.", "Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.", "Custode leggendario della pallina da tennis dorata."];
 
-        /* ==================== STATE VARIABLES ==================== */
-        let webcamStream = null;
-        let currentOriginalImage = null;
-        let cutoutCanvas, cutoutCtx;
-        let isDrawing = false;
-        let activeTool = 'magic';
-        let currentTolerance = 35;
-        let originalImageData = null;
-        let currentCardData = null;
-        let pomidexList = [];
-        let activeFilterBreed = 'Tutti';
+        /* ==================== APP STATE ==================== */
+        let currentOriginalImage = null; let cutoutCanvas, cutoutCtx;
+        let isDrawing = false; let activeTool = 'magic'; let currentTolerance = 35;
+        let originalImageData = null; let currentCardData = null;
+        let pomidexList = []; let activeFilterBreed = 'Tutti';
 
-        let trainerProfile = {
-            name: 'Allenatore Pomì',
-            avatar: ''
-        };
-
-        /* ==================== INITIALIZATION ==================== */
         window.onload = function() {
             cutoutCanvas = document.getElementById('cutout-canvas');
             cutoutCtx = cutoutCanvas.getContext('2d', { willReadFrequently: true });
-            
             setupCanvasEvents();
-            loadPomidexAndProfile();
+            loadPomidex();
             setup3DTilt();
-            startDirectCamera(); // Direct camera on app load
         };
 
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
-            const icon = document.getElementById('toast-icon');
-            const msgEl = document.getElementById('toast-msg');
-
-            msgEl.textContent = msg;
-            icon.className = isError ? "fa-solid fa-triangle-exclamation text-pomired" : "fa-solid fa-circle-check text-emerald-400";
-            
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            toast.classList.add('opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 3000);
+            document.getElementById('toast-msg').textContent = msg;
+            document.getElementById('toast-icon').className = isError ? "fa-solid fa-triangle-exclamation text-pomired" : "fa-solid fa-circle-check text-emerald-400";
+            toast.classList.remove('opacity-0', 'pointer-events-none'); toast.classList.add('opacity-100');
+            setTimeout(() => { toast.classList.remove('opacity-100'); toast.classList.add('opacity-0', 'pointer-events-none'); }, 3000);
         }
 
-        /* ==================== NAVIGATION ==================== */
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.replace('text-pomiyellow', 'text-gray-500'));
-
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            const targetNav = document.getElementById(`nav-${tabId}`);
-
-            if (targetTab) targetTab.classList.remove('hidden');
-            if (targetNav) targetNav.classList.replace('text-gray-500', 'text-pomiyellow');
-
-            if (tabId === 'capture') {
-                startDirectCamera();
-            } else {
-                stopWebcamStream();
-            }
-
-            if (tabId === 'pomidex') {
-                renderPomidexGrid();
-            } else if (tabId === 'profile') {
-                renderProfileStats();
-            }
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.replace('text-gray-500', 'text-pomiyellow');
+            if (tabId === 'pomidex') renderPomidexGrid();
         }
 
-        /* ==================== DIRECT CAMERA FEED (RESTORED) ==================== */
-        async function startDirectCamera() {
-            if (webcamStream) return;
-            try {
-                webcamStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment', width: { ideal: 720 }, height: { ideal: 720 } }
-                });
-                const videoEl = document.getElementById('webcam-video');
-                videoEl.srcObject = webcamStream;
-            } catch (err) {
-                console.log("Fotocamera diretta non disponibile, usa il caricamento foto");
-            }
+        function triggerFileInput(source) {
+            const fileInput = document.getElementById('image-file-input');
+            if (source === 'camera') fileInput.setAttribute('capture', 'environment');
+            else fileInput.removeAttribute('capture');
+            fileInput.click();
         }
 
-        function stopWebcamStream() {
-            if (webcamStream) {
-                webcamStream.getTracks().forEach(track => track.stop());
-                webcamStream = null;
-            }
-        }
-
-        function captureWebcamFrame() {
-            const videoEl = document.getElementById('webcam-video');
-            if (!videoEl || !videoEl.videoWidth) {
-                triggerFileInput();
-                return;
-            }
-
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = videoEl.videoWidth || 600;
-            tempCanvas.height = videoEl.videoHeight || 600;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(videoEl, 0, 0, tempCanvas.width, tempCanvas.height);
-
-            const img = new Image();
-            img.onload = function() {
-                currentOriginalImage = img;
-                initCutoutCanvas(img);
-                stopWebcamStream();
-
-                document.getElementById('capture-step-1').classList.add('hidden');
-                document.getElementById('capture-step-2').classList.remove('hidden');
-                document.getElementById('capture-step-2').classList.add('flex');
-            };
-            img.src = tempCanvas.toDataURL('image/png');
-        }
-
-        function triggerFileInput() {
-            document.getElementById('image-file-input').click();
-        }
-
+        /* ==================== CANVAS CUTOUT ==================== */
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             showCanvasLoader(true);
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    currentOriginalImage = img;
-                    initCutoutCanvas(img);
-                    showCanvasLoader(false);
-
+                    currentOriginalImage = img; initCutoutCanvas(img); showCanvasLoader(false);
                     document.getElementById('capture-step-1').classList.add('hidden');
                     document.getElementById('capture-step-2').classList.remove('hidden');
                     document.getElementById('capture-step-2').classList.add('flex');
@@ -734,734 +456,299 @@
             reader.readAsDataURL(file);
         }
 
-        /* ==================== CANVAS & AUTOMATIC CUTOUT ENGINE ==================== */
-        function showCanvasLoader(show) {
-            const loader = document.getElementById('canvas-loader');
-            if (show) loader.classList.remove('hidden');
-            else loader.classList.add('hidden');
-        }
+        function showCanvasLoader(show) { document.getElementById('canvas-loader').classList.toggle('hidden', !show); }
 
         function initCutoutCanvas(img) {
-            const maxDim = 500;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > maxDim || height > maxDim) {
-                if (width > height) {
-                    height = Math.round((height * maxDim) / width);
-                    width = maxDim;
-                } else {
-                    width = Math.round((width * maxDim) / height);
-                    height = maxDim;
-                }
-            }
-
-            cutoutCanvas.width = width;
-            cutoutCanvas.height = height;
-
-            cutoutCtx.clearRect(0, 0, width, height);
-            cutoutCtx.drawImage(img, 0, 0, width, height);
-            originalImageData = cutoutCtx.getImageData(0, 0, width, height);
-
-            autoRemoveBackground();
+            const maxDim = 600; let w = img.width, h = img.height;
+            if (w > maxDim || h > maxDim) { if (w > h) { h = Math.round((h * maxDim)/w); w = maxDim; } else { w = Math.round((w * maxDim)/h); h = maxDim; } }
+            cutoutCanvas.width = w; cutoutCanvas.height = h;
+            cutoutCtx.clearRect(0, 0, w, h); cutoutCtx.drawImage(img, 0, 0, w, h);
+            originalImageData = cutoutCtx.getImageData(0, 0, w, h);
         }
 
         function setCutoutTool(tool) {
             activeTool = tool;
-            document.querySelectorAll('.tool-btn').forEach(b => {
-                b.classList.replace('bg-pomiblue', 'bg-gray-800');
-                b.classList.replace('text-white', 'text-gray-300');
-            });
-
-            const btnMap = {
-                'magic': 'btn-tool-magic',
-                'erase': 'btn-tool-erase',
-                'restore': 'btn-tool-restore'
-            };
-
+            document.querySelectorAll('.tool-btn').forEach(b => { b.classList.replace('bg-pomiblue', 'bg-gray-800'); b.classList.replace('text-white', 'text-gray-300'); });
+            const btnMap = { 'magic': 'btn-tool-magic', 'erase': 'btn-tool-erase', 'restore': 'btn-tool-restore' };
             const activeBtn = document.getElementById(btnMap[tool]);
-            if (activeBtn) {
-                activeBtn.classList.replace('bg-gray-800', 'bg-pomiblue');
-                activeBtn.classList.replace('text-gray-300', 'text-white');
-            }
+            if (activeBtn) { activeBtn.classList.replace('bg-gray-800', 'bg-pomiblue'); activeBtn.classList.replace('text-gray-300', 'text-white'); }
         }
 
-        function updateTolerance(val) {
-            currentTolerance = parseInt(val);
-            document.getElementById('tolerance-val').textContent = val;
-        }
+        function updateTolerance(val) { currentTolerance = parseInt(val); document.getElementById('tolerance-val').textContent = val; }
 
         function autoRemoveBackground() {
             if (!cutoutCtx || !originalImageData) return;
             showCanvasLoader(true);
-
             setTimeout(() => {
-                const w = cutoutCanvas.width;
-                const h = cutoutCanvas.height;
-                const imgData = cutoutCtx.getImageData(0, 0, w, h);
-                const data = imgData.data;
-
-                const corners = [
-                    getPixelColor(data, 5, 5, w),
-                    getPixelColor(data, w - 5, 5, w),
-                    getPixelColor(data, 5, h - 5, w),
-                    getPixelColor(data, w - 5, h - 5, w)
-                ];
-
+                const w = cutoutCanvas.width, h = cutoutCanvas.height;
+                const imgData = cutoutCtx.getImageData(0, 0, w, h); const data = imgData.data;
+                const getPx = (x,y) => ({ r: data[(y*w+x)*4], g: data[(y*w+x)*4+1], b: data[(y*w+x)*4+2] });
+                const corners = [getPx(5,5), getPx(w-5,5), getPx(5,h-5), getPx(w-5,h-5)];
                 const tol = currentTolerance * 2.2;
-
                 for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-
                     for (let c of corners) {
-                        const dist = Math.sqrt((r - c.r)**2 + (g - c.g)**2 + (b - c.b)**2);
-                        if (dist < tol) {
-                            data[i + 3] = 0;
-                            break;
-                        }
+                        if (Math.sqrt((data[i]-c.r)**2 + (data[i+1]-c.g)**2 + (data[i+2]-c.b)**2) < tol) { data[i+3] = 0; break; }
                     }
                 }
-
-                cutoutCtx.putImageData(imgData, 0, 0);
-                showCanvasLoader(false);
-            }, 50);
-        }
-
-        function getPixelColor(data, x, y, width) {
-            const idx = (y * width + x) * 4;
-            return { r: data[idx], g: data[idx + 1], b: data[idx + 2] };
+                cutoutCtx.putImageData(imgData, 0, 0); showCanvasLoader(false); showToast("Sfondo rimosso!");
+            }, 100);
         }
 
         function magicWandAt(x, y) {
-            const w = cutoutCanvas.width;
-            const h = cutoutCanvas.height;
-            const imgData = cutoutCtx.getImageData(0, 0, w, h);
-            const data = imgData.data;
-
+            const w = cutoutCanvas.width, h = cutoutCanvas.height;
+            const imgData = cutoutCtx.getImageData(0, 0, w, h); const data = imgData.data;
             const targetIdx = (y * w + x) * 4;
-            const targetColor = {
-                r: data[targetIdx],
-                g: data[targetIdx + 1],
-                b: data[targetIdx + 2]
-            };
-
+            const tr = data[targetIdx], tg = data[targetIdx+1], tb = data[targetIdx+2];
             const tol = currentTolerance * 2.5;
-
             for (let i = 0; i < data.length; i += 4) {
-                if (data[i + 3] === 0) continue;
-                const dist = Math.sqrt(
-                    (data[i] - targetColor.r)**2 +
-                    (data[i + 1] - targetColor.g)**2 +
-                    (data[i + 2] - targetColor.b)**2
-                );
-
-                if (dist <= tol) data[i + 3] = 0;
+                if (data[i+3] === 0) continue;
+                if (Math.sqrt((data[i]-tr)**2 + (data[i+1]-tg)**2 + (data[i+2]-tb)**2) <= tol) data[i+3] = 0;
             }
-
             cutoutCtx.putImageData(imgData, 0, 0);
         }
 
-        function resetCutoutCanvas() {
-            if (currentOriginalImage) {
-                initCutoutCanvas(currentOriginalImage);
-                showToast("Foto ripristinata");
-            }
-        }
+        function resetCutoutCanvas() { if (currentOriginalImage) { initCutoutCanvas(currentOriginalImage); showToast("Ripristinata"); } }
 
         function setupCanvasEvents() {
-            const getCanvasPos = (e) => {
+            const getPos = (e) => {
                 const rect = cutoutCanvas.getBoundingClientRect();
-                const scaleX = cutoutCanvas.width / rect.width;
-                const scaleY = cutoutCanvas.height / rect.height;
-
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-                return {
-                    x: Math.floor((clientX - rect.left) * scaleX),
-                    y: Math.floor((clientY - rect.top) * scaleY)
-                };
+                return { x: Math.floor((clientX - rect.left) * (cutoutCanvas.width / rect.width)), y: Math.floor((clientY - rect.top) * (cutoutCanvas.height / rect.height)) };
             };
-
-            const handleStart = (e) => {
-                isDrawing = true;
-                const pos = getCanvasPos(e);
-                if (activeTool === 'magic') magicWandAt(pos.x, pos.y);
-                else applyBrush(pos.x, pos.y);
-            };
-
-            const handleMove = (e) => {
-                if (!isDrawing) return;
-                if (activeTool === 'erase' || activeTool === 'restore') {
-                    const pos = getCanvasPos(e);
-                    applyBrush(pos.x, pos.y);
-                }
-            };
-
-            const handleEnd = () => { isDrawing = false; };
-
-            cutoutCanvas.addEventListener('mousedown', handleStart);
-            cutoutCanvas.addEventListener('mousemove', handleMove);
-            window.addEventListener('mouseup', handleEnd);
-
-            cutoutCanvas.addEventListener('touchstart', (e) => { handleStart(e); e.preventDefault(); }, { passive: false });
-            cutoutCanvas.addEventListener('touchmove', (e) => { handleMove(e); e.preventDefault(); }, { passive: false });
-            window.addEventListener('touchend', handleEnd);
+            const start = (e) => { isDrawing = true; const p = getPos(e); activeTool === 'magic' ? magicWandAt(p.x, p.y) : applyBrush(p.x, p.y); };
+            const move = (e) => { if (!isDrawing) return; if(activeTool !== 'magic') { const p = getPos(e); applyBrush(p.x, p.y); } };
+            
+            cutoutCanvas.addEventListener('mousedown', start); cutoutCanvas.addEventListener('mousemove', move); window.addEventListener('mouseup', ()=>isDrawing=false);
+            cutoutCanvas.addEventListener('touchstart', (e)=>{start(e); e.preventDefault();}, {passive:false}); cutoutCanvas.addEventListener('touchmove', (e)=>{move(e); e.preventDefault();}, {passive:false}); window.addEventListener('touchend', ()=>isDrawing=false);
         }
 
         function applyBrush(x, y) {
-            const radius = currentTolerance;
-            cutoutCtx.save();
-            cutoutCtx.beginPath();
-            cutoutCtx.arc(x, y, radius, 0, Math.PI * 2);
-            cutoutCtx.clip();
-
-            if (activeTool === 'erase') {
-                cutoutCtx.clearRect(x - radius, y - radius, radius * 2, radius * 2);
-            } else if (activeTool === 'restore' && originalImageData) {
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = cutoutCanvas.width;
-                tempCanvas.height = cutoutCanvas.height;
-                tempCanvas.getContext('2d').putImageData(originalImageData, 0, 0);
-                cutoutCtx.drawImage(tempCanvas, 0, 0);
+            const r = currentTolerance; cutoutCtx.save(); cutoutCtx.beginPath(); cutoutCtx.arc(x, y, r, 0, Math.PI*2); cutoutCtx.clip();
+            if (activeTool === 'erase') cutoutCtx.clearRect(x-r, y-r, r*2, r*2);
+            else if (activeTool === 'restore' && originalImageData) {
+                const temp = document.createElement('canvas'); temp.width = cutoutCanvas.width; temp.height = cutoutCanvas.height;
+                temp.getContext('2d').putImageData(originalImageData, 0, 0); cutoutCtx.drawImage(temp, 0, 0);
             }
             cutoutCtx.restore();
         }
 
         function confirmCutoutAndProceed() {
-            const compressedUrl = cutoutCanvas.toDataURL('image/webp', 0.8) || cutoutCanvas.toDataURL('image/png');
-            document.getElementById('form-dog-preview').src = compressedUrl;
-
+            document.getElementById('form-dog-preview').src = cutoutCanvas.toDataURL('image/png');
             document.getElementById('capture-step-2').classList.add('hidden');
-            document.getElementById('capture-step-3').classList.remove('hidden');
-            document.getElementById('capture-step-3').classList.add('flex');
+            document.getElementById('capture-step-3').classList.remove('hidden'); document.getElementById('capture-step-3').classList.add('flex');
         }
 
-        /* ==================== CARD GENERATION & SCORE ALGORITHM ==================== */
+        /* ==================== CARD GENERATION ==================== */
         function generatePomikonCard(e) {
             e.preventDefault();
-
-            const name = document.getElementById('dog-name').value.trim();
-            const breed = document.getElementById('dog-breed').value;
+            const name = document.getElementById('dog-name').value.trim(); const breed = document.getElementById('dog-breed').value;
             const sex = document.querySelector('input[name="dog-sex"]:checked').value;
-            const years = parseInt(document.getElementById('dog-age-years').value) || 0;
-            const months = parseInt(document.getElementById('dog-age-months').value) || 0;
-
-            const breedInfo = BREED_DATA[breed] || BREED_DATA['Sconosciuta'];
-            const cutoutUrl = cutoutCanvas.toDataURL('image/webp', 0.8) || cutoutCanvas.toDataURL('image/png');
-
-            const totalAgeMonths = (years * 12) + months;
-            let ageBonus = totalAgeMonths <= 12 ? 45 : (totalAgeMonths <= 60 ? 60 : 35);
-            const sexBonus = sex === 'Maschio' ? 25 : 30;
-            const cuddleFactorRNG = Math.floor(Math.random() * 100) + 1;
-
-            const totalPowerCP = breedInfo.basePower + ageBonus + sexBonus + (cuddleFactorRNG * 2);
-            const baseHP = Math.floor(totalPowerCP / 7.5);
-
-            let rarity = 'Comune';
-            let rarityColor = 'text-gray-300';
-            let rarityClass = '';
-
-            if (totalPowerCP >= 1100) {
-                rarity = 'LEGENDARY ★★★';
-                rarityColor = 'text-yellow-400 font-extrabold';
-                rarityClass = 'rarity-legendaris';
-            } else if (totalPowerCP >= 980) {
-                rarity = 'EPICO ★★';
-                rarityColor = 'text-purple-400 font-bold';
-            } else if (totalPowerCP >= 880) {
-                rarity = 'RARO ★';
-                rarityColor = 'text-blue-400 font-bold';
-            }
-
-            const lore = FUN_LORE[Math.floor(Math.random() * FUN_LORE.length)];
-            const cardId = 'POM-' + String(Math.floor(Math.random() * 899) + 100);
+            const years = parseInt(document.getElementById('dog-age-years').value)||0; const months = parseInt(document.getElementById('dog-age-months').value)||0;
+            const b = BREED_DATA[breed] || BREED_DATA['Volpino'];
+            
+            const totalAge = (years*12)+months; let ageBonus = totalAge<=12 ? 40 : (totalAge<=60 ? 60 : 35);
+            const cuddle = Math.floor(Math.random()*100)+1;
+            const cp = b.basePower + ageBonus + (sex==='Maschio'?25:30) + (cuddle*2);
+            
+            let rarity = 'Comune', rc = 'text-gray-300', rclass = '';
+            if (cp >= 1100) { rarity = 'LEGENDARY ★★★'; rc = 'text-yellow-400 font-extrabold'; rclass = 'rarity-legendaris'; }
+            else if (cp >= 980) { rarity = 'EPICO ★★'; rc = 'text-purple-400 font-bold'; }
+            else if (cp >= 880) { rarity = 'RARO ★'; rc = 'text-blue-400 font-bold'; }
 
             currentCardData = {
-                id: cardId,
-                name: name,
-                breed: breed,
-                sex: sex,
-                ageYears: years,
-                ageMonths: months,
-                cp: totalPowerCP,
-                hp: baseHP,
-                cuddleFactor: cuddleFactorRNG,
-                rarity: rarity,
-                rarityColor: rarityColor,
-                rarityClass: rarityClass,
-                imageUrl: cutoutUrl,
-                lore: lore,
-                breedInfo: breedInfo,
-                trainer: trainerProfile.name,
-                timestamp: Date.now()
+                id: 'POM-' + Math.floor(Math.random()*899+100), name, breed, sex, ageYears: years, ageMonths: months,
+                cp, hp: Math.floor(cp/7.5), cuddleFactor: cuddle, rarity, rarityColor: rc, rarityClass: rclass,
+                imageUrl: cutoutCanvas.toDataURL('image/png'), lore: FUN_LORE[Math.floor(Math.random()*FUN_LORE.length)], breedInfo: b
             };
 
             renderTcgCard(currentCardData, 'card-display-container');
-
-            const saveBtn = document.getElementById('btn-save-card');
-            saveBtn.disabled = false;
+            const saveBtn = document.getElementById('btn-save-card'); saveBtn.disabled = false;
             saveBtn.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>Salva nel PomìDex</span>`;
             saveBtn.className = "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs transition active:scale-95";
-
-            switchTab('card-view');
-            showToast("Carta Pokémon Pomìkon Creata!");
+            switchTab('card-view'); showToast("Carta Creata!");
         }
 
         function renderTcgCard(card, targetContainerId) {
-            const container = document.getElementById(targetContainerId);
-            const b = card.breedInfo || BREED_DATA['Sconosciuta'];
-
-            container.innerHTML = `
-                <div id="active-tcg-card" class="tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative cursor-pointer">
+            const b = card.breedInfo;
+            document.getElementById(targetContainerId).innerHTML = `
+                <div class="tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative cursor-pointer">
                     <div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${card.rarityClass}">
-                        
-                        <!-- Holographic Overlay -->
                         <div class="tcg-holo-overlay"></div>
-
-                        <!-- Sparkle Particles -->
-                        <div class="sparkle-particle w-3 h-3 top-4 left-6" style="animation-delay: 0.1s"></div>
-                        <div class="sparkle-particle w-2.5 h-2.5 bottom-12 right-8" style="animation-delay: 0.6s"></div>
-                        <div class="sparkle-particle w-3.5 h-3.5 top-1/2 left-4" style="animation-delay: 1.2s"></div>
-
-                        <!-- Card Header -->
                         <div class="flex items-center justify-between border-b-2 border-pomiyellow/60 pb-1.5 z-10">
                             <span class="font-pixel text-xs text-pomiyellow font-black">${card.name}</span>
                             <div class="flex items-center space-x-2">
                                 <span class="text-[10px] text-gray-300 font-bold">HP <strong class="text-white text-xs">${card.hp}</strong></span>
-                                <div class="${b.badgeBg} w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white shadow">
-                                    <i class="fa-solid ${b.typeIcon}"></i>
-                                </div>
+                                <div class="${b.badgeBg} w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white shadow"><i class="fa-solid ${b.typeIcon}"></i></div>
                             </div>
                         </div>
-
-                        <!-- Photo Frame -->
                         <div class="relative w-full h-[45%] rounded-lg overflow-hidden border-2 border-pomiyellow/70 shadow-inner my-1.5 bg-gradient-to-br ${b.bgGradient} flex items-center justify-center z-10">
                             <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:10px_10px]"></div>
-                            <img src="${card.imageUrl}" alt="${card.name}" class="relative z-10 max-h-[92%] max-w-[92%] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)] transition transform hover:scale-105 duration-300">
-                            
+                            <img src="${card.imageUrl}" class="relative z-10 max-h-[92%] max-w-[92%] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)] transition transform hover:scale-105 duration-300">
                             <div class="absolute bottom-1 right-1 bg-pomidark/90 border border-pomiyellow/80 px-2 py-0.5 rounded-md z-20 flex items-center gap-1 shadow">
-                                <span class="text-[9px] text-gray-400 font-bold uppercase">CP</span>
-                                <span class="text-xs font-black text-pomiyellow">${card.cp}</span>
+                                <span class="text-[9px] text-gray-400 font-bold">CP</span><span class="text-xs font-black text-pomiyellow">${card.cp}</span>
                             </div>
                         </div>
-
-                        <!-- Breed Bar -->
                         <div class="bg-pomidark/90 border border-gray-700 rounded-md px-2 py-1 flex items-center justify-between text-[10px] z-10 shadow-sm">
-                            <span class="font-bold text-gray-200">${card.breed}</span>
-                            <span class="text-gray-400">${card.sex === 'Maschio' ? '♂' : '♀'} • ${card.ageYears}a ${card.ageMonths}m</span>
+                            <span class="font-bold text-gray-200">${card.breed}</span><span class="text-gray-400">${card.sex==='Maschio'?'♂':'♀'} • ${card.ageYears}a ${card.ageMonths}m</span>
                         </div>
-
-                        <!-- Attacks Box -->
                         <div class="bg-pomidark/80 border border-gray-800 rounded-lg p-2 space-y-1.5 z-10">
                             <div class="flex items-center justify-between text-[10px] border-b border-gray-800/80 pb-1">
-                                <div class="flex items-center space-x-1">
-                                    <i class="fa-solid fa-paw text-pomiyellow text-[9px]"></i>
-                                    <span class="font-bold text-gray-200">${b.move1}</span>
-                                </div>
-                                <span class="font-black text-gray-100">${b.move1Dmg}</span>
+                                <div><i class="fa-solid fa-paw text-pomiyellow"></i> <span class="font-bold text-gray-200">${b.move1}</span></div><span class="font-black">${b.move1Dmg}</span>
                             </div>
                             <div class="flex items-center justify-between text-[10px]">
-                                <div class="flex items-center space-x-1">
-                                    <i class="fa-solid fa-bolt text-pomired text-[9px]"></i>
-                                    <span class="font-bold text-pomiyellow">${b.move2}</span>
-                                </div>
-                                <span class="font-black text-pomiyellow">${b.move2Dmg}+</span>
+                                <div><i class="fa-solid fa-bolt text-pomired"></i> <span class="font-bold text-pomiyellow">${b.move2}</span></div><span class="font-black text-pomiyellow">${b.move2Dmg}+</span>
                             </div>
                         </div>
-
-                        <!-- Flavor Text -->
-                        <p class="text-[9px] italic text-gray-400 leading-tight px-1 z-10 border-l-2 border-pomiyellow/50 py-0.5 truncate">
-                            "${card.lore}"
-                        </p>
-
-                        <!-- Card Footer -->
+                        <p class="text-[9px] italic text-gray-400 leading-tight px-1 z-10 border-l-2 border-pomiyellow/50 py-0.5">"${card.lore}"</p>
                         <div class="flex items-center justify-between border-t border-gray-800 pt-1 text-[8px] text-gray-400 z-10">
-                            <span>All. <strong class="text-gray-200">${card.trainer || 'Allenatore'}</strong></span>
-                            <span class="${card.rarityColor}">${card.rarity}</span>
-                            <span class="font-mono text-gray-500">${card.id}</span>
+                            <span>Fattore Coccole: <strong class="text-pomiyellow">${card.cuddleFactor}%</strong></span><span class="${card.rarityColor}">${card.rarity}</span><span class="font-mono">${card.id}</span>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
         /* ==================== 3D TILT EFFECT ==================== */
         function setup3DTilt() {
-            const handleMove = (clientX, clientY) => {
-                const card = document.getElementById('active-tcg-card');
-                if (!card) return;
-
-                const rect = card.getBoundingClientRect();
-                const x = clientX - rect.left;
-                const y = clientY - rect.top;
-
-                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-
-                    const rotateX = (centerY - y) / 10;
-                    const rotateY = (x - centerX) / 10;
-
-                    card.querySelector('.tcg-card').style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                    const holo = card.querySelector('.tcg-holo-overlay');
-                    if (holo) holo.style.backgroundPosition = `${x * 1.5}% ${y * 1.5}%`;
-                }
+            const handleTilt = (e) => {
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                document.querySelectorAll('.tcg-card-container').forEach(card => {
+                    if (card.offsetParent === null) return; // Salta le carte non visibili
+                    const rect = card.getBoundingClientRect();
+                    const x = clientX - rect.left; const y = clientY - rect.top;
+                    if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                        const rotX = ((rect.height/2) - y) / 12; const rotY = (x - (rect.width/2)) / 12;
+                        card.querySelector('.tcg-card').style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+                        const holo = card.querySelector('.tcg-holo-overlay'); if (holo) holo.style.backgroundPosition = `${(x/rect.width)*100}% ${(y/rect.height)*100}%`;
+                    } else { card.querySelector('.tcg-card').style.transform = `rotateX(0deg) rotateY(0deg)`; }
+                });
             };
-
-            document.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
-            document.addEventListener('touchmove', (e) => {
-                if (e.touches && e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
-            });
+            document.addEventListener('mousemove', handleTilt);
+            document.addEventListener('touchmove', handleTilt, {passive: true});
         }
 
-        /* ==================== LOCAL STORAGE & PROFILE ==================== */
-        function loadPomidexAndProfile() {
-            const savedDex = localStorage.getItem('pomikon_dex');
-            if (savedDex) {
-                try { pomidexList = JSON.parse(savedDex); } catch(e) { pomidexList = []; }
-            }
-
-            const savedProfile = localStorage.getItem('pomikon_profile');
-            if (savedProfile) {
-                try { trainerProfile = JSON.parse(savedProfile); } catch(e) {}
-            }
-
-            document.getElementById('trainer-name-input').value = trainerProfile.name || 'Allenatore Pomì';
-            if (trainerProfile.avatar) {
-                document.getElementById('trainer-avatar-img').src = trainerProfile.avatar;
-            }
-
-            updateHeaderCount();
-        }
-
+        /* ==================== POMIDEX & SCAMBIO ==================== */
         function saveCurrentCardToDex() {
-            if (!currentCardData) return;
-
-            const exists = pomidexList.some(item => item.id === currentCardData.id);
-            if (exists) {
-                showToast("Carta già salvata nel PomìDex!", true);
-                return;
-            }
-
-            pomidexList.unshift(currentCardData);
-            saveDexToStorage();
-
-            const saveBtn = document.getElementById('btn-save-card');
-            saveBtn.disabled = true;
-            saveBtn.className = "bg-gray-700 text-gray-400 font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs cursor-not-allowed";
-            saveBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>Salvata nel Dex</span>`;
-
-            showToast("Carta salvata nel PomìDex!");
+            if (!currentCardData || pomidexList.some(i => i.id === currentCardData.id)) return showToast("Già salvata!", true);
+            pomidexList.unshift(currentCardData); localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
+            updateHeaderCount();
+            const btn = document.getElementById('btn-save-card'); btn.disabled = true;
+            btn.className = "bg-gray-700 text-gray-400 font-bold py-3 px-3 rounded-xl shadow-md flex items-center justify-center gap-2 text-xs cursor-not-allowed";
+            btn.innerHTML = `<i class="fa-solid fa-check"></i><span>Salvata nel Dex</span>`;
+            showToast("Aggiunta al PomìDex!");
         }
 
-        function saveDexToStorage() {
-            localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
+        function loadPomidex() {
+            const saved = localStorage.getItem('pomikon_dex');
+            if (saved) { try { pomidexList = JSON.parse(saved); } catch(e) { pomidexList = []; } }
             updateHeaderCount();
         }
+        function updateHeaderCount() { document.getElementById('header-card-count').textContent = `${pomidexList.length} Carte`; }
 
-        function saveTrainerProfile() {
-            const nameInput = document.getElementById('trainer-name-input').value.trim();
-            trainerProfile.name = nameInput || 'Allenatore Pomì';
-            localStorage.setItem('pomikon_profile', JSON.stringify(trainerProfile));
-            showToast("Profilo salvato!");
-        }
-
-        function triggerAvatarUpload() {
-            document.getElementById('avatar-file-input').click();
-        }
-
-        function handleAvatarUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 150;
-                    canvas.height = 150;
-                    canvas.getContext('2d').drawImage(img, 0, 0, 150, 150);
-                    const avatarUrl = canvas.toDataURL('image/jpeg', 0.8);
-
-                    trainerProfile.avatar = avatarUrl;
-                    document.getElementById('trainer-avatar-img').src = avatarUrl;
-                    saveTrainerProfile();
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function updateHeaderCount() {
-            document.getElementById('header-card-count').textContent = `${pomidexList.length} Carte`;
-        }
-
-        function renderProfileStats() {
-            document.getElementById('profile-total-cards').textContent = `${pomidexList.length} Carte`;
-            let maxCp = 0;
-            pomidexList.forEach(c => { if (c.cp > maxCp) maxCp = c.cp; });
-            document.getElementById('profile-max-cp').textContent = `${maxCp} CP`;
-        }
-
-        /* ==================== POMÌDEX GRID & FILTERS ==================== */
         function renderPomidexGrid() {
-            const grid = document.getElementById('pomidex-grid');
-            const empty = document.getElementById('dex-empty');
-            const searchQuery = document.getElementById('dex-search').value.toLowerCase().trim();
-
-            let filtered = pomidexList.filter(card => {
-                const matchSearch = card.name.toLowerCase().includes(searchQuery);
-                const matchBreed = activeFilterBreed === 'Tutti' || card.breed.includes(activeFilterBreed);
-                return matchSearch && matchBreed;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '';
-                grid.appendChild(empty);
-                empty.classList.remove('hidden');
-                return;
-            }
-
-            empty.classList.add('hidden');
-            grid.innerHTML = '';
-
-            filtered.forEach(card => {
-                const b = card.breedInfo || BREED_DATA['Sconosciuta'];
-                const cardEl = document.createElement('div');
-                cardEl.className = "bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 transition cursor-pointer shadow-lg group";
-                cardEl.onclick = () => openCardModal(card.id);
-
-                cardEl.innerHTML = `
-                    <div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${b.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700">
-                        <img src="${card.imageUrl}" alt="${card.name}" class="max-h-[85%] max-w-[85%] object-contain group-hover:scale-110 transition duration-300">
-                        <span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">
-                            CP ${card.cp}
-                        </span>
-                    </div>
-                    <div>
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-xs text-white truncate">${card.name}</h4>
-                            <span class="text-[9px] text-gray-400">${card.sex === 'Maschio' ? '♂' : '♀'}</span>
-                        </div>
-                        <p class="text-[10px] text-gray-400 truncate">${card.breed}</p>
-                    </div>
-                `;
-                grid.appendChild(cardEl);
+            const grid = document.getElementById('pomidex-grid'); const empty = document.getElementById('dex-empty');
+            const q = document.getElementById('dex-search').value.toLowerCase().trim();
+            let filtered = pomidexList.filter(c => (c.name.toLowerCase().includes(q)) && (activeFilterBreed === 'Tutti' || c.breed.includes(activeFilterBreed)));
+            if (filtered.length === 0) { grid.innerHTML = ''; grid.appendChild(empty); empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden'); grid.innerHTML = '';
+            filtered.forEach(c => {
+                const el = document.createElement('div');
+                el.className = "bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 shadow-lg cursor-pointer";
+                el.onclick = () => openCardModal(c.id);
+                el.innerHTML = `<div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${c.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700">
+                    <img src="${c.imageUrl}" class="max-h-[85%] max-w-[85%] object-contain"><span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">CP ${c.cp}</span>
+                    </div><div><div class="flex items-center justify-between"><h4 class="font-bold text-xs text-white truncate">${c.name}</h4><span class="text-[9px] text-gray-400">${c.sex==='Maschio'?'♂':'♀'}</span></div><p class="text-[10px] text-gray-400 truncate">${c.breed}</p></div>`;
+                grid.appendChild(el);
             });
         }
-
         function filterPomidex() { renderPomidexGrid(); }
-
         function setDexBreedFilter(breed) {
-            activeFilterBreed = breed;
-            document.querySelectorAll('.dex-filter-btn').forEach(btn => {
-                btn.classList.replace('bg-pomiblue', 'bg-gray-800');
-                btn.classList.replace('text-white', 'text-gray-300');
-                if (btn.textContent.includes(breed)) {
-                    btn.classList.replace('bg-gray-800', 'bg-pomiblue');
-                    btn.classList.replace('text-gray-300', 'text-white');
-                }
-            });
-            renderPomidexGrid();
+            activeFilterBreed = breed; document.querySelectorAll('.dex-filter-btn').forEach(b => {
+                b.classList.replace('bg-pomiblue', 'bg-gray-800'); b.classList.replace('text-white', 'text-gray-300');
+                if (b.textContent.includes(breed)) { b.classList.replace('bg-gray-800', 'bg-pomiblue'); b.classList.replace('text-gray-300', 'text-white'); }
+            }); renderPomidexGrid();
         }
 
-        /* ==================== SAFE UTF-8 TRADE CODE ENCODING (FIXED) ==================== */
-        function cardToTradeCode(card) {
-            // Encode UTF-8 cleanly to avoid Base64 btoa exceptions
-            const jsonStr = JSON.stringify(card);
-            const encodedStr = encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-                return String.fromCharCode('0x' + p1);
-            });
-            return btoa(encodedStr);
+        /* --- CODICE SCAMBIO SICURO --- */
+        async function exportTradeCode(cardId) {
+            const card = pomidexList.find(c => c.id === cardId); if (!card) return;
+            // Comprime immagine a 250px WEBP per evitare crash degli appunti o di WhatsApp
+            const img = new Image(); img.src = card.imageUrl;
+            await new Promise(r => img.onload = r);
+            const cvs = document.createElement('canvas'); const max = 250;
+            let w = img.width, h = img.height;
+            if (w > max || h > max) { if (w > h) { h = h*(max/w); w = max; } else { w = w*(max/h); h = max; } }
+            cvs.width = w; cvs.height = h; cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+            
+            const exportData = { ...card, imageUrl: cvs.toDataURL('image/webp', 0.6) };
+            const base64Code = btoa(encodeURIComponent(JSON.stringify(exportData)));
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(base64Code).then(() => showToast("Codice copiato negli appunti!"));
+            } else { prompt("Copia questo codice per il tuo amico:", base64Code); }
         }
 
-        function tradeCodeToCard(code) {
-            const cleanCode = code.trim().replace(/\s+/g, '');
-            const decodedStr = atob(cleanCode);
-            const jsonStr = decodeURIComponent(decodedStr.split('').map(c => {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonStr);
+        function importCard() {
+            const code = prompt("Incolla qui il codice di scambio ricevuto:");
+            if (!code) return;
+            try {
+                const card = JSON.parse(decodeURIComponent(atob(code)));
+                if (!card.name || !card.cp) throw new Error("Invalid");
+                card.id = 'POM-' + Math.floor(Math.random()*899+100) + '-TRD'; // Genera nuovo ID
+                pomidexList.unshift(card); localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
+                updateHeaderCount(); renderPomidexGrid(); showToast("Carta importata con successo!");
+            } catch(e) { showToast("Codice non valido o corrotto!", true); }
         }
 
-        function openCardModal(cardId) {
-            const card = pomidexList.find(c => c.id === cardId);
-            if (!card) return;
-
+        /* ==================== MODAL ==================== */
+        let activeModalCardId = null;
+        function openCardModal(id) {
+            activeModalCardId = id; const card = pomidexList.find(c => c.id === id); if(!card) return;
             renderTcgCard(card, 'modal-card-container');
-
-            document.getElementById('modal-trade-btn').onclick = () => exportCardToTradeCode(card);
             document.getElementById('modal-download-btn').onclick = () => downloadCardPNG(card);
-            document.getElementById('modal-delete-btn').onclick = () => deleteCardFromDex(card.id);
-
+            document.getElementById('modal-export-btn').onclick = () => exportTradeCode(id);
+            document.getElementById('modal-delete-btn').onclick = () => {
+                if(confirm("Vuoi davvero eliminare questa carta?")) {
+                    pomidexList = pomidexList.filter(c => c.id !== id); localStorage.setItem('pomikon_dex', JSON.stringify(pomidexList));
+                    updateHeaderCount(); renderPomidexGrid(); closeCardModal(); showToast("Carta eliminata");
+                }
+            };
             document.getElementById('card-modal').classList.remove('hidden');
         }
+        function closeCardModal() { document.getElementById('card-modal').classList.add('hidden'); activeModalCardId = null; }
 
-        function closeCardModal() {
-            document.getElementById('card-modal').classList.add('hidden');
-        }
-
-        function deleteCardFromDex(cardId) {
-            pomidexList = pomidexList.filter(c => c.id !== cardId);
-            saveDexToStorage();
-            closeCardModal();
-            renderPomidexGrid();
-            showToast("Carta eliminata dal Dex");
-        }
-
-        function exportCardToTradeCode(card) {
-            try {
-                const b64Code = cardToTradeCode(card);
-
-                const tempInput = document.createElement('textarea');
-                tempInput.value = b64Code;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-
-                showToast("Codice Scambio copiato negli appunti!");
-            } catch (err) {
-                showToast("Errore durante la creazione del codice!", true);
-            }
-        }
-
-        function importCardFromCode() {
-            const codeInput = document.getElementById('trade-code-input').value;
-            if (!codeInput) {
-                showToast("Incolla un codice di scambio valido!", true);
-                return;
-            }
-
-            try {
-                const card = tradeCodeToCard(codeInput);
-
-                if (!card.id || !card.name || !card.cp) {
-                    throw new Error("Formato carta non valido");
-                }
-
-                const exists = pomidexList.some(c => c.id === card.id);
-                if (exists) {
-                    showToast("Hai già questa carta nel PomìDex!", true);
-                    return;
-                }
-
-                pomidexList.unshift(card);
-                saveDexToStorage();
-                document.getElementById('trade-code-input').value = '';
-
-                showToast(`Carta di ${card.name} importata con successo!`);
-                switchTab('pomidex');
-            } catch (err) {
-                showToast("Codice di scambio non valido o corrotto!", true);
-            }
-        }
-
-        /* ==================== HIGH RES PNG EXPORT ==================== */
+        /* ==================== PNG EXPORT ==================== */
         function downloadCardPNG(cardToExport = null) {
-            const card = cardToExport || currentCardData;
-            if (!card) return;
-
-            const canvas = document.createElement('canvas');
-            canvas.width = 600;
-            canvas.height = 930;
-            const ctx = canvas.getContext('2d');
-            const b = card.breedInfo || BREED_DATA['Sconosciuta'];
-
-            ctx.fillStyle = "#1c1f33";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.strokeStyle = "#f3c642";
-            ctx.lineWidth = 16;
-            ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
-
-            ctx.fillStyle = "#FFD13B";
-            ctx.font = "900 28px 'Outfit', sans-serif";
-            ctx.fillText(card.name, 35, 65);
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 20px 'Outfit', sans-serif";
-            ctx.fillText(`HP ${card.hp}`, 450, 65);
-
-            const grad = ctx.createLinearGradient(30, 90, 570, 510);
-            grad.addColorStop(0, '#f97316');
-            grad.addColorStop(1, '#c2410c');
-            ctx.fillStyle = grad;
-            ctx.fillRect(35, 95, 530, 420);
-            ctx.strokeStyle = "#f3c642";
-            ctx.lineWidth = 6;
-            ctx.strokeRect(35, 95, 530, 420);
-
-            const img = new Image();
-            img.crossOrigin = "anonymous";
+            const card = cardToExport || currentCardData; if (!card) return;
+            const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 930; const ctx = canvas.getContext('2d');
+            const b = card.breedInfo;
+            ctx.fillStyle = "#1c1f33"; ctx.fillRect(0, 0, 600, 930); ctx.strokeStyle = "#f3c642"; ctx.lineWidth = 16; ctx.strokeRect(8, 8, 584, 914);
+            ctx.fillStyle = "#FFD13B"; ctx.font = "900 28px 'Outfit', sans-serif"; ctx.fillText(card.name, 35, 65);
+            ctx.fillStyle = "#ffffff"; ctx.font = "bold 20px 'Outfit'"; ctx.fillText(`HP ${card.hp}`, 450, 65);
+            const grad = ctx.createLinearGradient(30, 90, 570, 510); grad.addColorStop(0, '#f97316'); grad.addColorStop(1, '#c2410c');
+            ctx.fillStyle = grad; ctx.fillRect(35, 95, 530, 420); ctx.strokeStyle = "#f3c642"; ctx.lineWidth = 6; ctx.strokeRect(35, 95, 530, 420);
+            
+            const img = new Image(); img.crossOrigin = "anonymous";
             img.onload = function() {
-                const scale = Math.min(480 / img.width, 380 / img.height);
-                const w = img.width * scale;
-                const h = img.height * scale;
-                const x = 35 + (530 - w) / 2;
-                const y = 95 + (420 - h) / 2;
-
-                ctx.drawImage(img, x, y, w, h);
-
-                ctx.fillStyle = "rgba(18, 20, 32, 0.9)";
-                ctx.fillRect(400, 450, 150, 50);
-                ctx.strokeStyle = "#FFD13B";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(400, 450, 150, 50);
-
-                ctx.fillStyle = "#FFD13B";
-                ctx.font = "900 24px 'Outfit', sans-serif";
-                ctx.fillText(`CP ${card.cp}`, 420, 485);
-
-                ctx.fillStyle = "#121420";
-                ctx.fillRect(35, 535, 530, 45);
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 20px 'Outfit', sans-serif";
-                ctx.fillText(`${card.breed} (${card.sex} • ${card.ageYears}a ${card.ageMonths}m)`, 50, 565);
-
-                ctx.fillStyle = "#121420";
-                ctx.fillRect(35, 600, 530, 150);
-
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 22px 'Outfit', sans-serif";
-                ctx.fillText(`🐾 ${b.move1}`, 55, 640);
-                ctx.fillText(`${b.move1Dmg}`, 510, 640);
-
-                ctx.fillStyle = "#FFD13B";
-                ctx.fillText(`⚡ ${b.move2}`, 55, 710);
-                ctx.fillText(`${b.move2Dmg}+`, 500, 710);
-
-                ctx.fillStyle = "#9ca3af";
-                ctx.font = "italic 18px 'Outfit', sans-serif";
-                ctx.fillText(`"${card.lore}"`, 35, 790);
-
-                ctx.fillStyle = "#d1d5db";
-                ctx.font = "bold 18px 'Outfit', sans-serif";
-                ctx.fillText(`All: ${card.trainer || 'Allenatore'}`, 35, 870);
-                ctx.fillText(`${card.rarity}`, 280, 870);
-                ctx.fillText(`${card.id}`, 490, 870);
-
-                const dataUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `Pomikon_${card.name}_${card.id}.png`;
-                link.href = dataUrl;
-                link.click();
-
-                showToast("Carta scaricata!");
+                const s = Math.min(480/img.width, 380/img.height); const w = img.width*s, h = img.height*s;
+                ctx.drawImage(img, 35+(530-w)/2, 95+(420-h)/2, w, h);
+                ctx.fillStyle = "rgba(18,20,32,0.9)"; ctx.fillRect(400, 450, 150, 50); ctx.strokeStyle = "#FFD13B"; ctx.lineWidth = 2; ctx.strokeRect(400, 450, 150, 50);
+                ctx.fillStyle = "#FFD13B"; ctx.font = "black 24px 'Outfit'"; ctx.fillText(`CP ${card.cp}`, 420, 485);
+                ctx.fillStyle = "#121420"; ctx.fillRect(35, 535, 530, 45); ctx.fillStyle = "#ffffff"; ctx.font = "bold 20px 'Outfit'"; ctx.fillText(`${card.breed} (${card.sex} • ${card.ageYears}a ${card.ageMonths}m)`, 50, 565);
+                ctx.fillStyle = "#121420"; ctx.fillRect(35, 600, 530, 150); ctx.fillStyle = "#ffffff"; ctx.font = "bold 22px 'Outfit'";
+                ctx.fillText(`🐾 ${b.move1}`, 55, 640); ctx.fillText(`${b.move1Dmg}`, 510, 640); ctx.fillStyle = "#FFD13B"; ctx.fillText(`⚡ ${b.move2}`, 55, 710); ctx.fillText(`${b.move2Dmg}+`, 500, 710);
+                ctx.fillStyle = "#9ca3af"; ctx.font = "italic 18px 'Outfit'"; ctx.fillText(`"${card.lore}"`, 35, 790);
+                ctx.fillStyle = "#d1d5db"; ctx.font = "bold 18px 'Outfit'"; ctx.fillText(`Fattore Coccole: ${card.cuddleFactor}%`, 35, 870); ctx.fillText(card.rarity, 270, 870); ctx.fillText(card.id, 490, 870);
+                
+                const link = document.createElement('a'); link.download = `Pomikon_${card.name}.png`; link.href = canvas.toDataURL('image/png'); link.click(); showToast("Scaricata in PNG!");
             };
             img.src = card.imageUrl;
         }
 
         function startNewCapture() {
-            document.getElementById('capture-step-1').classList.remove('hidden');
-            document.getElementById('capture-step-2').classList.add('hidden');
-            document.getElementById('capture-step-3').classList.add('hidden');
-            document.getElementById('dog-name').value = '';
-            switchTab('capture');
+            document.getElementById('capture-step-1').classList.remove('hidden'); document.getElementById('capture-step-2').classList.add('hidden');
+            document.getElementById('capture-step-3').classList.add('hidden'); document.getElementById('dog-name').value = ''; switchTab('capture');
         }
     </script>
 </body>
