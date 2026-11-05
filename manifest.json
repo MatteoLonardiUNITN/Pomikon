@@ -1,0 +1,20 @@
+{
+  "name": "Pomìkon - Dog TCG Collector",
+  "short_name": "Pomìkon",
+  "description": "Trasforma i tuoi cani in carte collezionabili.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0c10",
+  "theme_color": "#121420",
+  "lang": "it",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

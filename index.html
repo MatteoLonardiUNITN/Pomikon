@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#121420">
 <title>Pomìkon - Dog TCG Photo & Collection App</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script>
@@ -11,7 +14,7 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Outfit','sans-serif'],pixel:[
 </script>
 <style>
 body{background-color:#0b0c10;color:#fff;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-input,textarea{user-select:text;-webkit-user-select:text}
+input,textarea,select{user-select:text;-webkit-user-select:text}
 .ic{width:1em;height:1em;display:inline-block;vertical-align:-.125em;flex-shrink:0}
 .checkered-bg{background-color:#1a1d2e;background-image:linear-gradient(45deg,#252942 25%,transparent 25%),linear-gradient(-45deg,#252942 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#252942 75%),linear-gradient(-45deg,transparent 75%,#252942 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0px}
 .tcg-card-container{perspective:1000px}
@@ -59,9 +62,13 @@ input,textarea{user-select:text;-webkit-user-select:text}
             <p class="text-[10px] text-gray-400 font-semibold -mt-1 tracking-widest uppercase">Dog TCG Collector</p>
         </div>
     </div>
-    <div class="flex items-center space-x-2 bg-pomidark/80 px-3 py-1 rounded-full border border-gray-700">
-        <i data-ic="paw" class="text-xs text-pomiyellow"></i>
-        <span id="hdr-count" class="text-xs font-bold text-gray-200">0 Carte</span>
+    <div class="flex items-center gap-1.5">
+        <div class="flex items-center space-x-1.5 bg-pomidark/80 px-2.5 py-1 rounded-full border border-gray-700">
+            <i data-ic="paw" class="text-xs text-pomiyellow"></i><span id="hdr-count" class="text-xs font-bold text-gray-200">0 Carte</span>
+        </div>
+        <div class="flex items-center space-x-1.5 bg-pomidark/80 px-2.5 py-1 rounded-full border border-gray-700">
+            <i data-ic="cookie" class="text-xs text-pomiyellow"></i><span id="hdr-bisc" class="text-xs font-bold text-gray-200">0</span>
+        </div>
     </div>
 </header>
 
@@ -191,7 +198,16 @@ input,textarea{user-select:text;-webkit-user-select:text}
                 </div>
                 <button onclick="openCode('import')" class="btn bg-pomipurple text-white px-3 rounded-lg text-xs font-bold flex items-center gap-1"><i data-ic="file-import"></i> Importa</button>
             </div>
-            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-xs">
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex bg-pomidark rounded-lg p-0.5 border border-gray-700">
+                    <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="view" data-v="list" onclick="setDexView('list')">Lista</button>
+                    <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="view" data-v="album" onclick="setDexView('album')">Album</button>
+                </div>
+                <select id="dex-sort" onchange="renderDex()" class="bg-pomidark border border-gray-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none">
+                    <option value="date">Più recenti</option><option value="cp">CP</option><option value="name">Nome</option><option value="rar">Rarità</option>
+                </select>
+            </div>
+            <div id="breed-filters" class="flex items-center space-x-1.5 overflow-x-auto pb-1 text-xs">
                 <button class="fb" data-b="Tutti" onclick="setBreed('Tutti')">Tutti</button>
                 <button class="fb" data-b="Volpino" onclick="setBreed('Volpino')">Volpino</button>
                 <button class="fb" data-b="Chihuahua" onclick="setBreed('Chihuahua')">Chihuahua</button>
@@ -200,11 +216,39 @@ input,textarea{user-select:text;-webkit-user-select:text}
                 <button class="fb" data-b="Bassotto" onclick="setBreed('Bassotto')">Bassotto</button>
             </div>
         </div>
-        <div id="dex-grid" class="grid grid-cols-2 gap-3 min-h-[200px]"></div>
-        <div id="dex-empty" class="flex-col items-center justify-center py-12 text-center text-gray-500" style="display:none">
-            <i data-ic="box-open" class="text-4xl mb-2"></i>
-            <p id="dex-msg" class="font-bold text-sm">Il tuo PomìDex è vuoto</p>
-            <p class="text-xs max-w-xs mt-1">Cattura subito o importa il tuo primo cane!</p>
+
+        <div id="list-wrap" class="space-y-4">
+            <div id="dex-grid" class="grid grid-cols-2 gap-3 min-h-[200px]"></div>
+            <div id="dex-empty" class="flex-col items-center justify-center py-12 text-center text-gray-500" style="display:none">
+                <i data-ic="box-open" class="text-4xl mb-2"></i>
+                <p id="dex-msg" class="font-bold text-sm">Il tuo PomìDex è vuoto</p>
+                <p class="text-xs max-w-xs mt-1">Cattura subito o importa il tuo primo cane!</p>
+            </div>
+        </div>
+
+        <div id="album-wrap" class="space-y-3" style="display:none">
+            <div class="bg-pomicard rounded-xl p-3 border border-gray-800 space-y-2.5">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold flex items-center gap-1.5"><i data-ic="layers" class="text-pomiyellow"></i> Completamento</span>
+                    <span id="alb-pct" class="font-black text-pomiyellow"></span>
+                </div>
+                <div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div id="alb-bar" class="h-full bg-gradient-to-r from-pomired via-pomiyellow to-pomiblue transition-all duration-700" style="width:0%"></div></div>
+                <div class="flex bg-pomidark rounded-lg p-0.5 border border-gray-700 text-xs w-fit mx-auto">
+                    <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="grp" data-v="breed" onclick="setAlbGroup('breed')">Per razza</button>
+                    <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="grp" data-v="rarity" onclick="setAlbGroup('rarity')">Per rarità</button>
+                </div>
+            </div>
+            <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl">
+                <div class="flex items-center justify-between mb-3">
+                    <button onclick="albPage(-1)" class="btn w-9 h-9 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center"><i data-ic="chev-l"></i></button>
+                    <div class="text-center">
+                        <p id="alb-title" class="font-black text-lg"></p>
+                        <p id="alb-sub" class="text-[10px] text-gray-400 uppercase tracking-widest"></p>
+                    </div>
+                    <button onclick="albPage(1)" class="btn w-9 h-9 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center"><i data-ic="chev-r"></i></button>
+                </div>
+                <div id="alb-grid" class="grid grid-cols-2 gap-3"></div>
+            </div>
         </div>
     </section>
 
@@ -222,6 +266,7 @@ input,textarea{user-select:text;-webkit-user-select:text}
             <h2 id="p-title" class="mt-3 text-xl font-black">Allenatore</h2>
             <p class="text-xs text-gray-400">Allenatore Pomìkon</p>
         </div>
+
         <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-300">Nome utente</label>
             <div class="flex gap-2">
@@ -229,10 +274,54 @@ input,textarea{user-select:text;-webkit-user-select:text}
                 <button onclick="saveName()" class="btn bg-pomiblue text-white font-bold px-4 rounded-xl text-xs">Salva</button>
             </div>
         </div>
+
         <div class="grid grid-cols-3 gap-2 text-center">
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-cards" class="text-xl font-black text-pomiyellow">0</p><p class="text-[10px] text-gray-400 uppercase">Carte</p></div>
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-best" class="text-xl font-black text-pomiyellow">0</p><p class="text-[10px] text-gray-400 uppercase">CP Max</p></div>
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-breeds" class="text-xl font-black text-pomiyellow">0/8</p><p class="text-[10px] text-gray-400 uppercase">Razze</p></div>
+        </div>
+
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
+            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="store" class="text-pomiyellow"></i> Premi e Negozio</h3>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="btn-daily" onclick="claimDaily()" class="btn bg-gradient-to-r from-pomiyellow to-amber-500 text-pomidark font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="gift"></i> Premio del giorno</button>
+                <button onclick="buyPack()" class="btn bg-pomipurple text-white font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="cookie"></i> Bustina · 20</button>
+            </div>
+            <p id="daily-note" class="text-[10px] text-gray-400 text-center"></p>
+            <div>
+                <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-1.5">Inventario potenziamenti</p>
+                <div id="inv-list" class="flex flex-wrap gap-1.5"></div>
+            </div>
+        </div>
+
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="trophy" class="text-pomiyellow"></i> Badge</h3>
+                <span id="ach-count" class="text-xs font-bold text-gray-300"></span>
+            </div>
+            <div id="ach-grid" class="grid grid-cols-3 gap-2"></div>
+        </div>
+
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
+            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="chart" class="text-pomiblue"></i> Statistiche</h3>
+            <div id="stat-bars" class="space-y-2"></div>
+        </div>
+
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="sparkles" class="text-pomipurple"></i> Lore segrete</h3>
+                <span id="lore-count" class="text-xs font-bold text-gray-300"></span>
+            </div>
+            <div id="lore-list" class="space-y-1.5 text-xs text-gray-300 italic"></div>
+        </div>
+
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
+            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="share-nodes" class="text-emerald-400"></i> Backup</h3>
+            <p class="text-[11px] text-gray-400">Crea un codice con tutta la collezione per ripristinarla su un altro telefono.</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="exportBackup()" class="btn bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="download"></i> Esporta tutto</button>
+                <button onclick="openCode('import')" class="btn bg-gray-800 border border-gray-700 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="file-import"></i> Ripristina</button>
+            </div>
         </div>
     </section>
 
@@ -261,6 +350,9 @@ input,textarea{user-select:text;-webkit-user-select:text}
             </div>
         </div>
         <button onclick="SFX.reveal()" class="btn w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="play"></i> Prova effetti</button>
+        <div id="install-row" class="bg-pomicard rounded-2xl p-4 border border-gray-800" style="display:none">
+            <button onclick="installApp()" class="btn w-full bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="phone"></i> Installa l'app sul telefono</button>
+        </div>
     </section>
 </main>
 
@@ -268,7 +360,11 @@ input,textarea{user-select:text;-webkit-user-select:text}
 <div id="card-modal" class="modal" onclick="if(event.target===this)closeModal()">
     <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-pomired text-2xl w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center"><i data-ic="xmark"></i></button>
     <div id="modal-card" class="w-full max-w-xs my-auto flex justify-center"></div>
-    <div class="w-full max-w-xs mt-4 flex flex-col gap-2">
+    <div class="w-full max-w-xs mt-3">
+        <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-1.5">Potenziamenti</p>
+        <div id="modal-gear" class="grid grid-cols-4 gap-2"></div>
+    </div>
+    <div class="w-full max-w-xs mt-3 flex flex-col gap-2">
         <button onclick="exportModal()" class="btn w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="share-nodes"></i> Esporta Codice Scambio</button>
         <div class="flex gap-2">
             <button onclick="downloadPNG(dexCard())" class="btn flex-1 bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="download"></i> Scarica PNG</button>
@@ -277,7 +373,7 @@ input,textarea{user-select:text;-webkit-user-select:text}
     </div>
 </div>
 
-<!-- MODALE CODICE SCAMBIO -->
+<!-- MODALE CODICE -->
 <div id="code-modal" class="modal top" onclick="if(event.target===this)closeCode()">
     <div class="pop-in bg-pomicard border border-gray-800 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl">
         <h3 id="code-title" class="font-bold text-sm"></h3>
@@ -288,6 +384,17 @@ input,textarea{user-select:text;-webkit-user-select:text}
             <button id="code-copy" onclick="copyCode()" class="btn bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs">Copia</button>
             <button id="code-go" onclick="importCode()" class="btn bg-pomipurple text-white font-bold py-2.5 rounded-xl text-xs">Importa</button>
         </div>
+    </div>
+</div>
+
+<!-- MODALE INFO (bustine, potenziamenti, lore) -->
+<div id="info-modal" class="modal top" onclick="if(event.target===this)closeInfo()">
+    <div class="pop-in bg-pomicard border border-gray-800 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center">
+            <h3 id="info-t" class="font-bold text-sm"></h3>
+            <button onclick="closeInfo()" class="text-gray-400 hover:text-white"><i data-ic="xmark"></i></button>
+        </div>
+        <div id="info-b" class="space-y-2"></div>
     </div>
 </div>
 
@@ -345,14 +452,29 @@ const IC={
  'download':'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',
  'triangle-exclamation':'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
  'dog':'<path d="M5 9c0-3 2-5 4-5l3 2 3-2c2 0 4 2 4 5v5c0 4-3 7-7 7s-7-3-7-7z"/><circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/>',
- 'bookmark':'<path d="M6 3h12v18l-6-4-6 4z"/>'
+ 'bookmark':'<path d="M6 3h12v18l-6-4-6 4z"/>',
+ 'cookie':'<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="9" r="1.2" fill="currentColor"/><circle cx="14.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="10" cy="14.5" r="1.2" fill="currentColor"/><circle cx="15" cy="14.5" r="1.2" fill="currentColor"/>',
+ 'star':'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+ 'trophy':'<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M12 14v4M8 21h8M9 18h6"/>',
+ 'gift':'<rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13M12 8c-2-4-6-4-6-1s6 1 6 1zM12 8c2-4 6-4 6-1s-6 1-6 1z"/>',
+ 'layers':'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+ 'lock':'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+ 'store':'<path d="M3 9l2-5h14l2 5"/><path d="M3 9h18v3a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 12v9h14v-9"/>',
+ 'sparkles':'<path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/>',
+ 'chev-l':'<path d="M15 6l-6 6 6 6"/>',
+ 'chev-r':'<path d="M9 6l6 6-6 6"/>',
+ 'chart':'<path d="M3 21h18"/><rect x="5" y="11" width="3" height="8"/><rect x="10.5" y="6" width="3" height="13"/><rect x="16" y="13" width="3" height="6"/>',
+ 'phone':'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+ 'leash':'<circle cx="8" cy="6" r="3.5"/><path d="M8 9.5c0 5 3 6 7 9.5"/><circle cx="16" cy="20" r="1.5"/>',
+ 'shirt':'<path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3c-1 2-7 2-8 0z"/>',
+ 'tail':'<path d="M5 20c0-6 3-10 9-10 4 0 5-3 4-6"/><path d="M16 4l2 0 0 2"/>'
 };
 function ic(n,c='',id=''){
  const p=IC[n];
  return p?`<svg ${id?`id="${id}"`:''} class="ic ${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`:'';
 }
 
-/* ================= DATI ================= */
+/* ================= DATI DI GIOCO ================= */
 const $=i=>document.getElementById(i);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const BREED_DATA={
@@ -365,15 +487,47 @@ const BREED_DATA={
  'Barboncino':{bgGradient:'from-emerald-400 via-green-600 to-teal-800',badgeBg:'bg-emerald-500',basePower:860,move1:'Salto Elegante',move1Dmg:40,move2:'Aura Regale',move2Dmg:92,typeIcon:'leaf'},
  'Bassotto':{bgGradient:'from-slate-500 via-zinc-700 to-stone-900',badgeBg:'bg-slate-600',basePower:880,move1:'Scavo Lampo',move1Dmg:42,move2:'Carica Siluro',move2Dmg:95,typeIcon:'shield-halved'}
 };
+const BREEDS=Object.keys(BREED_DATA);
 const FUN_LORE=["Si dice che questo cane possa captare i biscotti da 3km di distanza.","La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.","Maestro supremo delle coccole notturne sul divano.","Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.","Custode leggendario della pallina da tennis dorata."];
+const SECRET_LORE=["Ha imparato a dare la zampa prima ancora di essere chiamato.","Dorme sempre con un occhio aperto per proteggere la ciotola.","Ogni temporale è per lui un'avventura da esplorare.","Il suo nome è celebre in tutto il parco sotto casa.","Quando sbadiglia, la città sembra fermarsi un attimo.","Colleziona foglie e le nasconde sotto il cuscino."];
 const TABS=['capture','dex','profile','settings'];
+const RARS=['Comune','Raro','Epico','Legendario'];
+const RAR=[
+ {n:'Comune',c:'text-gray-300',b:'border-gray-700',v:5},
+ {n:'Raro',c:'text-blue-400',b:'border-blue-500/50',v:12},
+ {n:'Epico',c:'text-purple-400',b:'border-purple-500/50',v:20},
+ {n:'Leggendario',c:'text-yellow-400',b:'border-yellow-400/60',v:35}
+];
+const RG=['from-gray-400 to-gray-500','from-blue-400 to-blue-600','from-purple-400 to-purple-600','from-yellow-300 to-amber-500'];
+const ITYPES=['guinzaglio','vestitino','codino','premietto'];
+const TN={guinzaglio:'Guinzaglio',vestitino:'Vestitino',codino:'Codino',premietto:'Premietto'};
+const STAT={guinzaglio:'CP',vestitino:'HP',codino:'Coccole %',premietto:'CP'};
+const ICON={guinzaglio:'leash',vestitino:'shirt',codino:'tail',premietto:'cookie'};
+const PACK_COST=20;
+const ACH=[
+ {id:'first',t:'Prima cattura',d:'Crea la tua prima carta',ic:'paw',ok:()=>dex.length>=1},
+ {id:'breeds5',t:'Cacciatore',d:'Cattura 5 razze diverse',ic:'layers',ok:()=>breedCount()>=5},
+ {id:'breeds8',t:'Enciclopedia',d:'Cattura tutte le 8 razze',ic:'trophy',ok:()=>breedCount()>=8},
+ {id:'legend',t:'Leggenda',d:'Trova una carta leggendaria',ic:'star',ok:()=>dex.some(c=>c.cp>=1100)},
+ {id:'cp1000',t:'Campione',d:'Una carta supera 1000 CP',ic:'fire',ok:()=>dex.some(c=>c.cp>=1000)},
+ {id:'trade3',t:'Scambista',d:'Scambia 3 carte',ic:'share-nodes',ok:()=>S.st.trades>=3},
+ {id:'pack1',t:'Compratore',d:'Apri una bustina',ic:'gift',ok:()=>S.st.packs>=1},
+ {id:'equip5',t:'Preparatore',d:'Equipaggia 5 potenziamenti',ic:'sparkles',ok:()=>S.st.equips>=5},
+ {id:'daily7',t:'Fedele',d:'Ritira 7 premi giornalieri',ic:'heart',ok:()=>S.st.dailies>=7}
+];
 
 /* ================= STATO ================= */
-const S={sfx:true,sfxVol:.6,music:false,musVol:.35,user:'Allenatore',avatar:''};
-try{Object.assign(S,JSON.parse(localStorage.getItem('pomikon_cfg')||'{}'))}catch(e){}
+const S={sfx:true,sfxVol:.6,music:false,musVol:.35,user:'Allenatore',avatar:'',bisc:0,inv:[],lores:[],lastDaily:'',st:{trades:0,packs:0,dailies:0,equips:0},ach:{}};
+try{
+ const o=JSON.parse(localStorage.getItem('pomikon_cfg')||'{}');
+ Object.assign(S,o);
+ S.st=Object.assign({trades:0,packs:0,dailies:0,equips:0},S.st);
+}catch(e){}
 let dex=[];
-try{dex=JSON.parse(localStorage.getItem('pomikon_dex')||'[]').filter(c=>BREED_DATA[c.breed]).map(c=>({...c,breedInfo:BREED_DATA[c.breed],...rarityOf(c.cp)}))}catch(e){}
-let cv,cx,orig,work,W=0,H=0,tool='magic',drawing=false,last=null,srcUrl=null,card=null,curTab='capture',activeBreed='Tutti',modalId=null,musTimer=null,musStep=0,toastT;
+const normSafe=c=>{try{return norm(c)}catch(e){return null}};
+try{dex=JSON.parse(localStorage.getItem('pomikon_dex')||'[]').map(normSafe).filter(Boolean)}catch(e){}
+
+let cv,cx,orig,work,W=0,H=0,tool='magic',drawing=false,last=null,srcUrl=null,card=null,curTab='capture',activeBreed='Tutti',modalId=null,musTimer=null,musStep=0,toastT,dexView='list',albGroup='breed',albIdx=0,deferredInstall=null;
 
 function save(){try{localStorage.setItem('pomikon_cfg',JSON.stringify(S))}catch(e){toast('Impossibile salvare le impostazioni',1)}}
 function persistDex(){try{localStorage.setItem('pomikon_dex',JSON.stringify(dex));return true}catch(e){toast('Memoria piena: elimina qualche carta',1);return false}}
@@ -393,8 +547,33 @@ function rarityOf(cp){
  if(cp>=880)return{rarity:'RARO ★',rarityColor:'text-blue-400 font-bold',rarityClass:''};
  return{rarity:'Comune',rarityColor:'text-gray-300',rarityClass:''};
 }
+const rarIdx=c=>c.cp>=1100?3:c.cp>=980?2:c.cp>=880?1:0;
+const breedCount=()=>new Set(dex.map(c=>c.breed)).size;
+// Ricalcola le statistiche di una carta in base ai potenziamenti equipaggiati
+function recalc(c){
+ const e=c.eq||{},v=t=>e[t]?e[t].val:0;
+ c.cp=c.baseCp+v('guinzaglio')+v('premietto');
+ c.hp=Math.floor(c.baseCp/7.5)+v('vestitino');
+ c.cuddleFactor=c.baseCuddle+v('codino');
+ return Object.assign(c,rarityOf(c.cp));
+}
 function buildCard(o){
- return{...o,id:'POM-'+Math.random().toString(36).slice(2,7).toUpperCase(),hp:Math.floor(o.cp/7.5),breedInfo:BREED_DATA[o.breed],...rarityOf(o.cp)};
+ return recalc({...o,id:'POM-'+Math.random().toString(36).slice(2,7).toUpperCase(),t:Date.now(),breedInfo:BREED_DATA[o.breed],baseCp:o.cp,baseCuddle:o.cuddleFactor,eq:{}});
+}
+function norm(c){
+ if(!BREED_DATA[c.breed])throw 0;
+ if(!/^data:image\//.test(c.imageUrl||''))throw 0;
+ c.breedInfo=BREED_DATA[c.breed];
+ c.baseCp=c.baseCp??c.cp;
+ c.baseCuddle=c.baseCuddle??c.cuddleFactor;
+ c.eq=c.eq||{};
+ c.t=c.t||0;
+ return recalc(c);
+}
+function pickLore(){const pool=FUN_LORE.concat(S.lores);return pool[Math.floor(Math.random()*pool.length)]}
+function makeItem(){
+ const r=Math.random(),rar=r<.55?0:r<.8?1:r<.95?2:3;
+ return{id:'I'+Math.random().toString(36).slice(2,8),type:ITYPES[Math.floor(Math.random()*ITYPES.length)],rar,val:RAR[rar].v};
 }
 
 /* ================= AUDIO (sintetizzato) ================= */
@@ -459,6 +638,9 @@ function switchTab(t){
  if(t==='settings')paintSettings();
 }
 function step(id){['s1','s2','s3','s4'].forEach(s=>$(s).classList.toggle('on',s===id))}
+function paintSeg(k,v){
+ document.querySelectorAll(`.sg[data-k="${k}"]`).forEach(b=>{const on=b.dataset.v===v;b.className=`sg px-3 py-1 rounded-md transition ${on?'bg-pomiblue text-white':'text-gray-400'}`});
+}
 
 /* ================= RITAGLIO ================= */
 function pickFile(cam){const f=$('file-in');cam?f.setAttribute('capture','environment'):f.removeAttribute('capture');f.click()}
@@ -541,7 +723,7 @@ async function makeCard(e){
  const cp=BREED_DATA[breed].basePower+ageBonus+(sex==='Maschio'?25:30)+cuddle*2;
  let img;
  try{img=await shrink(cv.toDataURL('image/png'),480,.85)}catch(err){toast('Errore immagine',1);return}
- card=buildCard({name,breed,sex,ageYears:yrs,ageMonths:mo,cp,cuddleFactor:cuddle,lore:FUN_LORE[Math.floor(Math.random()*FUN_LORE.length)],imageUrl:img});
+ card=buildCard({name,breed,sex,ageYears:yrs,ageMonths:mo,cp,cuddleFactor:cuddle,lore:pickLore(),imageUrl:img});
  renderCard(card,'card-box');
  paintSaveBtn();
  step('s4');SFX.reveal();toast('Carta creata!');
@@ -556,7 +738,7 @@ function saveCard(){
  if(!card||dex.some(x=>x.id===card.id))return;
  dex.unshift(card);
  if(!persistDex()){dex.shift();return}
- paintSaveBtn();updateCount();SFX.ok();toast('Aggiunta al PomìDex!');
+ save();paintSaveBtn();refreshAll();SFX.ok();checkAch();toast('Aggiunta al PomìDex!');
 }
 function newPhoto(){card=null;$('dog-name').value='';step('s1')}
 function renderCard(c,boxId){
@@ -597,64 +779,224 @@ function downloadPNG(c=card){
  im.src=c.imageUrl;
 }
 
-/* ================= POMIDEX ================= */
-function updateCount(){$('hdr-count').textContent=dex.length+' Carte'}
+/* ================= POMIDEX & ALBUM ================= */
+const SORTS={
+ date:(a,b)=>(b.t||0)-(a.t||0),
+ cp:(a,b)=>b.cp-a.cp,
+ name:(a,b)=>a.name.localeCompare(b.name,'it'),
+ rar:(a,b)=>rarIdx(b)-rarIdx(a)||b.cp-a.cp
+};
+function updateCount(){$('hdr-count').textContent=dex.length+' Carte';$('hdr-bisc').textContent=S.bisc}
+function refreshAll(){
+ updateCount();renderDex();
+ if(dexView==='album')renderAlbum(0);
+ renderProfile();
+}
 function setBreed(b){
  activeBreed=b;
  document.querySelectorAll('.fb').forEach(x=>{const on=x.dataset.b===b;x.className='fb font-semibold px-2.5 py-1 rounded-full whitespace-nowrap text-xs transition '+(on?'bg-pomiblue text-white':'bg-gray-800 text-gray-300')});
  renderDex();
 }
+function setDexView(v){
+ dexView=v;
+ show($('list-wrap'),v==='list');show($('album-wrap'),v==='album');
+ show($('breed-filters'),v==='list');show($('dex-sort'),v==='list');
+ paintSeg('view',v);
+ if(v==='album')renderAlbum(0);else renderDex();
+}
 function renderDex(){
  const q=$('dex-q').value.toLowerCase().trim();
- const list=dex.filter(c=>c.name.toLowerCase().includes(q)&&(activeBreed==='Tutti'||c.breed.startsWith(activeBreed)));
+ const list=dex.filter(c=>c.name.toLowerCase().includes(q)&&(activeBreed==='Tutti'||c.breed.startsWith(activeBreed))).sort(SORTS[$('dex-sort').value]||SORTS.date);
  $('dex-grid').innerHTML=list.map((c,i)=>`<div class="dexcard pop-in bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 shadow-lg cursor-pointer" style="animation-delay:${Math.min(i,12)*40}ms" onclick="openModal('${c.id}')">
  <div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${c.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700"><img src="${c.imageUrl}" class="max-h-[85%] max-w-[85%] object-contain"><span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">CP ${c.cp}</span></div>
  <div><div class="flex items-center justify-between"><h4 class="font-bold text-xs text-white truncate">${esc(c.name)}</h4><span class="text-[9px] text-gray-400">${c.sex==='Maschio'?'♂':'♀'}</span></div><p class="text-[10px] text-gray-400 truncate">${esc(c.breed)}</p></div></div>`).join('');
- const empty=$('dex-empty');
- empty.style.display=list.length?'none':'flex';
+ $('dex-empty').style.display=list.length?'none':'flex';
  $('dex-msg').textContent=dex.length?'Nessuna carta trovata':'Il tuo PomìDex è vuoto';
 }
+function renderAlbum(dir=0){
+ const isB=albGroup==='breed',n=isB?BREEDS.length:RARS.length;
+ albIdx=(albIdx+n)%n;
+ const g=albIdx;
+ const filled=new Set(dex.map(c=>c.breed+'|'+rarIdx(c))).size;
+ const pct=Math.round(filled/(BREEDS.length*RARS.length)*100);
+ $('alb-pct').textContent=filled+'/32 · '+pct+'%';
+ $('alb-bar').style.width=pct+'%';
+ $('alb-title').textContent=isB?BREEDS[g]:RARS[g];
+ $('alb-sub').textContent=isB?`Razza ${g+1}/${BREEDS.length}`:`Rarità ${g+1}/${RARS.length}`;
+ const slots=isB?RARS.map((_,i)=>i):BREEDS;
+ $('alb-grid').innerHTML=slots.map((s,i)=>{
+  const br=isB?BREEDS[g]:s,ra=isB?s:g,label=isB?RARS[s]:s;
+  const best=dex.filter(c=>c.breed===br&&rarIdx(c)===ra).sort((a,b)=>b.cp-a.cp)[0];
+  if(best){
+   return `<button onclick="openModal('${best.id}')" class="pop-in h-44 rounded-xl border border-gray-700 bg-gradient-to-br ${BREED_DATA[best.breed].bgGradient} p-2 flex flex-col items-center justify-between" style="animation-delay:${i*60}ms">
+   <div class="flex-1 min-h-0 w-full flex items-center justify-center"><img src="${best.imageUrl}" class="max-h-full max-w-full object-contain"></div>
+   <div class="w-full text-center bg-pomidark/80 rounded-md px-1 py-0.5"><p class="text-[10px] font-bold truncate">${esc(best.name)}</p><p class="text-[9px] ${RAR[ra].c}">${label} · CP ${best.cp}</p></div></button>`;
+  }
+  return `<div class="h-44 rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center gap-2 text-gray-600">${ic('lock','text-2xl')}<p class="text-[10px] font-bold">${label}</p><p class="text-[9px]">Da trovare</p></div>`;
+ }).join('');
+ if(dir){const el=$('alb-grid');el.style.animation='none';void el.offsetWidth;el.style.animation=`${dir>0?'inR':'inL'} .35s cubic-bezier(.2,.8,.2,1) both`}
+}
+function albPage(d){albIdx+=d;renderAlbum(d)}
+function setAlbGroup(g){albGroup=g;albIdx=0;paintSeg('grp',g);renderAlbum(0)}
 function dexCard(){return dex.find(x=>x.id===modalId)}
 function openModal(id){
  modalId=id;const c=dexCard();if(!c)return;
- renderCard(c,'modal-card');
+ renderCard(c,'modal-card');renderGear(c);
  $('card-modal').classList.add('on');SFX.open();
 }
 function closeModal(){$('card-modal').classList.remove('on');modalId=null}
 function deleteModal(){
  if(!confirm('Vuoi davvero eliminare questa carta?'))return;
  dex=dex.filter(c=>c.id!==modalId);
- persistDex();closeModal();renderDex();updateCount();toast('Carta eliminata');
+ persistDex();closeModal();refreshAll();toast('Carta eliminata');
 }
 function exportModal(){const c=dexCard();if(c)exportCard(c)}
 
-/* ================= CODICE DI SCAMBIO ================= */
-function enc(o){
+/* ================= POTENZIAMENTI ================= */
+function renderGear(c){
+ $('modal-gear').innerHTML=ITYPES.map(t=>{
+  const it=c.eq[t];
+  return `<button onclick="openPick('${t}')" class="btn bg-pomidark border ${it?RAR[it.rar].b:'border-gray-700'} rounded-xl p-2 flex flex-col items-center gap-1 text-center"><span class="${it?RAR[it.rar].c:'text-gray-500'}">${ic(ICON[t],'text-lg')}</span><span class="text-[9px] font-bold ${it?'text-gray-200':'text-gray-500'} leading-tight">${it?RAR[it.rar].n:'Vuoto'}</span><span class="text-[8px] text-gray-500">${TN[t]}</span></button>`;
+ }).join('');
+}
+function itemHTML(it,action='',delay=0){
+ const r=RAR[it.rar];
+ return `<div class="pop-in flex items-center gap-3 bg-pomidark border ${r.b} rounded-xl p-2.5" style="animation-delay:${delay}s"><span class="${r.c}">${ic(ICON[it.type],'text-xl')}</span><div class="flex-1 min-w-0"><p class="font-bold text-xs ${r.c} truncate">${r.n} ${TN[it.type]}</p><p class="text-[10px] text-gray-400">+${it.val} ${STAT[it.type]}</p></div>${action}</div>`;
+}
+function showInfo(title,html){$('info-t').textContent=title;$('info-b').innerHTML=html;$('info-modal').classList.add('on')}
+function closeInfo(){$('info-modal').classList.remove('on')}
+function openPick(type){
+ const c=dexCard();if(!c)return;
+ const cur=c.eq[type],list=S.inv.filter(i=>i.type===type);
+ let h='';
+ if(cur)h+=`<p class="text-[10px] text-gray-400">Equipaggiato:</p>`+itemHTML(cur,`<button onclick="unequip('${type}')" class="btn text-[10px] bg-red-900/40 border border-red-700/60 text-red-400 rounded-lg px-2 py-1.5">Rimuovi</button>`);
+ h+=`<p class="text-[10px] text-gray-400 pt-1">Nel tuo inventario:</p>`;
+ h+=list.length?list.map(i=>itemHTML(i,`<button onclick="equipItem('${i.id}')" class="btn text-[10px] bg-pomiblue text-white font-bold rounded-lg px-2 py-1.5">Equipaggia</button>`)).join(''):`<p class="text-xs text-gray-500">Nessun ${TN[type].toLowerCase()} disponibile. Compra una bustina!</p>`;
+ showInfo(TN[type],h);
+}
+function afterGear(c,msg){
+ persistDex();save();closeInfo();
+ renderCard(c,'modal-card');renderGear(c);
+ refreshAll();SFX.ok();toast(msg);checkAch();
+}
+function equipItem(id){
+ const c=dexCard(),it=S.inv.find(i=>i.id===id);if(!c||!it)return;
+ if(c.eq[it.type])S.inv.push(c.eq[it.type]);
+ S.inv=S.inv.filter(i=>i.id!==id);
+ c.eq[it.type]=it;S.st.equips++;
+ recalc(c);afterGear(c,`${TN[it.type]} equipaggiato: CP ${c.cp}`);
+}
+function unequip(type){
+ const c=dexCard();if(!c||!c.eq[type])return;
+ S.inv.push(c.eq[type]);c.eq[type]=null;
+ recalc(c);afterGear(c,'Potenziamento rimosso');
+}
+
+/* ================= PREMI, BUSTINE, BADGE ================= */
+function claimDaily(){
+ const today=new Date().toDateString();
+ if(S.lastDaily===today){SFX.err();toast('Premio di oggi già ritirato',1);return}
+ S.lastDaily=today;S.st.dailies++;
+ const r=Math.random(),locked=SECRET_LORE.filter(l=>!S.lores.includes(l));
+ save();SFX.reveal();
+ if(r<.5||(r>=.8&&!locked.length)){
+  const n=15+Math.floor(Math.random()*26);S.bisc+=n;save();
+  toast(`+${n} Punti Biscotto!`);
+ }else if(r<.8){
+  const it=makeItem();S.inv.push(it);save();
+  toast(`Mossa bonus: ${RAR[it.rar].n} ${TN[it.type]}!`);
+ }else{
+  const l=locked[Math.floor(Math.random()*locked.length)];S.lores.push(l);save();
+  showInfo('Lore segreta sbloccata',`<p class="text-xs italic text-gray-300">“${esc(l)}”</p>`);
+ }
+ refreshAll();checkAch();
+}
+function buyPack(){
+ if(S.bisc<PACK_COST){SFX.err();toast(`Servono ${PACK_COST} Punti Biscotto`,1);return}
+ S.bisc-=PACK_COST;
+ const items=[makeItem(),makeItem(),makeItem()];
+ S.inv.push(...items);S.st.packs++;
+ save();refreshAll();SFX.reveal();checkAch(true);
+ showInfo('Bustina aperta!',items.map((it,i)=>itemHTML(it,'',i*.15)).join('')+`<button onclick="closeInfo()" class="btn w-full bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs mt-1">Fantastico!</button>`);
+}
+// Controlla i badge; mostra un avviso per il primo sbloccato
+function checkAch(silent=false){
+ let got=null;
+ ACH.forEach(a=>{if(!S.ach[a.id]&&a.ok()){S.ach[a.id]=1;got=got||a}});
+ if(got){save();if(!silent){SFX.reveal();toast(`Badge sbloccato: ${got.t}!`)}}
+ renderAch();
+}
+function renderAch(){
+ $('ach-grid').innerHTML=ACH.map(a=>{
+  const ok=!!S.ach[a.id];
+  return `<div class="rounded-xl p-2 border ${ok?'border-pomiyellow/60 bg-pomidark':'border-gray-800 bg-pomidark/50'} flex flex-col items-center text-center gap-1"><span class="${ok?'text-pomiyellow':'text-gray-600'}">${ic(ok?a.ic:'lock','text-xl')}</span><p class="text-[10px] font-bold ${ok?'text-white':'text-gray-500'} leading-tight">${a.t}</p><p class="text-[8px] text-gray-500 leading-tight">${a.d}</p></div>`;
+ }).join('');
+ $('ach-count').textContent=ACH.filter(a=>S.ach[a.id]).length+'/'+ACH.length;
+}
+function renderStats(){
+ const rows=items=>{
+  const m=Math.max(1,...items.map(i=>i.n));
+  return items.map(i=>`<div class="flex items-center gap-2 text-[10px]"><span class="w-24 truncate text-gray-300">${i.l}</span><div class="flex-1 h-2.5 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r ${i.g} rounded-full transition-all duration-700" style="width:${i.n/m*100}%"></div></div><span class="w-5 text-right font-bold text-pomiyellow">${i.n}</span></div>`).join('');
+ };
+ const b=BREEDS.map(x=>({l:x,n:dex.filter(c=>c.breed===x).length,g:BREED_DATA[x].bgGradient}));
+ const r=RARS.map((x,i)=>({l:x,n:dex.filter(c=>rarIdx(c)===i).length,g:RG[i]}));
+ $('stat-bars').innerHTML=`<p class="text-[10px] uppercase tracking-widest text-gray-400">Razze</p>${rows(b)}<p class="text-[10px] uppercase tracking-widest text-gray-400 pt-2">Rarità</p>${rows(r)}`;
+}
+
+/* ================= CODICI: SCAMBIO E BACKUP ================= */
+function encode(o,prefix){
  const bytes=new TextEncoder().encode(JSON.stringify(o));
  let s='';bytes.forEach(b=>s+=String.fromCharCode(b));
- return 'POM1.'+btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+ return prefix+btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
-function dec(code){
- let c=code.replace(/\s/g,'').replace(/^POM1\./,'').replace(/-/g,'+').replace(/_/g,'/');
+function decodeAny(text){
+ const t=text.replace(/\s/g,''),m=t.match(/^(POMB1|POM1)\./);
+ if(!m)throw new Error('prefix');
+ let c=t.slice(m[0].length).replace(/-/g,'+').replace(/_/g,'/');
  while(c.length%4)c+='=';
  const bin=atob(c);
- return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))));
+ return{backup:m[1]==='POMB1',data:JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,ch=>ch.charCodeAt(0))))};
 }
 async function exportCard(c){
  try{
   const img=await shrink(c.imageUrl,180,.55);
-  openCode('export',enc({v:1,n:c.name,b:c.breed,s:c.sex,y:c.ageYears,m:c.ageMonths,c:c.cp,k:c.cuddleFactor,l:c.lore,i:img}));
+  openCode('export',encode({v:1,n:c.name,b:c.breed,s:c.sex,y:c.ageYears,m:c.ageMonths,c:c.cp,k:c.cuddleFactor,l:c.lore,i:img},'POM1.'),'card');
+  S.st.trades++;save();checkAch();
  }catch(e){toast('Impossibile creare il codice',1)}
+}
+async function exportBackup(){
+ try{
+  toast('Preparo il backup...');
+  const cards=await Promise.all(dex.map(async c=>({...c,imageUrl:await shrink(c.imageUrl,160,.55),breedInfo:undefined})));
+  const data={v:2,dex:cards,bisc:S.bisc,inv:S.inv,lores:S.lores,st:S.st,ach:S.ach,lastDaily:S.lastDaily,user:S.user,avatar:S.avatar};
+  openCode('export',encode(data,'POMB1.'),'backup');
+ }catch(e){toast('Impossibile creare il backup',1)}
 }
 function fromShare(o){
  if(!o||o.v!==1||!BREED_DATA[o.b]||!o.n||!(+o.c>0))throw new Error('invalid');
  if(!/^data:image\/(webp|png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(o.i||''))throw new Error('img');
  return buildCard({name:String(o.n).slice(0,18),breed:o.b,sex:o.s==='Femmina'?'Femmina':'Maschio',ageYears:+o.y||0,ageMonths:+o.m||0,cp:+o.c,cuddleFactor:+o.k||0,lore:String(o.l||'').slice(0,140),imageUrl:o.i});
 }
-function openCode(mode,text=''){
+function restoreBackup(o){
+ if(!Array.isArray(o.dex))throw new Error('bad');
+ const nd=o.dex.map(normSafe).filter(Boolean);
+ dex=nd;
+ S.bisc=+o.bisc||0;
+ S.inv=Array.isArray(o.inv)?o.inv:[];
+ S.lores=Array.isArray(o.lores)?o.lores:[];
+ S.st={trades:0,packs:0,dailies:0,equips:0,...(o.st||{})};
+ S.ach=o.ach||{};
+ S.lastDaily=o.lastDaily||'';
+ if(o.user)S.user=String(o.user).slice(0,18);
+ if(/^data:image\//.test(o.avatar||''))S.avatar=o.avatar;
+ persistDex();save();closeCode();refreshAll();checkAch(true);
+ SFX.reveal();toast('Backup ripristinato!');
+}
+function openCode(mode,text='',kind='card'){
  const ta=$('code-text');
- $('code-title').textContent=mode==='export'?'Codice di scambio':'Importa carta';
- $('code-desc').textContent=mode==='export'?'Copia questo codice e invialo al tuo amico.':'Incolla il codice ricevuto da un altro allenatore.';
+ const title=mode==='import'?'Importa':(kind==='backup'?'Backup collezione':'Codice di scambio');
+ const desc=mode==='import'?'Incolla un codice carta o un backup.':(kind==='backup'?'Conserva questo codice: contiene tutta la tua collezione.':'Copia questo codice e invialo al tuo amico.');
+ $('code-title').textContent=title;$('code-desc').textContent=desc;
  ta.value=text;ta.readOnly=mode==='export';
  show($('code-copy'),mode==='export');show($('code-go'),mode==='import');
  $('code-modal').classList.add('on');
@@ -669,10 +1011,18 @@ function copyCode(){
 }
 function importCode(){
  try{
-  const c=fromShare(dec($('code-text').value));
-  dex.unshift(c);
-  if(!persistDex()){dex.shift();return}
-  closeCode();renderDex();updateCount();SFX.reveal();toast(`${c.name} aggiunto al PomìDex!`);
+  const {backup,data}=decodeAny($('code-text').value);
+  if(backup){
+   if(!confirm('Sostituire la collezione attuale con il backup?'))return;
+   restoreBackup(data);
+  }else{
+   const c=fromShare(data);
+   dex.unshift(c);
+   if(!persistDex()){dex.shift();return}
+   S.st.trades++;save();
+   closeCode();refreshAll();SFX.reveal();toast(`${c.name} aggiunto al PomìDex!`);
+   checkAch();
+  }
  }catch(e){SFX.err();toast('Codice non valido o corrotto!',1)}
 }
 
@@ -684,7 +1034,14 @@ function renderProfile(){
  if(S.avatar)$('av-img').src=S.avatar;
  $('st-cards').textContent=dex.length;
  $('st-best').textContent=dex.length?Math.max(...dex.map(c=>c.cp)):0;
- $('st-breeds').textContent=new Set(dex.map(c=>c.breed)).size+'/8';
+ $('st-breeds').textContent=breedCount()+'/8';
+ const done=S.lastDaily===new Date().toDateString();
+ $('btn-daily').style.opacity=done?'.5':'1';
+ $('daily-note').textContent=done?'Premio di oggi già ritirato. Torna domani!':'Un premio gratuito ogni giorno.';
+ $('inv-list').innerHTML=S.inv.length?S.inv.map(i=>`<span class="inline-flex items-center gap-1 bg-pomidark border ${RAR[i.rar].b} rounded-full px-2 py-0.5 text-[10px] ${RAR[i.rar].c}">${ic(ICON[i.type])}${RAR[i.rar].n} ${TN[i.type]}</span>`).join(''):'<span class="text-xs text-gray-500">Inventario vuoto</span>';
+ renderAch();renderStats();
+ $('lore-count').textContent=S.lores.length+'/'+SECRET_LORE.length;
+ $('lore-list').innerHTML=S.lores.length?S.lores.map(l=>`<p>“${esc(l)}”</p>`).join(''):'<p class="not-italic text-gray-500">Scopri nuove lore con il Premio del giorno.</p>';
 }
 function saveName(){
  S.user=$('p-name').value.trim().slice(0,18)||'Allenatore';
@@ -699,6 +1056,19 @@ function setAvatar(e){
  };
  r.readAsDataURL(f);
  e.target.value='';
+}
+
+/* ================= PWA ================= */
+window.addEventListener('beforeinstallprompt',e=>{
+ e.preventDefault();deferredInstall=e;show($('install-row'),true);
+});
+function installApp(){
+ if(!deferredInstall)return;
+ deferredInstall.prompt();
+ deferredInstall.userChoice.then(()=>{deferredInstall=null;show($('install-row'),false)});
+}
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
 /* ================= EVENTI GLOBALI ================= */
@@ -743,7 +1113,8 @@ cv.addEventListener('pointermove',e=>{
 });
 const stopDraw=()=>drawing=false;
 cv.addEventListener('pointerup',stopDraw);cv.addEventListener('pointercancel',stopDraw);
-setTool('magic');setBreed('Tutti');paintSettings();renderProfile();updateCount();
+setTool('magic');setBreed('Tutti');setDexView('list');paintSettings();
+updateCount();renderProfile();checkAch(true);
 </script>
 </body>
 </html>
