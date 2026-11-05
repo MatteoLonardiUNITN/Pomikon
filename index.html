@@ -20,9 +20,18 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
 .tcg-card-container{perspective:1000px}
 .tcg-card{transition:transform .15s ease-out,box-shadow .2s ease;transform-style:preserve-3d;position:relative;background:linear-gradient(135deg,#1f2438 0%,#0d101d 100%);border:8px solid #f3c642;border-radius:18px;box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 15px rgba(255,209,59,.3)}
 .tcg-holo-overlay{position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:20;opacity:.6;mix-blend-mode:color-dodge;background:linear-gradient(115deg,transparent 20%,rgba(255,0,150,.4) 35%,rgba(0,255,255,.6) 50%,rgba(255,230,0,.4) 65%,transparent 80%);background-size:200% 200%;transition:background-position .1s ease}
-.rarity-legendaris{border-color:#ffe600!important;animation:borderGlow 2.5s infinite alternate}
-@keyframes borderGlow{0%{box-shadow:0 0 15px #ffe600,inset 0 0 10px #ffe600}50%{box-shadow:0 0 25px #ff007b,inset 0 0 15px #ff007b}100%{box-shadow:0 0 20px #00f0ff,inset 0 0 12px #00f0ff}}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#121420}::-webkit-scrollbar-thumb{background:#2b86ff;border-radius:4px}
+.rarity-legendaris{animation:borderGlow 2.5s infinite alternate}
+@keyframes borderGlow{0%{box-shadow:0 0 15px #ffe600,inset 0 0 10px #ffe600;border-color:#ffe600}50%{box-shadow:0 0 25px #ff007b,inset 0 0 15px #ff007b;border-color:#ffe600}100%{box-shadow:0 0 20px #00f0ff,inset 0 0 12px #00f0ff;border-color:#ffe600}}
+.tier1 .tcg-card{border-color:#cbd5e1;box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 18px rgba(203,213,225,.35)}
+.tier2 .tcg-card{border-color:#f59e0b;box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 24px rgba(245,158,11,.55),inset 0 0 0 2px rgba(255,215,0,.6)}
+.tier3 .tcg-card{animation:hueB 4s linear infinite;box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 28px rgba(168,85,247,.6),inset 0 0 0 2px rgba(255,255,255,.25)}
+.tier4 .tcg-card{animation:hueB 2.5s linear infinite,aura 2s ease-in-out infinite}
+@keyframes hueB{0%{border-color:#ff3b5c}25%{border-color:#ffd13b}50%{border-color:#2b86ff}75%{border-color:#a855f7}100%{border-color:#ff3b5c}}
+@keyframes aura{0%,100%{box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 20px rgba(255,255,255,.35)}50%{box-shadow:0 15px 35px rgba(0,0,0,.6),0 0 40px rgba(255,0,150,.7),0 0 64px rgba(0,240,255,.5)}}
+.tcg-card.shine::after{content:'';position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:30;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.4) 50%,transparent 65%);background-size:250% 100%;animation:sheen 3.5s linear infinite}
+@keyframes sheen{0%{background-position:150% 0}100%{background-position:-150% 0}}
+.sp{position:absolute;z-index:40;width:.9rem;height:.9rem;color:#fff;pointer-events:none;animation:twk 1.8s ease-in-out infinite;filter:drop-shadow(0 0 4px #fff)}
+@keyframes twk{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
 @keyframes inR{from{opacity:0;transform:translate3d(32px,0,0)}to{opacity:1;transform:none}}
 @keyframes inL{from{opacity:0;transform:translate3d(-32px,0,0)}to{opacity:1;transform:none}}
 @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
@@ -46,6 +55,23 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
 .dexcard:active{transform:scale(.96)}
 .btn{transition:transform .15s ease,filter .2s ease}
 .btn:active{transform:scale(.95)}
+.pkw{animation:pkFloat 3.2s ease-in-out infinite;filter:drop-shadow(0 0 14px var(--g))}
+@keyframes pkFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.pk{position:relative;width:10rem;height:14rem;clip-path:polygon(0 5%,6% 0,12% 5%,18% 0,24% 5%,30% 0,36% 5%,42% 0,48% 5%,54% 0,60% 5%,66% 0,72% 5%,78% 0,84% 5%,90% 0,96% 5%,100% 0,100% 95%,94% 100%,88% 95%,82% 100%,76% 95%,70% 100%,64% 95%,58% 100%,52% 95%,46% 100%,40% 95%,34% 100%,28% 95%,22% 100%,16% 95%,10% 100%,4% 95%,0 100%);overflow:hidden;cursor:pointer}
+.pk.sm{width:6.5rem;height:9.5rem}
+.pk-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.45)}
+.pk-n{font-weight:900;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.5rem}
+.pk.sm .pk-n{font-size:.55rem}
+.pk-shine{position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);background-size:250% 100%;animation:sheen 2.8s linear infinite}
+.pk-tear{position:absolute;left:0;right:0;top:14%;height:2px;background:rgba(255,255,255,.8);box-shadow:0 0 8px #fff}
+.pk.shake{animation:pkShake .6s ease-in-out}
+@keyframes pkShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-7deg) scale(1.03)}40%{transform:rotate(7deg)}60%{transform:rotate(-9deg) scale(1.06)}80%{transform:rotate(9deg)}}
+.pk.open{animation:pkOpen .6s ease-in forwards}
+@keyframes pkOpen{0%{transform:scale(1);opacity:1;filter:brightness(1)}40%{transform:scale(1.12);opacity:1;filter:brightness(1.8)}100%{transform:scale(.3);opacity:0;filter:brightness(2.5)}}
+.burst{position:absolute;left:50%;top:50%;width:16rem;height:16rem;margin:-8rem 0 0 -8rem;border-radius:50%;background:radial-gradient(circle,var(--g) 0%,transparent 62%);animation:burst .9s ease-out both;pointer-events:none}
+@keyframes burst{0%{transform:scale(.2);opacity:1}100%{transform:scale(1.7);opacity:0}}
+.spk{position:absolute;left:50%;top:50%;width:.55rem;height:.55rem;margin:-.275rem;border-radius:50%;background:#fff;box-shadow:0 0 10px var(--g);animation:spkFly .9s ease-out both;pointer-events:none}
+@keyframes spkFly{from{transform:translate(0,0);opacity:1}to{transform:translate(var(--x),var(--y)) scale(.2);opacity:0}}
 #toast{position:fixed;top:4rem;left:50%;transform:translate(-50%,-12px);opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.8,.2,1);z-index:70;white-space:nowrap}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -92,6 +118,10 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
                 </button>
             </div>
             <input type="file" id="file-in" accept="image/*" class="hidden" onchange="onPick(event)">
+            <div class="mt-5 text-left space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center gap-1.5"><i data-ic="target" class="text-pomiyellow"></i> Obiettivi</h3>
+                <div id="quest-list" class="space-y-2"></div>
+            </div>
         </div>
 
         <div id="s2" class="step flex-col bg-pomicard rounded-2xl p-4 border border-gray-800 shadow-xl space-y-3">
@@ -202,6 +232,7 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
                 <div class="flex bg-pomidark rounded-lg p-0.5 border border-gray-700">
                     <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="view" data-v="list" onclick="setDexView('list')">Lista</button>
                     <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="view" data-v="album" onclick="setDexView('album')">Album</button>
+                    <button class="sg px-3 py-1 rounded-md transition text-gray-400" data-k="view" data-v="inv" onclick="setDexView('inv')">Inventario</button>
                 </div>
                 <select id="dex-sort" onchange="renderDex()" class="bg-pomidark border border-gray-700 rounded-lg px-2 py-1 text-xs text-white focus:outline-none">
                     <option value="date">Più recenti</option><option value="cp">CP</option><option value="name">Nome</option><option value="rar">Rarità</option>
@@ -250,10 +281,50 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
                 <div id="alb-grid" class="grid grid-cols-2 gap-3"></div>
             </div>
         </div>
+
+        <div id="inv-wrap" class="space-y-4" style="display:none"></div>
+    </section>
+
+    <!-- NEGOZIO -->
+    <section id="tab-shop" class="tab-content flex-col space-y-4">
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 flex items-center justify-between">
+            <div>
+                <p class="font-black text-lg">Negozio</p>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Casse e potenziamenti</p>
+            </div>
+            <div class="flex items-center gap-1.5 bg-pomidark px-3 py-1.5 rounded-full border border-pomiyellow/40"><i data-ic="cookie" class="text-pomiyellow"></i><span id="shop-bisc" class="font-black text-pomiyellow">0</span></div>
+        </div>
+        <div class="bg-pomicard rounded-2xl p-3 border border-gray-800 flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-pomiyellow to-pomired flex items-center justify-center text-pomidark"><i data-ic="gift"></i></div>
+            <div class="flex-1 min-w-0"><p class="font-bold text-sm">Premio del giorno</p><p id="daily-note" class="text-[10px] text-gray-400"></p></div>
+            <button id="btn-daily" onclick="claimDaily()" class="btn bg-pomiyellow text-pomidark font-black px-3 py-2 rounded-xl text-xs">Ritira</button>
+        </div>
+        <h3 class="font-black text-xs uppercase tracking-widest text-gray-300 px-1">Casse in vendita</h3>
+        <div id="shop-chests" class="grid grid-cols-2 gap-3"></div>
+        <h3 class="font-black text-xs uppercase tracking-widest text-gray-300 px-1">Le tue casse</h3>
+        <div id="shop-owned" class="grid grid-cols-2 gap-3"></div>
+        <h3 class="font-black text-xs uppercase tracking-widest text-gray-300 px-1">Oggetti singoli</h3>
+        <div class="bg-pomicard rounded-2xl p-3 border border-gray-800 space-y-3">
+            <div class="flex bg-pomidark rounded-lg p-0.5 border border-gray-700 text-[10px]">
+                <button class="sg px-2 py-1 rounded-md transition text-gray-400 flex-1" data-k="srar" data-v="0" onclick="setShopRar(0)">Comune</button>
+                <button class="sg px-2 py-1 rounded-md transition text-gray-400 flex-1" data-k="srar" data-v="1" onclick="setShopRar(1)">Raro</button>
+                <button class="sg px-2 py-1 rounded-md transition text-gray-400 flex-1" data-k="srar" data-v="2" onclick="setShopRar(2)">Epico</button>
+                <button class="sg px-2 py-1 rounded-md transition text-gray-400 flex-1" data-k="srar" data-v="3" onclick="setShopRar(3)">Leggendario</button>
+            </div>
+            <div id="shop-items" class="space-y-2"></div>
+        </div>
     </section>
 
     <!-- PROFILO -->
     <section id="tab-profile" class="tab-content flex-col space-y-4">
+        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
+            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="sparkles" class="text-pomiyellow"></i> Codice segreto</h3>
+            <div class="flex gap-2">
+                <input id="code-in" maxlength="20" autocomplete="off" placeholder="Inserisci il codice..." onkeydown="if(event.key==='Enter')redeemCode()" class="flex-1 min-w-0 bg-pomidark border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-pomiyellow text-white placeholder-gray-500">
+                <button onclick="redeemCode()" class="btn bg-pomiyellow text-pomidark font-black px-4 rounded-xl text-xs">Riscatta</button>
+            </div>
+            <div id="code-banner"></div>
+        </div>
         <div class="bg-pomicard rounded-2xl p-5 border border-gray-800 shadow-xl flex flex-col items-center text-center">
             <label class="relative cursor-pointer">
                 <div class="w-24 h-24 rounded-full border-4 border-pomiyellow overflow-hidden bg-gradient-to-tr from-pomired via-pomiyellow to-pomiblue flex items-center justify-center">
@@ -266,7 +337,6 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
             <h2 id="p-title" class="mt-3 text-xl font-black">Allenatore</h2>
             <p class="text-xs text-gray-400">Allenatore Pomìkon</p>
         </div>
-
         <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-300">Nome utente</label>
             <div class="flex gap-2">
@@ -274,26 +344,11 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
                 <button onclick="saveName()" class="btn bg-pomiblue text-white font-bold px-4 rounded-xl text-xs">Salva</button>
             </div>
         </div>
-
         <div class="grid grid-cols-3 gap-2 text-center">
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-cards" class="text-xl font-black text-pomiyellow">0</p><p class="text-[10px] text-gray-400 uppercase">Carte</p></div>
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-best" class="text-xl font-black text-pomiyellow">0</p><p class="text-[10px] text-gray-400 uppercase">CP Max</p></div>
             <div class="bg-pomicard rounded-xl p-3 border border-gray-800"><p id="st-breeds" class="text-xl font-black text-pomiyellow">0/8</p><p class="text-[10px] text-gray-400 uppercase">Razze</p></div>
         </div>
-
-        <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
-            <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="store" class="text-pomiyellow"></i> Premi e Negozio</h3>
-            <div class="grid grid-cols-2 gap-2">
-                <button id="btn-daily" onclick="claimDaily()" class="btn bg-gradient-to-r from-pomiyellow to-amber-500 text-pomidark font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="gift"></i> Premio del giorno</button>
-                <button onclick="buyPack()" class="btn bg-pomipurple text-white font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2"><i data-ic="cookie"></i> Bustina · 20</button>
-            </div>
-            <p id="daily-note" class="text-[10px] text-gray-400 text-center"></p>
-            <div>
-                <p class="text-[10px] uppercase tracking-widest text-gray-400 mb-1.5">Inventario potenziamenti</p>
-                <div id="inv-list" class="flex flex-wrap gap-1.5"></div>
-            </div>
-        </div>
-
         <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="trophy" class="text-pomiyellow"></i> Badge</h3>
@@ -301,12 +356,10 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
             </div>
             <div id="ach-grid" class="grid grid-cols-3 gap-2"></div>
         </div>
-
         <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
             <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="chart" class="text-pomiblue"></i> Statistiche</h3>
             <div id="stat-bars" class="space-y-2"></div>
         </div>
-
         <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="sparkles" class="text-pomipurple"></i> Lore segrete</h3>
@@ -314,7 +367,6 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
             </div>
             <div id="lore-list" class="space-y-1.5 text-xs text-gray-300 italic"></div>
         </div>
-
         <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
             <h3 class="font-bold text-sm flex items-center gap-2"><i data-ic="share-nodes" class="text-emerald-400"></i> Backup</h3>
             <p class="text-[11px] text-gray-400">Crea un codice con tutta la collezione per ripristinarla su un altro telefono.</p>
@@ -387,7 +439,7 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
     </div>
 </div>
 
-<!-- MODALE INFO (bustine, potenziamenti, lore) -->
+<!-- MODALE INFO -->
 <div id="info-modal" class="modal top" onclick="if(event.target===this)closeInfo()">
     <div class="pop-in bg-pomicard border border-gray-800 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center">
@@ -398,13 +450,25 @@ input,textarea,select{user-select:text;-webkit-user-select:text}
     </div>
 </div>
 
+<!-- MODALE CASSA -->
+<div id="pack-modal" class="modal top">
+    <div class="w-full max-w-xs flex flex-col items-center gap-4 max-h-[92vh] overflow-y-auto">
+        <p id="pk-label" class="text-xs uppercase tracking-widest text-gray-400"></p>
+        <div id="pk-stage" class="relative w-full flex items-center justify-center" style="min-height:15rem"></div>
+        <p id="pk-hint" class="text-xs text-gray-300">Tocca la cassa per aprirla</p>
+        <div id="pk-rewards" class="w-full space-y-2" style="display:none"></div>
+        <button id="pk-done" onclick="closePack()" class="btn w-full bg-pomiblue text-white font-black py-3 rounded-xl" style="display:none">Continua</button>
+    </div>
+</div>
+
 <!-- NAVIGAZIONE -->
 <nav class="fixed bottom-0 left-0 right-0 z-40 bg-pomicard/95 border-t border-gray-800 backdrop-blur-lg">
-    <div class="max-w-md mx-auto grid grid-cols-4 h-16">
-        <button data-t="capture" onclick="switchTab('capture')" class="nb on text-pomiyellow flex flex-col items-center justify-center space-y-1"><i data-ic="camera" class="text-lg"></i><span class="text-[10px] font-bold">Cattura</span></button>
-        <button data-t="dex" onclick="switchTab('dex')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="book-bookmark" class="text-lg"></i><span class="text-[10px] font-bold">PomìDex</span></button>
-        <button data-t="profile" onclick="switchTab('profile')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="user" class="text-lg"></i><span class="text-[10px] font-bold">Profilo</span></button>
-        <button data-t="settings" onclick="switchTab('settings')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="gear" class="text-lg"></i><span class="text-[10px] font-bold">Impostazioni</span></button>
+    <div class="max-w-md mx-auto grid grid-cols-5 h-16">
+        <button data-t="capture" onclick="switchTab('capture')" class="nb on text-pomiyellow flex flex-col items-center justify-center space-y-1"><i data-ic="camera" class="text-lg"></i><span class="text-[9px] font-bold">Cattura</span></button>
+        <button data-t="dex" onclick="switchTab('dex')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="book-bookmark" class="text-lg"></i><span class="text-[9px] font-bold">PomìDex</span></button>
+        <button data-t="shop" onclick="switchTab('shop')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="store" class="text-lg"></i><span class="text-[9px] font-bold">Negozio</span></button>
+        <button data-t="profile" onclick="switchTab('profile')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="user" class="text-lg"></i><span class="text-[9px] font-bold">Profilo</span></button>
+        <button data-t="settings" onclick="switchTab('settings')" class="nb text-gray-500 flex flex-col items-center justify-center space-y-1"><i data-ic="gear" class="text-lg"></i><span class="text-[9px] font-bold">Impostazioni</span></button>
     </div>
 </nav>
 
@@ -467,7 +531,9 @@ const IC={
  'phone':'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
  'leash':'<circle cx="8" cy="6" r="3.5"/><path d="M8 9.5c0 5 3 6 7 9.5"/><circle cx="16" cy="20" r="1.5"/>',
  'shirt':'<path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3c-1 2-7 2-8 0z"/>',
- 'tail':'<path d="M5 20c0-6 3-10 9-10 4 0 5-3 4-6"/><path d="M16 4l2 0 0 2"/>'
+ 'tail':'<path d="M5 20c0-6 3-10 9-10 4 0 5-3 4-6"/><path d="M16 4l2 0 0 2"/>',
+ 'target':'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+ 'bag':'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'
 };
 function ic(n,c='',id=''){
  const p=IC[n];
@@ -490,7 +556,7 @@ const BREED_DATA={
 const BREEDS=Object.keys(BREED_DATA);
 const FUN_LORE=["Si dice che questo cane possa captare i biscotti da 3km di distanza.","La sua mossa segreta viene attivata quando sente il rumore del guinzaglio.","Maestro supremo delle coccole notturne sul divano.","Ha sconfitto 10 aspirapolvere giganti senza riportare graffi.","Custode leggendario della pallina da tennis dorata."];
 const SECRET_LORE=["Ha imparato a dare la zampa prima ancora di essere chiamato.","Dorme sempre con un occhio aperto per proteggere la ciotola.","Ogni temporale è per lui un'avventura da esplorare.","Il suo nome è celebre in tutto il parco sotto casa.","Quando sbadiglia, la città sembra fermarsi un attimo.","Colleziona foglie e le nasconde sotto il cuscino."];
-const TABS=['capture','dex','profile','settings'];
+const TABS=['capture','dex','shop','profile','settings'];
 const RARS=['Comune','Raro','Epico','Legendario'];
 const RAR=[
  {n:'Comune',c:'text-gray-300',b:'border-gray-700',v:5},
@@ -503,31 +569,59 @@ const ITYPES=['guinzaglio','vestitino','codino','premietto'];
 const TN={guinzaglio:'Guinzaglio',vestitino:'Vestitino',codino:'Codino',premietto:'Premietto'};
 const STAT={guinzaglio:'CP',vestitino:'HP',codino:'Coccole %',premietto:'CP'};
 const ICON={guinzaglio:'leash',vestitino:'shirt',codino:'tail',premietto:'cookie'};
-const PACK_COST=20;
+// Casse: colori, prezzo, numero oggetti, probabilità di biscotti e rarità degli oggetti
+const CHEST=[
+ {nm:'Comune',price:25,k:2,bp:.35,bmin:5,bmax:15,odds:[.75,.22,.03,0]},
+ {nm:'Rara',price:60,k:3,bp:.3,bmin:12,bmax:30,odds:[.4,.48,.11,.01]},
+ {nm:'Epica',price:140,k:3,bp:.25,bmin:25,bmax:55,odds:[.12,.42,.4,.06]},
+ {nm:'Leggendaria',price:300,k:4,bp:.2,bmin:50,bmax:110,odds:[0,.25,.5,.25]}
+];
+const PK=[
+ {a:'#94a3b8',b:'#52525b',c:'#334155',g:'#94a3b8'},
+ {a:'#60a5fa',b:'#2563eb',c:'#1e3a8a',g:'#3b82f6'},
+ {a:'#c084fc',b:'#a21caf',c:'#4c1d95',g:'#a855f7'},
+ {a:'#fde047',b:'#f59e0b',c:'#c2410c',g:'#fde047'}
+];
+const ITEM_PRICE=[15,35,80,180];
+const SP=[[10,14],[86,10],[90,52],[7,60],[52,3],[72,88]];
+const QUESTS=[
+ {d:'Fotografa 2 cani',need:2,p:10,ch:-1,m:()=>true},
+ {d:'Fotografa 3 cani',need:3,p:18,ch:-1,m:()=>true},
+ {d:'Cattura un Volpino',need:1,p:15,ch:-1,m:c=>c.breed==='Volpino'},
+ {d:'Cattura una femmina',need:1,p:15,ch:-1,m:c=>c.sex==='Femmina'},
+ {d:'Cattura un cane di almeno 3 anni',need:1,p:22,ch:-1,m:c=>c.ageYears>=3},
+ {d:'Cattura 2 femmine',need:2,p:26,ch:-1,m:c=>c.sex==='Femmina'},
+ {d:'Trova un Maltipoo di meno di 1 anno',need:1,p:32,ch:0,m:c=>c.breed==='Maltipoo'&&c.ageYears===0},
+ {d:'Trova un Bassotto di almeno 5 anni',need:1,p:40,ch:1,m:c=>c.breed==='Bassotto'&&c.ageYears>=5},
+ {d:'Trova una carta con più di 1000 CP',need:1,p:45,ch:1,m:c=>c.cp>=1000},
+ {d:'Trova una Yorkshire femmina con più di 900 CP',need:1,p:60,ch:2,m:c=>c.breed==='Yorkshire'&&c.sex==='Femmina'&&c.cp>900},
+ {d:'Trova una carta leggendaria',need:1,p:80,ch:2,m:c=>c.cp>=1100}
+];
 const ACH=[
- {id:'first',t:'Prima cattura',d:'Crea la tua prima carta',ic:'paw',ok:()=>dex.length>=1},
- {id:'breeds5',t:'Cacciatore',d:'Cattura 5 razze diverse',ic:'layers',ok:()=>breedCount()>=5},
- {id:'breeds8',t:'Enciclopedia',d:'Cattura tutte le 8 razze',ic:'trophy',ok:()=>breedCount()>=8},
- {id:'legend',t:'Leggenda',d:'Trova una carta leggendaria',ic:'star',ok:()=>dex.some(c=>c.cp>=1100)},
- {id:'cp1000',t:'Campione',d:'Una carta supera 1000 CP',ic:'fire',ok:()=>dex.some(c=>c.cp>=1000)},
- {id:'trade3',t:'Scambista',d:'Scambia 3 carte',ic:'share-nodes',ok:()=>S.st.trades>=3},
- {id:'pack1',t:'Compratore',d:'Apri una bustina',ic:'gift',ok:()=>S.st.packs>=1},
- {id:'equip5',t:'Preparatore',d:'Equipaggia 5 potenziamenti',ic:'sparkles',ok:()=>S.st.equips>=5},
- {id:'daily7',t:'Fedele',d:'Ritira 7 premi giornalieri',ic:'heart',ok:()=>S.st.dailies>=7}
+ {id:'first',t:'Prima cattura',d:'Crea la tua prima carta',ic:'paw',r:0,ok:()=>dex.length>=1},
+ {id:'breeds5',t:'Cacciatore',d:'Cattura 5 razze diverse',ic:'layers',r:1,ok:()=>breedCount()>=5},
+ {id:'breeds8',t:'Enciclopedia',d:'Cattura tutte le 8 razze',ic:'trophy',r:2,ok:()=>breedCount()>=8},
+ {id:'legend',t:'Leggenda',d:'Trova una carta leggendaria',ic:'star',r:2,ok:()=>dex.some(c=>c.cp>=1100)},
+ {id:'cp1000',t:'Campione',d:'Una carta supera 1000 CP',ic:'fire',r:1,ok:()=>dex.some(c=>c.cp>=1000)},
+ {id:'trade3',t:'Scambista',d:'Scambia 3 carte',ic:'share-nodes',r:0,ok:()=>S.st.trades>=3},
+ {id:'pack1',t:'Compratore',d:'Apri una cassa',ic:'gift',r:0,ok:()=>S.st.packs>=1},
+ {id:'equip5',t:'Preparatore',d:'Equipaggia 5 potenziamenti',ic:'sparkles',r:1,ok:()=>S.st.equips>=5},
+ {id:'daily7',t:'Fedele',d:'Ritira 7 premi giornalieri',ic:'heart',r:2,ok:()=>S.st.dailies>=7}
 ];
 
 /* ================= STATO ================= */
-const S={sfx:true,sfxVol:.6,music:false,musVol:.35,user:'Allenatore',avatar:'',bisc:0,inv:[],lores:[],lastDaily:'',st:{trades:0,packs:0,dailies:0,equips:0},ach:{}};
+const S={sfx:true,sfxVol:.6,music:false,musVol:.35,user:'Allenatore',avatar:'',bisc:0,inv:[],packs:[],quests:[],lores:[],lastDaily:'',st:{trades:0,packs:0,dailies:0,equips:0},ach:{}};
 try{
  const o=JSON.parse(localStorage.getItem('pomikon_cfg')||'{}');
  Object.assign(S,o);
  S.st=Object.assign({trades:0,packs:0,dailies:0,equips:0},S.st);
+ S.quests=(S.quests||[]).filter(q=>QUESTS[q.q]);
 }catch(e){}
 let dex=[];
 const normSafe=c=>{try{return norm(c)}catch(e){return null}};
 try{dex=JSON.parse(localStorage.getItem('pomikon_dex')||'[]').map(normSafe).filter(Boolean)}catch(e){}
 
-let cv,cx,orig,work,W=0,H=0,tool='magic',drawing=false,last=null,srcUrl=null,card=null,curTab='capture',activeBreed='Tutti',modalId=null,musTimer=null,musStep=0,toastT,dexView='list',albGroup='breed',albIdx=0,deferredInstall=null;
+let cv,cx,orig,work,W=0,H=0,tool='magic',drawing=false,last=null,srcUrl=null,card=null,curTab='capture',activeBreed='Tutti',modalId=null,musTimer=null,musStep=0,toastT,dexView='list',albGroup='breed',albIdx=0,deferredInstall=null,shopRar=0;
 
 function save(){try{localStorage.setItem('pomikon_cfg',JSON.stringify(S))}catch(e){toast('Impossibile salvare le impostazioni',1)}}
 function persistDex(){try{localStorage.setItem('pomikon_dex',JSON.stringify(dex));return true}catch(e){toast('Memoria piena: elimina qualche carta',1);return false}}
@@ -539,6 +633,8 @@ function toast(msg,err){
  const t=$('toast');t.classList.add('on');
  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600);
 }
+// Mostra più messaggi uno dopo l'altro
+function toastSeq(list,start=0){list.forEach((m,i)=>setTimeout(()=>toast(m),start+i*2600))}
 const show=(el,on)=>el.style.display=on?'':'none';
 const shrink=(src,max,q=.85)=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/webp',q))};im.onerror=rej;im.src=src});
 function rarityOf(cp){
@@ -549,7 +645,7 @@ function rarityOf(cp){
 }
 const rarIdx=c=>c.cp>=1100?3:c.cp>=980?2:c.cp>=880?1:0;
 const breedCount=()=>new Set(dex.map(c=>c.breed)).size;
-// Ricalcola le statistiche di una carta in base ai potenziamenti equipaggiati
+// Ricalcola le statistiche della carta in base ai potenziamenti equipaggiati
 function recalc(c){
  const e=c.eq||{},v=t=>e[t]?e[t].val:0;
  c.cp=c.baseCp+v('guinzaglio')+v('premietto');
@@ -570,10 +666,34 @@ function norm(c){
  c.t=c.t||0;
  return recalc(c);
 }
-function pickLore(){const pool=FUN_LORE.concat(S.lores);return pool[Math.floor(Math.random()*pool.length)]}
-function makeItem(){
- const r=Math.random(),rar=r<.55?0:r<.8?1:r<.95?2:3;
- return{id:'I'+Math.random().toString(36).slice(2,8),type:ITYPES[Math.floor(Math.random()*ITYPES.length)],rar,val:RAR[rar].v};
+function makeItem(rar,type){
+ if(rar===undefined){const r=Math.random();rar=r<.55?0:r<.8?1:r<.95?2:3}
+ return{id:'I'+Math.random().toString(36).slice(2,8),type:type||ITYPES[Math.floor(Math.random()*ITYPES.length)],rar,val:RAR[rar].v};
+}
+function pickRar(odds){let r=Math.random();for(let i=0;i<odds.length;i++){r-=odds[i];if(r<0)return i}return odds.length-1}
+function newPack(t){return{id:'K'+Math.random().toString(36).slice(2,8),t}}
+// Genera il contenuto di una cassa: biscotti oppure potenziamenti
+function rollChest(t){
+ const C=CHEST[t],out=[];
+ for(let i=0;i<C.k;i++){
+  if(Math.random()<C.bp)out.push({b:C.bmin+Math.floor(Math.random()*(C.bmax-C.bmin+1))});
+  else out.push(makeItem(pickRar(C.odds)));
+ }
+ return out;
+}
+function applyRewards(list){list.forEach(e=>{if(e.b!==undefined)S.bisc+=e.b;else S.inv.push(e)})}
+function itemHTML(it,action='',delay=0){
+ const r=RAR[it.rar];
+ return `<div class="pop-in flex items-center gap-3 bg-pomidark border ${r.b} rounded-xl p-2.5" style="animation-delay:${delay}s"><span class="${r.c}">${ic(ICON[it.type],'text-xl')}</span><div class="flex-1 min-w-0"><p class="font-bold text-xs ${r.c} truncate">${r.n} ${TN[it.type]}</p><p class="text-[10px] text-gray-400">+${it.val} ${STAT[it.type]}</p></div>${action}</div>`;
+}
+function rewardHTML(e,delay=0){
+ if(e.b!==undefined)return `<div class="pop-in flex items-center gap-3 bg-pomidark border border-pomiyellow/50 rounded-xl p-2.5" style="animation-delay:${delay}s">${ic('cookie','text-xl text-pomiyellow')}<p class="font-bold text-xs text-pomiyellow">+${e.b} Punti Biscotto</p></div>`;
+ return itemHTML(e,'',delay);
+}
+// Busta/cassa con la zampa, colorata in base alla rarità
+function packHTML(t,id='',sm=false){
+ const P=PK[t];
+ return `<div class="pkw" style="--g:${P.g}"><div${id?` id="${id}"`:''} class="pk${sm?' sm':''}" style="background:linear-gradient(160deg,${P.a},${P.b} 55%,${P.c})"><div class="pk-tear"></div><div class="pk-shine"></div><div class="pk-in">${ic('paw',sm?'text-3xl':'text-5xl')}<span class="pk-n">${CHEST[t].nm}</span></div></div></div>`;
 }
 
 /* ================= AUDIO (sintetizzato) ================= */
@@ -596,7 +716,7 @@ const SFX={
  tab:()=>note(380,.16,'triangle',.25,sfxL(),0,820),
  ok:()=>{note(523,.1,'triangle',.25,sfxL());note(784,.18,'triangle',.25,sfxL(),.09)},
  reveal:()=>[523,659,784,1047].forEach((f,i)=>note(f,.22,'triangle',.22,sfxL(),i*.09)),
- open:()=>note(880,.2,'sine',.25,sfxL(),0,1320),
+ open:()=>{note(220,.3,'sawtooth',.12,sfxL(),0,440);note(880,.2,'sine',.25,sfxL(),.25,1320)},
  cut:()=>note(300,.08,'sine',.2,sfxL(),0,600),
  err:()=>note(170,.28,'sawtooth',.14,sfxL(),0,95)
 };
@@ -623,7 +743,7 @@ function paintSettings(){
  $('r-music').value=Math.round(S.musVol*100);$('v-music').textContent=Math.round(S.musVol*100)+'%';
 }
 
-/* ================= NAVIGAZIONE & ANIMAZIONI ================= */
+/* ================= NAVIGAZIONE ================= */
 function switchTab(t){
  if(t===curTab)return;
  const forward=TABS.indexOf(t)>TABS.indexOf(curTab);
@@ -634,12 +754,13 @@ function switchTab(t){
  document.querySelectorAll('.nb').forEach(b=>{const on=b.dataset.t===t;b.classList.toggle('on',on);b.classList.toggle('text-pomiyellow',on);b.classList.toggle('text-gray-500',!on)});
  curTab=t;SFX.tab();
  if(t==='dex')renderDex();
+ if(t==='shop')renderShop();
  if(t==='profile')renderProfile();
  if(t==='settings')paintSettings();
 }
 function step(id){['s1','s2','s3','s4'].forEach(s=>$(s).classList.toggle('on',s===id))}
 function paintSeg(k,v){
- document.querySelectorAll(`.sg[data-k="${k}"]`).forEach(b=>{const on=b.dataset.v===v;b.className=`sg px-3 py-1 rounded-md transition ${on?'bg-pomiblue text-white':'text-gray-400'}`});
+ document.querySelectorAll(`.sg[data-k="${k}"]`).forEach(b=>{const on=b.dataset.v===v;b.className=`sg px-2 py-1 rounded-md transition flex-1 ${on?'bg-pomiblue text-white':'text-gray-400'}`});
 }
 
 /* ================= RITAGLIO ================= */
@@ -728,6 +849,7 @@ async function makeCard(e){
  paintSaveBtn();
  step('s4');SFX.reveal();toast('Carta creata!');
 }
+function pickLore(){const pool=FUN_LORE.concat(S.lores);return pool[Math.floor(Math.random()*pool.length)]}
 function paintSaveBtn(){
  const b=$('btn-save'),saved=dex.some(x=>x.id===card.id);
  b.disabled=saved;
@@ -736,14 +858,28 @@ function paintSaveBtn(){
 }
 function saveCard(){
  if(!card||dex.some(x=>x.id===card.id))return;
+ const had=dex.some(x=>x.breed===card.breed);
  dex.unshift(card);
  if(!persistDex()){dex.shift();return}
- save();paintSaveBtn();refreshAll();SFX.ok();checkAch();toast('Aggiunta al PomìDex!');
+ const msgs=['Carta salvata: +5 Punti Biscotto'];
+ S.bisc+=5;
+ if(!had){S.packs.push(newPack(1));msgs.push('Razza nuova: Cassa Rara ricevuta!')}
+ if(dex.length%5===0){S.packs.push(newPack(0));msgs.push('5 carte nel PomìDex: Cassa Comune!')}
+ msgs.push(...checkQuests(card));
+ msgs.push(...checkAch());
+ save();paintSaveBtn();refreshAll();SFX.ok();toastSeq(msgs);
 }
 function newPhoto(){card=null;$('dog-name').value='';step('s1')}
+// Il livello di potenziamento (numero di oggetti equipaggiati) determina luccichio e cornice
+function tierOf(c){return Object.values(c.eq||{}).filter(Boolean).length}
+function sparksHTML(n){
+ if(n<2)return '';
+ const k=n>=4?6:n>=3?5:3;
+ return SP.slice(0,k).map(([x,y],i)=>`<i class="sp" style="left:${x}%;top:${y}%;animation-delay:${i*.3}s">${ic('sparkles')}</i>`).join('');
+}
 function renderCard(c,boxId){
- const b=c.breedInfo;
- $(boxId).innerHTML=`<div class="pop-in tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative"><div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${c.rarityClass}"><div class="tcg-holo-overlay"></div>
+ const b=c.breedInfo,n=tierOf(c);
+ $(boxId).innerHTML=`<div class="pop-in tcg-card-container w-full max-w-[310px] aspect-[1/1.55] relative${n?' tier'+n:''}"><div class="tcg-card w-full h-full p-3 flex flex-col justify-between overflow-hidden ${c.rarityClass}${n?' shine':''}"><div class="tcg-holo-overlay"></div>${sparksHTML(n)}
 <div class="flex items-center justify-between border-b-2 border-pomiyellow/60 pb-1.5 z-10"><span class="font-pixel text-xs text-pomiyellow font-black">${esc(c.name)}</span><div class="flex items-center space-x-2"><span class="text-[10px] text-gray-300 font-bold">HP <strong class="text-white text-xs">${c.hp}</strong></span><div class="${b.badgeBg} w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white shadow">${ic(b.typeIcon)}</div></div></div>
 <div class="relative w-full h-[45%] rounded-lg overflow-hidden border-2 border-pomiyellow/70 shadow-inner my-1.5 bg-gradient-to-br ${b.bgGradient} flex items-center justify-center z-10"><div class="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:10px_10px]"></div><img src="${c.imageUrl}" class="relative z-10 max-h-[92%] max-w-[92%] object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.7)]"><div class="absolute bottom-1 right-1 bg-pomidark/90 border border-pomiyellow/80 px-2 py-0.5 rounded-md z-20 flex items-center gap-1 shadow"><span class="text-[9px] text-gray-400 font-bold">CP</span><span class="text-xs font-black text-pomiyellow">${c.cp}</span></div></div>
 <div class="bg-pomidark/90 border border-gray-700 rounded-md px-2 py-1 flex items-center justify-between text-[10px] z-10 shadow-sm"><span class="font-bold text-gray-200">${esc(c.breed)}</span><span class="text-gray-400">${c.sex==='Maschio'?'♂':'♀'} • ${c.ageYears}a ${c.ageMonths}m</span></div>
@@ -779,6 +915,37 @@ function downloadPNG(c=card){
  im.src=c.imageUrl;
 }
 
+/* ================= OBIETTIVI ================= */
+function newQuest(){
+ const used=S.quests.map(q=>q.q);
+ const pool=QUESTS.map((_,i)=>i).filter(i=>!used.includes(i));
+ if(pool.length)S.quests.push({q:pool[Math.floor(Math.random()*pool.length)],n:0});
+}
+function ensureQuests(){while(S.quests.length<3&&S.quests.length<QUESTS.length)newQuest()}
+// Aggiorna gli obiettivi con una nuova carta salvata e assegna le ricompense
+function checkQuests(c){
+ const msgs=[];
+ S.quests.forEach(qs=>{if(QUESTS[qs.q].m(c))qs.n++});
+ S.quests=S.quests.filter(qs=>{
+  const q=QUESTS[qs.q];
+  if(qs.n<q.need)return true;
+  S.bisc+=q.p;
+  if(q.ch>=0)S.packs.push(newPack(q.ch));
+  msgs.push(`Obiettivo completato: +${q.p} biscotti${q.ch>=0?' e Cassa '+CHEST[q.ch].nm:''}`);
+  return false;
+ });
+ ensureQuests();
+ return msgs;
+}
+function renderQuests(){
+ $('quest-list').innerHTML=S.quests.map(qs=>{
+  const q=QUESTS[qs.q],pct=Math.min(100,qs.n/q.need*100);
+  const diff=q.p<=15?'Facile':q.p<=35?'Medio':'Difficile';
+  const dc=diff==='Difficile'?'text-pomired':diff==='Medio'?'text-pomiyellow':'text-emerald-400';
+  return `<div class="bg-pomidark border border-gray-700 rounded-xl p-2.5 space-y-1.5"><div class="flex justify-between items-center gap-2"><p class="text-xs font-bold text-gray-200 flex-1">${q.d}</p><span class="text-[9px] uppercase tracking-wider ${dc}">${diff}</span></div><div class="flex items-center gap-2"><div class="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-pomiblue to-pomipurple transition-all duration-500" style="width:${pct}%"></div></div><span class="text-[10px] text-gray-400">${Math.min(qs.n,q.need)}/${q.need}</span></div><p class="text-[10px] text-pomiyellow flex items-center gap-1">${ic('cookie')} ${q.p}${q.ch>=0?` + Cassa ${CHEST[q.ch].nm}`:''}</p></div>`;
+ }).join('');
+}
+
 /* ================= POMIDEX & ALBUM ================= */
 const SORTS={
  date:(a,b)=>(b.t||0)-(a.t||0),
@@ -790,7 +957,8 @@ function updateCount(){$('hdr-count').textContent=dex.length+' Carte';$('hdr-bis
 function refreshAll(){
  updateCount();renderDex();
  if(dexView==='album')renderAlbum(0);
- renderProfile();
+ if(dexView==='inv')renderInv();
+ renderProfile();renderShop();renderQuests();
 }
 function setBreed(b){
  activeBreed=b;
@@ -799,16 +967,16 @@ function setBreed(b){
 }
 function setDexView(v){
  dexView=v;
- show($('list-wrap'),v==='list');show($('album-wrap'),v==='album');
+ show($('list-wrap'),v==='list');show($('album-wrap'),v==='album');show($('inv-wrap'),v==='inv');
  show($('breed-filters'),v==='list');show($('dex-sort'),v==='list');
  paintSeg('view',v);
- if(v==='album')renderAlbum(0);else renderDex();
+ if(v==='album')renderAlbum(0);else if(v==='inv')renderInv();else renderDex();
 }
 function renderDex(){
  const q=$('dex-q').value.toLowerCase().trim();
  const list=dex.filter(c=>c.name.toLowerCase().includes(q)&&(activeBreed==='Tutti'||c.breed.startsWith(activeBreed))).sort(SORTS[$('dex-sort').value]||SORTS.date);
  $('dex-grid').innerHTML=list.map((c,i)=>`<div class="dexcard pop-in bg-pomicard border border-gray-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-pomiyellow/60 shadow-lg cursor-pointer" style="animation-delay:${Math.min(i,12)*40}ms" onclick="openModal('${c.id}')">
- <div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${c.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700"><img src="${c.imageUrl}" class="max-h-[85%] max-w-[85%] object-contain"><span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">CP ${c.cp}</span></div>
+ <div class="relative aspect-square w-full rounded-lg bg-gradient-to-br ${c.breedInfo.bgGradient} flex items-center justify-center overflow-hidden mb-2 border border-gray-700"><img src="${c.imageUrl}" class="max-h-[85%] max-w-[85%] object-contain"><span class="absolute top-1 right-1 bg-pomidark/90 text-pomiyellow text-[9px] font-black px-1.5 py-0.5 rounded border border-pomiyellow/40">CP ${c.cp}</span>${tierOf(c)?`<span class="absolute bottom-1 left-1 bg-pomidark/90 text-[9px] font-bold px-1.5 py-0.5 rounded text-yellow-200 flex items-center gap-0.5">${ic('sparkles')} ${tierOf(c)}</span>`:''}</div>
  <div><div class="flex items-center justify-between"><h4 class="font-bold text-xs text-white truncate">${esc(c.name)}</h4><span class="text-[9px] text-gray-400">${c.sex==='Maschio'?'♂':'♀'}</span></div><p class="text-[10px] text-gray-400 truncate">${esc(c.breed)}</p></div></div>`).join('');
  $('dex-empty').style.display=list.length?'none':'flex';
  $('dex-msg').textContent=dex.length?'Nessuna carta trovata':'Il tuo PomìDex è vuoto';
@@ -827,11 +995,9 @@ function renderAlbum(dir=0){
  $('alb-grid').innerHTML=slots.map((s,i)=>{
   const br=isB?BREEDS[g]:s,ra=isB?s:g,label=isB?RARS[s]:s;
   const best=dex.filter(c=>c.breed===br&&rarIdx(c)===ra).sort((a,b)=>b.cp-a.cp)[0];
-  if(best){
-   return `<button onclick="openModal('${best.id}')" class="pop-in h-44 rounded-xl border border-gray-700 bg-gradient-to-br ${BREED_DATA[best.breed].bgGradient} p-2 flex flex-col items-center justify-between" style="animation-delay:${i*60}ms">
+  if(best)return `<button onclick="openModal('${best.id}')" class="pop-in h-44 rounded-xl border border-gray-700 bg-gradient-to-br ${BREED_DATA[best.breed].bgGradient} p-2 flex flex-col items-center justify-between" style="animation-delay:${i*60}ms">
    <div class="flex-1 min-h-0 w-full flex items-center justify-center"><img src="${best.imageUrl}" class="max-h-full max-w-full object-contain"></div>
    <div class="w-full text-center bg-pomidark/80 rounded-md px-1 py-0.5"><p class="text-[10px] font-bold truncate">${esc(best.name)}</p><p class="text-[9px] ${RAR[ra].c}">${label} · CP ${best.cp}</p></div></button>`;
-  }
   return `<div class="h-44 rounded-xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center gap-2 text-gray-600">${ic('lock','text-2xl')}<p class="text-[10px] font-bold">${label}</p><p class="text-[9px]">Da trovare</p></div>`;
  }).join('');
  if(dir){const el=$('alb-grid');el.style.animation='none';void el.offsetWidth;el.style.animation=`${dir>0?'inR':'inL'} .35s cubic-bezier(.2,.8,.2,1) both`}
@@ -847,21 +1013,57 @@ function openModal(id){
 function closeModal(){$('card-modal').classList.remove('on');modalId=null}
 function deleteModal(){
  if(!confirm('Vuoi davvero eliminare questa carta?'))return;
- dex=dex.filter(c=>c.id!==modalId);
- persistDex();closeModal();refreshAll();toast('Carta eliminata');
+ const c=dexCard();
+ if(c)ITYPES.forEach(t=>{if(c.eq[t])S.inv.push(c.eq[t])}); // gli oggetti tornano nell'inventario
+ dex=dex.filter(x=>x.id!==modalId);
+ persistDex();save();closeModal();refreshAll();toast('Carta eliminata');
 }
 function exportModal(){const c=dexCard();if(c)exportCard(c)}
 
-/* ================= POTENZIAMENTI ================= */
+/* ================= INVENTARIO ================= */
+function renderInv(){
+ const packs=S.packs.length?S.packs.map(p=>`<button onclick="openPack('${p.id}')" class="btn bg-pomicard border border-gray-800 rounded-2xl p-2 flex flex-col items-center gap-1.5">${packHTML(p.t,'',true)}<span class="text-[10px] font-bold text-gray-200">Cassa ${CHEST[p.t].nm}</span><span class="text-[10px] font-black text-pomiyellow">APRI</span></button>`).join(''):'<p class="col-span-full text-xs text-gray-500 text-center py-2">Nessuna cassa. Guadagnale con le catture e gli obiettivi, oppure comprale nel Negozio.</p>';
+ const items=[...S.inv].sort((a,b)=>ITYPES.indexOf(a.type)-ITYPES.indexOf(b.type)||b.rar-a.rar);
+ const itemsHTML=items.length?items.map(i=>itemHTML(i,`<button onclick="pickCard('${i.id}')" class="btn text-[10px] bg-pomiblue text-white font-bold rounded-lg px-2 py-1.5">Equipaggia</button>`)).join(''):'<p class="text-xs text-gray-500">Nessun potenziamento. Apri le casse!</p>';
+ const eqCards=dex.filter(c=>tierOf(c)>0);
+ const eqHTML=eqCards.length?eqCards.map(c=>`<div class="flex items-center gap-2 bg-pomidark border border-gray-800 rounded-xl p-2"><img src="${c.imageUrl}" class="w-9 h-9 object-contain"><p class="flex-1 text-xs font-bold truncate">${esc(c.name)}</p><div class="flex gap-1.5">${ITYPES.map(t=>c.eq[t]?`<span class="${RAR[c.eq[t].rar].c}" title="${TN[t]}">${ic(ICON[t],'text-sm')}</span>`:'').join('')}</div></div>`).join(''):'<p class="text-xs text-gray-500">Nessuna carta potenziata.</p>';
+ $('inv-wrap').innerHTML=`
+ <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-3">
+  <h3 class="font-black text-xs uppercase tracking-widest text-gray-300 flex items-center gap-2">${ic('gift','text-pomiyellow')} Casse (${S.packs.length})</h3>
+  <div class="grid grid-cols-2 gap-3">${packs}</div>
+ </div>
+ <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
+  <h3 class="font-black text-xs uppercase tracking-widest text-gray-300 flex items-center gap-2">${ic('bag','text-pomiyellow')} Potenziamenti (${S.inv.length})</h3>
+  ${itemsHTML}
+ </div>
+ <div class="bg-pomicard rounded-2xl p-4 border border-gray-800 space-y-2">
+  <h3 class="font-black text-xs uppercase tracking-widest text-gray-300 flex items-center gap-2">${ic('sparkles','text-pomiyellow')} Carte potenziate (${eqCards.length})</h3>
+  ${eqHTML}
+ </div>`;
+}
+function pickCard(itemId){
+ const it=S.inv.find(i=>i.id===itemId);if(!it)return;
+ showInfo('Equipaggia su',dex.length?dex.map(c=>`<button onclick="equipTo('${c.id}','${itemId}')" class="btn w-full flex items-center gap-2 bg-pomidark border border-gray-700 rounded-xl p-2 text-left"><img src="${c.imageUrl}" class="w-9 h-9 object-contain"><span class="flex-1 min-w-0"><span class="block text-xs font-bold truncate">${esc(c.name)}</span><span class="block text-[10px] text-gray-400">${esc(c.breed)} · CP ${c.cp}${c.eq[it.type]?' · sostituisce '+RAR[c.eq[it.type].rar].n:''}</span></span></button>`).join(''):'<p class="text-xs text-gray-500">Non hai ancora carte.</p>');
+}
+// Equipaggia un oggetto su una carta: il vecchio oggetto torna nell'inventario
+function equipTo(cid,iid){
+ const c=dex.find(x=>x.id===cid),it=S.inv.find(i=>i.id===iid);
+ if(!c||!it)return;
+ if(c.eq[it.type])S.inv.push(c.eq[it.type]);
+ S.inv=S.inv.filter(i=>i.id!==iid);
+ c.eq[it.type]=it;S.st.equips++;
+ recalc(c);persistDex();save();closeInfo();
+ if(modalId===cid){renderCard(c,'modal-card');renderGear(c)}
+ refreshAll();SFX.ok();
+ toastSeq([`${TN[it.type]} su ${c.name}: CP ${c.cp}`,...checkAch()]);
+}
+
+/* ================= POTENZIAMENTI SULLA CARTA ================= */
 function renderGear(c){
  $('modal-gear').innerHTML=ITYPES.map(t=>{
   const it=c.eq[t];
   return `<button onclick="openPick('${t}')" class="btn bg-pomidark border ${it?RAR[it.rar].b:'border-gray-700'} rounded-xl p-2 flex flex-col items-center gap-1 text-center"><span class="${it?RAR[it.rar].c:'text-gray-500'}">${ic(ICON[t],'text-lg')}</span><span class="text-[9px] font-bold ${it?'text-gray-200':'text-gray-500'} leading-tight">${it?RAR[it.rar].n:'Vuoto'}</span><span class="text-[8px] text-gray-500">${TN[t]}</span></button>`;
  }).join('');
-}
-function itemHTML(it,action='',delay=0){
- const r=RAR[it.rar];
- return `<div class="pop-in flex items-center gap-3 bg-pomidark border ${r.b} rounded-xl p-2.5" style="animation-delay:${delay}s"><span class="${r.c}">${ic(ICON[it.type],'text-xl')}</span><div class="flex-1 min-w-0"><p class="font-bold text-xs ${r.c} truncate">${r.n} ${TN[it.type]}</p><p class="text-[10px] text-gray-400">+${it.val} ${STAT[it.type]}</p></div>${action}</div>`;
 }
 function showInfo(title,html){$('info-t').textContent=title;$('info-b').innerHTML=html;$('info-modal').classList.add('on')}
 function closeInfo(){$('info-modal').classList.remove('on')}
@@ -871,60 +1073,119 @@ function openPick(type){
  let h='';
  if(cur)h+=`<p class="text-[10px] text-gray-400">Equipaggiato:</p>`+itemHTML(cur,`<button onclick="unequip('${type}')" class="btn text-[10px] bg-red-900/40 border border-red-700/60 text-red-400 rounded-lg px-2 py-1.5">Rimuovi</button>`);
  h+=`<p class="text-[10px] text-gray-400 pt-1">Nel tuo inventario:</p>`;
- h+=list.length?list.map(i=>itemHTML(i,`<button onclick="equipItem('${i.id}')" class="btn text-[10px] bg-pomiblue text-white font-bold rounded-lg px-2 py-1.5">Equipaggia</button>`)).join(''):`<p class="text-xs text-gray-500">Nessun ${TN[type].toLowerCase()} disponibile. Compra una bustina!</p>`;
+ h+=list.length?list.map(i=>itemHTML(i,`<button onclick="equipTo('${c.id}','${i.id}')" class="btn text-[10px] bg-pomiblue text-white font-bold rounded-lg px-2 py-1.5">Equipaggia</button>`)).join(''):`<p class="text-xs text-gray-500">Nessun ${TN[type].toLowerCase()} disponibile. Apri una cassa!</p>`;
  showInfo(TN[type],h);
-}
-function afterGear(c,msg){
- persistDex();save();closeInfo();
- renderCard(c,'modal-card');renderGear(c);
- refreshAll();SFX.ok();toast(msg);checkAch();
-}
-function equipItem(id){
- const c=dexCard(),it=S.inv.find(i=>i.id===id);if(!c||!it)return;
- if(c.eq[it.type])S.inv.push(c.eq[it.type]);
- S.inv=S.inv.filter(i=>i.id!==id);
- c.eq[it.type]=it;S.st.equips++;
- recalc(c);afterGear(c,`${TN[it.type]} equipaggiato: CP ${c.cp}`);
 }
 function unequip(type){
  const c=dexCard();if(!c||!c.eq[type])return;
  S.inv.push(c.eq[type]);c.eq[type]=null;
- recalc(c);afterGear(c,'Potenziamento rimosso');
+ recalc(c);persistDex();save();closeInfo();
+ renderCard(c,'modal-card');renderGear(c);
+ refreshAll();SFX.ok();toast('Potenziamento rimosso');
 }
 
-/* ================= PREMI, BUSTINE, BADGE ================= */
+/* ================= CASSE: APERTURA ANIMATA ================= */
+function openPack(id){
+ const p=S.packs.find(x=>x.id===id);if(!p)return;
+ $('pk-label').textContent=`Cassa ${CHEST[p.t].nm}`;
+ $('pk-stage').innerHTML=packHTML(p.t,'pk-main');
+ $('pk-hint').style.display='';
+ $('pk-rewards').style.display='none';$('pk-rewards').innerHTML='';
+ $('pk-done').style.display='none';
+ $('pack-modal').classList.add('on');
+ const el=$('pk-main');let busy=false;
+ el.onclick=()=>{
+  if(busy)return;busy=true;
+  const i=S.packs.findIndex(x=>x.id===id);if(i<0)return;
+  S.packs.splice(i,1);S.st.packs++;
+  const rewards=rollChest(p.t);
+  applyRewards(rewards);save();refreshAll();
+  $('pk-hint').style.display='none';
+  el.classList.add('shake');SFX.cut();
+  setTimeout(()=>{el.classList.add('open');SFX.open();burstFx(p.t)},620);
+  setTimeout(()=>{$('pk-stage').innerHTML='';showRewards(rewards)},1250);
+ };
+}
+function burstFx(t){
+ const st=$('pk-stage'),g=PK[t].g;
+ const n=t>=2?2:1;
+ for(let i=0;i<n;i++){const b=document.createElement('div');b.className='burst';b.style.setProperty('--g',g);b.style.animationDelay=(i*.18)+'s';st.appendChild(b)}
+ for(let k=0;k<12;k++){
+  const a=k/12*Math.PI*2,d=110+Math.random()*60;
+  const s=document.createElement('span');s.className='spk';
+  s.style.setProperty('--x',Math.cos(a)*d+'px');s.style.setProperty('--y',Math.sin(a)*d+'px');s.style.setProperty('--g',g);
+  s.style.animationDelay=(Math.random()*.15)+'s';st.appendChild(s);
+ }
+}
+function showRewards(rewards){
+ const rw=$('pk-rewards');
+ rw.innerHTML=rewards.map((e,i)=>rewardHTML(e,i*.22)).join('');
+ rw.style.display='';SFX.reveal();
+ $('pk-done').style.display='none';
+ setTimeout(()=>{$('pk-done').style.display=''},rewards.length*220+300);
+}
+function closePack(){$('pack-modal').classList.remove('on');$('pk-stage').innerHTML='';refreshAll()}
+
+/* ================= NEGOZIO & PREMI ================= */
+function renderShop(){
+ $('shop-bisc').textContent=S.bisc;
+ const done=S.lastDaily===new Date().toDateString();
+ $('daily-note').textContent=done?'Già ritirato oggi. Torna domani!':'Un premio gratuito ogni giorno';
+ $('btn-daily').style.opacity=done?'.45':'1';
+ const BTN=['bg-slate-600 text-white','bg-blue-600 text-white','bg-purple-600 text-white','bg-gradient-to-r from-yellow-300 to-amber-500 text-pomidark'];
+ $('shop-chests').innerHTML=CHEST.map((C,t)=>`<div class="bg-pomicard rounded-2xl p-3 border border-gray-800 flex flex-col items-center gap-2 text-center">${packHTML(t,'',true)}<p class="font-black text-sm">Cassa ${C.nm}</p><p class="text-[10px] text-gray-400">${C.k} oggetti · biscotti inclusi</p><button onclick="buyChest(${t})" class="btn w-full ${BTN[t]} font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5">${ic('cookie')} ${C.price}</button></div>`).join('');
+ $('shop-owned').innerHTML=S.packs.length?S.packs.map(p=>`<button onclick="openPack('${p.id}')" class="btn bg-pomicard border border-gray-800 rounded-2xl p-2 flex flex-col items-center gap-1.5">${packHTML(p.t,'',true)}<span class="text-[10px] font-bold text-gray-200">Cassa ${CHEST[p.t].nm}</span><span class="text-[10px] font-black text-pomiyellow">APRI</span></button>`).join(''):'<p class="col-span-full text-xs text-gray-500 text-center py-2">Nessuna cassa in attesa.</p>';
+ paintSeg('srar',String(shopRar));
+ $('shop-items').innerHTML=ITYPES.map(t=>`<div class="bg-pomidark border ${RAR[shopRar].b} rounded-xl p-2.5 flex items-center gap-2"><span class="${RAR[shopRar].c}">${ic(ICON[t],'text-xl')}</span><div class="flex-1 min-w-0"><p class="text-xs font-bold truncate">${RAR[shopRar].n} ${TN[t]}</p><p class="text-[10px] text-gray-400">+${RAR[shopRar].v} ${STAT[t]}</p></div><button onclick="buyItem('${t}')" class="btn bg-gray-800 border border-gray-700 rounded-lg px-2.5 py-1.5 text-[11px] font-black text-pomiyellow flex items-center gap-1">${ic('cookie')}${ITEM_PRICE[shopRar]}</button></div>`).join('');
+}
+function setShopRar(r){shopRar=r;renderShop()}
+function buyChest(t){
+ const C=CHEST[t];
+ if(S.bisc<C.price){SFX.err();toast('Punti Biscotto insufficienti',1);return}
+ S.bisc-=C.price;S.packs.push(newPack(t));save();refreshAll();SFX.ok();
+ toast(`Cassa ${C.nm} aggiunta alle tue casse!`);
+}
+function buyItem(type){
+ const p=ITEM_PRICE[shopRar];
+ if(S.bisc<p){SFX.err();toast('Punti Biscotto insufficienti',1);return}
+ S.bisc-=p;
+ const it=makeItem(shopRar,type);
+ S.inv.push(it);save();refreshAll();SFX.ok();
+ toast(`${RAR[shopRar].n} ${TN[type]} acquistato!`);
+}
 function claimDaily(){
  const today=new Date().toDateString();
  if(S.lastDaily===today){SFX.err();toast('Premio di oggi già ritirato',1);return}
  S.lastDaily=today;S.st.dailies++;
  const r=Math.random(),locked=SECRET_LORE.filter(l=>!S.lores.includes(l));
- save();SFX.reveal();
- if(r<.5||(r>=.8&&!locked.length)){
-  const n=15+Math.floor(Math.random()*26);S.bisc+=n;save();
-  toast(`+${n} Punti Biscotto!`);
- }else if(r<.8){
-  const it=makeItem();S.inv.push(it);save();
-  toast(`Mossa bonus: ${RAR[it.rar].n} ${TN[it.type]}!`);
+ SFX.reveal();
+ if(r<.45||(r>=.9&&!locked.length)){
+  const n=15+Math.floor(Math.random()*26);S.bisc+=n;toast(`+${n} Punti Biscotto!`);
+ }else if(r<.7){
+  S.packs.push(newPack(0));toast('Hai ricevuto una Cassa Comune!');
+ }else if(r<.9){
+  const it=makeItem();S.inv.push(it);toast(`Potenziamento: ${RAR[it.rar].n} ${TN[it.type]}!`);
  }else{
-  const l=locked[Math.floor(Math.random()*locked.length)];S.lores.push(l);save();
+  const l=locked[Math.floor(Math.random()*locked.length)];S.lores.push(l);
   showInfo('Lore segreta sbloccata',`<p class="text-xs italic text-gray-300">“${esc(l)}”</p>`);
  }
- refreshAll();checkAch();
+ save();refreshAll();
+ toastSeq(checkAch(),2800);
 }
-function buyPack(){
- if(S.bisc<PACK_COST){SFX.err();toast(`Servono ${PACK_COST} Punti Biscotto`,1);return}
- S.bisc-=PACK_COST;
- const items=[makeItem(),makeItem(),makeItem()];
- S.inv.push(...items);S.st.packs++;
- save();refreshAll();SFX.reveal();checkAch(true);
- showInfo('Bustina aperta!',items.map((it,i)=>itemHTML(it,'',i*.15)).join('')+`<button onclick="closeInfo()" class="btn w-full bg-pomiblue text-white font-bold py-2.5 rounded-xl text-xs mt-1">Fantastico!</button>`);
-}
-// Controlla i badge; mostra un avviso per il primo sbloccato
-function checkAch(silent=false){
- let got=null;
- ACH.forEach(a=>{if(!S.ach[a.id]&&a.ok()){S.ach[a.id]=1;got=got||a}});
- if(got){save();if(!silent){SFX.reveal();toast(`Badge sbloccato: ${got.t}!`)}}
+
+/* ================= BADGE & STATISTICHE ================= */
+// Sblocca i badge soddisfatti, assegna la cassa in premio e restituisce i messaggi
+function checkAch(){
+ const out=[];
+ ACH.forEach(a=>{
+  if(!S.ach[a.id]&&a.ok()){
+   S.ach[a.id]=1;S.packs.push(newPack(a.r));
+   out.push(`Badge: ${a.t}! Cassa ${CHEST[a.r].nm} ricevuta`);
+  }
+ });
+ if(out.length)save();
  renderAch();
+ return out;
 }
 function renderAch(){
  $('ach-grid').innerHTML=ACH.map(a=>{
@@ -961,14 +1222,15 @@ async function exportCard(c){
  try{
   const img=await shrink(c.imageUrl,180,.55);
   openCode('export',encode({v:1,n:c.name,b:c.breed,s:c.sex,y:c.ageYears,m:c.ageMonths,c:c.cp,k:c.cuddleFactor,l:c.lore,i:img},'POM1.'),'card');
-  S.st.trades++;save();checkAch();
+  S.st.trades++;save();
+  toastSeq(checkAch());
  }catch(e){toast('Impossibile creare il codice',1)}
 }
 async function exportBackup(){
  try{
   toast('Preparo il backup...');
   const cards=await Promise.all(dex.map(async c=>({...c,imageUrl:await shrink(c.imageUrl,160,.55),breedInfo:undefined})));
-  const data={v:2,dex:cards,bisc:S.bisc,inv:S.inv,lores:S.lores,st:S.st,ach:S.ach,lastDaily:S.lastDaily,user:S.user,avatar:S.avatar};
+  const data={v:3,dex:cards,bisc:S.bisc,inv:S.inv,packs:S.packs,quests:S.quests,lores:S.lores,st:S.st,ach:S.ach,lastDaily:S.lastDaily,user:S.user,avatar:S.avatar};
   openCode('export',encode(data,'POMB1.'),'backup');
  }catch(e){toast('Impossibile creare il backup',1)}
 }
@@ -979,17 +1241,19 @@ function fromShare(o){
 }
 function restoreBackup(o){
  if(!Array.isArray(o.dex))throw new Error('bad');
- const nd=o.dex.map(normSafe).filter(Boolean);
- dex=nd;
+ dex=o.dex.map(normSafe).filter(Boolean);
  S.bisc=+o.bisc||0;
  S.inv=Array.isArray(o.inv)?o.inv:[];
+ S.packs=Array.isArray(o.packs)?o.packs:[];
+ S.quests=(Array.isArray(o.quests)?o.quests:[]).filter(q=>QUESTS[q.q]);
  S.lores=Array.isArray(o.lores)?o.lores:[];
  S.st={trades:0,packs:0,dailies:0,equips:0,...(o.st||{})};
  S.ach=o.ach||{};
  S.lastDaily=o.lastDaily||'';
  if(o.user)S.user=String(o.user).slice(0,18);
  if(/^data:image\//.test(o.avatar||''))S.avatar=o.avatar;
- persistDex();save();closeCode();refreshAll();checkAch(true);
+ ensureQuests();
+ persistDex();save();closeCode();refreshAll();checkAch();
  SFX.reveal();toast('Backup ripristinato!');
 }
 function openCode(mode,text='',kind='card'){
@@ -1019,9 +1283,9 @@ function importCode(){
    const c=fromShare(data);
    dex.unshift(c);
    if(!persistDex()){dex.shift();return}
-   S.st.trades++;save();
-   closeCode();refreshAll();SFX.reveal();toast(`${c.name} aggiunto al PomìDex!`);
-   checkAch();
+   S.st.trades++;S.packs.push(newPack(0));save();
+   closeCode();refreshAll();SFX.reveal();
+   toastSeq([`${c.name} aggiunto! Cassa Comune ricevuta per lo scambio`,...checkAch()]);
   }
  }catch(e){SFX.err();toast('Codice non valido o corrotto!',1)}
 }
@@ -1035,10 +1299,6 @@ function renderProfile(){
  $('st-cards').textContent=dex.length;
  $('st-best').textContent=dex.length?Math.max(...dex.map(c=>c.cp)):0;
  $('st-breeds').textContent=breedCount()+'/8';
- const done=S.lastDaily===new Date().toDateString();
- $('btn-daily').style.opacity=done?'.5':'1';
- $('daily-note').textContent=done?'Premio di oggi già ritirato. Torna domani!':'Un premio gratuito ogni giorno.';
- $('inv-list').innerHTML=S.inv.length?S.inv.map(i=>`<span class="inline-flex items-center gap-1 bg-pomidark border ${RAR[i.rar].b} rounded-full px-2 py-0.5 text-[10px] ${RAR[i.rar].c}">${ic(ICON[i.type])}${RAR[i.rar].n} ${TN[i.type]}</span>`).join(''):'<span class="text-xs text-gray-500">Inventario vuoto</span>';
  renderAch();renderStats();
  $('lore-count').textContent=S.lores.length+'/'+SECRET_LORE.length;
  $('lore-list').innerHTML=S.lores.length?S.lores.map(l=>`<p>“${esc(l)}”</p>`).join(''):'<p class="not-italic text-gray-500">Scopri nuove lore con il Premio del giorno.</p>';
@@ -1056,6 +1316,22 @@ function setAvatar(e){
  };
  r.readAsDataURL(f);
  e.target.value='';
+}
+
+/* ================= CODICE SEGRETO ================= */
+const SECRET_CODES={'pippi':50,'cameo':50,'freddy':50,'mini':50,'seina':100,'ti amo':2323};
+function codeBanner(ok,title,pts=0){
+ $('code-banner').innerHTML=`<div class="pop-in flex items-center gap-3 rounded-xl p-3 border ${ok?'bg-emerald-500/15 border-emerald-400/60':'bg-red-500/15 border-red-400/60'}"><span class="${ok?'text-emerald-300':'text-red-300'}">${ic(ok?'gift':'triangle-exclamation','text-xl')}</span><div class="flex-1 min-w-0"><p class="text-xs font-black ${ok?'text-emerald-200':'text-red-200'}">${esc(title)}</p>${ok?`<p class="text-[11px] text-pomiyellow flex items-center gap-1 mt-0.5">${ic('cookie')} +${pts} Punti Biscotto</p>`:''}</div><button onclick="$('code-banner').innerHTML=''" class="text-gray-400 hover:text-white">${ic('xmark')}</button></div>`;
+}
+function redeemCode(){
+ const key=$('code-in').value.trim().toLowerCase().replace(/\s+/g,' ');
+ if(!key){SFX.err();codeBanner(false,'Inserisci un codice');return}
+ if(!Object.prototype.hasOwnProperty.call(SECRET_CODES,key)){SFX.err();codeBanner(false,'Codice non valido');return}
+ const pts=SECRET_CODES[key];
+ S.bisc+=pts;save();
+ $('code-in').value='';
+ SFX.reveal();refreshAll();
+ codeBanner(true,`Codice "${key}" riscattato!`,pts);
 }
 
 /* ================= PWA ================= */
@@ -1113,8 +1389,10 @@ cv.addEventListener('pointermove',e=>{
 });
 const stopDraw=()=>drawing=false;
 cv.addEventListener('pointerup',stopDraw);cv.addEventListener('pointercancel',stopDraw);
+ensureQuests();
+checkAch();
 setTool('magic');setBreed('Tutti');setDexView('list');paintSettings();
-updateCount();renderProfile();checkAch(true);
+updateCount();refreshAll();
 </script>
 </body>
 </html>

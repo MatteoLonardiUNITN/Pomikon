@@ -1,6 +1,6 @@
 // Cambia il numero di versione ogni volta che aggiorni index.html,
 // così i browser scaricano la nuova versione invece di quella in cache.
-const CACHE = 'pomikon-v3';
+const CACHE = 'pomikon-v4';
 const CORE = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
